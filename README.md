@@ -22,3 +22,9 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+rails db:create
+rails db:migrate
+rails webpacker:install
+yarn add sweetalert2
+
