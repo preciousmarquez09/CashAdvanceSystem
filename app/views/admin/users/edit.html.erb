@@ -1,0 +1,289 @@
+<div class="p-10">
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+    <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
+      <p class="text-xl font-bold">Edit User</p>
+      <%= link_to admin_users_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+        <i class="bi bi-arrow-left"></i> 
+        <span>Back</span>
+      <% end %>
+    </div>
+    <%= form_with model: @user, url: admin_user_path(@user), html: { multipart: true }, method: :patch, local: true do |f| %>
+
+     <div class="flex items-center justify-center w-full mb-5">
+        <div class="relative w-40 h-40">
+            <label for="profile_picture_input" id="profile_picture_label" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 overflow-hidden relative">
+                <div id="upload-placeholder" class="<%= 'hidden' if @user.profile_picture.attached? %> flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-2 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                </svg>
+                <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Click to upload <br> profile picture</p>
+                </div>
+            
+                <% if @user.profile_picture.attached? %>
+                <%= image_tag @user.profile_picture, id: "preview-image", class: "w-full h-full object-cover rounded-full" %>
+                <% else %>
+                <img id="preview-image" class="hidden w-full h-full object-cover rounded-full" src="" />
+                <% end %>
+                
+                <%= f.file_field :profile_picture, id: "profile_picture_input", class: "hidden", accept: '.png, .jpg, .jpeg', onchange: "previewImage(event)" %>
+            </label>
+            
+            <button id="remove-image" type="button" onclick="removeImage()" class="<%= @user.profile_picture.attached? ? '' : 'hidden' %> absolute top-2 right-2 bg-gray-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-gray-700">×</button>
+            <%= f.hidden_field :remove_profile, id: "remove_profile", value: "false" %>
+        </div>
+      </div>
+      
+      <h6 class="font-bold">Personal Information</h6>
+      <div class="p-3">
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/3">
+            <%= f.label :f_name, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              First Name <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :f_name, value: @user.f_name, autofocus: true, autocomplete: "given-name", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:f_name].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:f_name).first %></p>
+            <% end %>  
+          </div>
+        
+          <div class="w-full md:w-1/3">
+            <%= f.label :m_name, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Middle Name <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :m_name, value: @user.m_name, autocomplete: "additional-name", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:m_name].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:m_name).first %></p>
+            <% end %>  
+          </div>
+        
+          <div class="w-full md:w-1/3">
+            <%= f.label :l_name, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Last Name <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :l_name, value: @user.l_name, autocomplete: "family-name", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:l_name].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:l_name).first %></p>
+            <% end %>  
+          </div>
+        </div>
+    
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+            <%= f.label :birthday, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Date of Birth <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.date_field :birthday, value: @user.birthday, autofocus: true, autocomplete: "birthday", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:birthday].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:birthday).first %></p>
+            <% end %>  
+          </div>
+
+          <div class="w-full md:w-1/2">
+            <%= f.label :civil_status, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Civil Status <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.select :civil_status, options_for_select([['Single', 'single'], ['Married', 'married'], ['Widow', 'widow']], @user.civil_status), {prompt: "Select Civil Status"}, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:civil_status].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:civil_status).first %></p>
+            <% end %>  
+          </div>
+        </div>
+        
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-2">
+          <div class="w-full md:w-1/2">
+            <%= f.label :email, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Email <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.email_field :email, value: @user.email, autofocus: true, autocomplete: "email", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 h-11 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:email].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:email).first %></p>
+            <% end %>  
+          </div>
+
+          <div class="w-full md:w-1/2">
+            <%= f.label :gender, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Gender <span class="text-red-500">*</span>
+            <% end %>
+            <div class="border border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-2.5 h-11 flex items-center space-x-4">
+              <div class="flex items-center space-x-2">
+                <%= f.radio_button :gender, "male", id: "gender_male", class: "form-check-input cursor-pointer", checked: @user.gender == "male" %>
+                <%= f.label :gender_male, "Male", for: "gender_male", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
+              </div>
+              <div class="flex items-center space-x-2">
+                <%= f.radio_button :gender, "female", id: "gender_female", class: "form-check-input cursor-pointer", checked: @user.gender == "female" %>
+                <%= f.label :gender_female, "Female", for: "gender_female", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
+              </div>
+            </div>
+            <% if @user.errors[:gender].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:gender).first %></p>
+            <% end %>  
+          </div>
+        </div>
+      </div>
+
+      <hr class="p-2"></hr>
+
+      <h6 class="font-bold">Work Information</h6>
+      <div class="p-3">
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+            <%= f.label :employee_id, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Employee ID <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.number_field :employee_id, value: @user.employee_id, autofocus: true, autocomplete: "employee_id", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:employee_id].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:employee_id).first %></p>
+            <% end %>  
+          </div>
+          <div class="w-full md:w-1/2">
+            <%= f.label :job_title, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Job Title <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :job_title, value: @user.job_title, autofocus: true, autocomplete: "job_title", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:job_title].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:job_title).first %></p>
+            <% end %>  
+          </div>
+        </div>
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+            <%= f.label :hire_date, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Hire Date <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.date_field :hire_date, value: @user.hire_date, autofocus: true, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+            <% if @user.errors[:hire_date].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:hire_date).first %></p>
+            <% end %>  
+          </div>
+
+          <div class="w-full md:w-1/2">
+            <%= f.label :employment_status, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+              Employment Status <span class="text-red-500">*</span>
+            <% end %>
+            <div class="border border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-2.5 h-11 flex items-center space-x-4">
+              <div class="flex items-center space-x-2">
+                <%= f.radio_button :employment_status, "regular", id: "estatus_regular", class: "form-check-input cursor-pointer", checked: @user.employment_status == "regular" %>
+                <%= f.label :estatus_regular, "Regular", for: "estatus_regular", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
+              </div>
+              <div class="flex items-center space-x-2">
+                <%= f.radio_button :employment_status, "probationary", id: "estatus_probationary", class: "form-check-input cursor-pointer", checked: @user.employment_status == "probationary" %>
+                <%= f.label :estatus_probationary, "Probationary", for: "estatus_probationary", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
+              </div>
+            </div>
+            <% if @user.errors[:employment_status].present? %>
+              <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:employment_status).first %></p>
+            <% end %>  
+          </div>
+        </div>
+        <div class="mb-2">
+          <%= f.label :salary, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+            Salary <span class="text-red-500">*</span>
+          <% end %>
+          <%= f.number_field :salary, value: @user.salary, autofocus: true, autocomplete: "salary", class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+          <% if @user.errors[:salary].present? %>
+            <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:salary).first %></p>
+          <% end %>  
+        </div>
+      </div>
+
+      <hr class="p-2"></hr>
+      
+      <h6 class="font-bold">Account Information</h6>
+      <div class="p-3">
+        <div class="mb-3">
+          <%= f.label :role, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+            Role <span class="text-red-500">*</span>
+          <% end %>
+          <%= f.select :role, options_for_select([['Admin', 'admin'], ['Employee', 'employee'], ['Finance', 'finance']], @user.role), {prompt: "Select Account Role"}, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
+          <% if @user.errors[:role].present? %>
+            <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:role).first %></p>
+          <% end %>  
+        </div>
+        
+        <div class="flex gap-2 md:flex-nowrap flex-wrap items-center mb-5">
+            <div class="flex-grow relative">
+                <label for="password" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Temporary Password
+                </label>
+                <div class="relative">
+                    <%= f.password_field :password, autocomplete: "current_password", readonly: true, value: @user.temporary_password, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder: "Password", id: "current_password" %>
+                    <button type="button" onclick="toggleCurrentPassword()" class="absolute inset-y-0 right-3 flex items-center">
+                    <i id="eye-icon-password" class="bi bi-eye-slash text-gray-500 cursor-pointer"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+      
+        <div class="p-3 flex justify-between items-center">
+            <div class="flex-grow-0 w-full">
+            <%= f.submit "Update", class: "p-3 bg-green-500 text-white font-bold rounded-lg cursor-pointer px-8" %>
+            </div>
+        <% end %>
+        
+            <div class="flex-grow-0">
+            <%= button_to "Reset Password", reset_password_admin_user_path(@user), 
+                method: :post, 
+                params: { temporary_password: @temporary_password }, 
+                class: "bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg whitespace-nowrap cursor-pointer" %>
+            </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  function toggleCurrentPassword() {
+    const passwordInput = document.getElementById("current_password");
+    const eyeIcon = document.getElementById("eye-icon-password");
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      eyeIcon.classList.replace("bi-eye-slash", "bi-eye");
+    } else {
+      passwordInput.type = "password";
+      eyeIcon.classList.replace("bi-eye", "bi-eye-slash");
+    }
+  }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+        
+        if (!validTypes.includes(file.type)) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid File Type",
+                text: "Please upload an image in PNG, JPEG, or JPG format."
+            });
+            event.target.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("preview-image").src = e.target.result;
+            document.getElementById("preview-image").classList.remove("hidden");
+            document.getElementById("upload-placeholder").classList.add("hidden");
+            document.getElementById("remove-image").classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+    }
+  }
+
+  function removeImage() {
+      document.getElementById("profile_picture_input").value = "";
+      document.getElementById("preview-image").classList.add("hidden");
+      document.getElementById("upload-placeholder").classList.remove("hidden");
+      document.getElementById("remove-image").classList.add("hidden");
+      const removeProfileField = document.getElementById('remove_profile');
+      removeProfileField.value = "true";
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    const previewImage = document.getElementById("preview-image");
+    if (previewImage.src && previewImage.src !== window.location.href && previewImage.src !== "") {
+      previewImage.classList.remove("hidden");
+      document.getElementById("upload-placeholder").classList.add("hidden");
+      document.getElementById("remove-image").classList.remove("hidden");
+    }
+  });
+</script>
