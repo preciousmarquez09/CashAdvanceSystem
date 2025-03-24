@@ -13,8 +13,10 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <%= render "layouts/navbar/sidenav" %>
-  
+
+  <% if user_signed_in? && current_user.has_role?(:admin) %>
+  <%= render "layouts/navbar/admin_sidenav" %>
+  <% end %>
   <body>
   <% if flash[:notice] %>
     <script>

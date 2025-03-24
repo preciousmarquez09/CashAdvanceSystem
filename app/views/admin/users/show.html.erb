@@ -1,0 +1,160 @@
+<div class="p-10">
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+    <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
+      <p class="text-xl font-bold">User Details</p>
+      <%= link_to admin_users_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+        <i class="bi bi-arrow-left"></i> 
+        <span>Back</span>
+      <% end %>
+    </div>
+
+    <div class="flex items-center justify-center w-full mb-5">
+        <div class="relative w-40 h-40">
+            <label for="profile_picture_input" id="profile_picture_label" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 overflow-hidden relative">
+                <div id="upload-placeholder" class="<%= 'hidden' if @user.profile_picture.attached? %> flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-2 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                </svg>
+                <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Click to upload <br> profile picture</p>
+                </div>
+            
+                <% if @user.profile_picture.attached? %>
+                    <%= image_tag @user.profile_picture, id: "preview-image", class: "w-full h-full object-cover rounded-full" %>
+                <% else %>
+                    <img id="preview-image" class="hidden w-full h-full object-cover rounded-full" src="" />
+                <% end %>
+            </label>
+
+        </div>
+      </div>
+    <div class="p-2">
+      <h6 class="font-bold">Personal Information</h6>
+      <div class="p-3">
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/3">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> First Name </label>
+            <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.f_name %> </p>   
+          </div>
+        
+          <div class="w-full md:w-1/3">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Middle Name </label>
+            <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.m_name %> </p>   
+          </div>
+          <div class="w-full md:w-1/3">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Last Name </label>
+            <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.l_name %> </p>   
+          </div>
+        </div>
+    
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Birthday </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.birthday.strftime("%B %d, %Y") %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Civil Status </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize "> <%= @user.civil_status %> </p>   
+            </div>
+        </div>
+
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-2">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Email </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.email %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Gender</label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.gender %> </p>   
+            </div>
+        </div>
+    </div>
+      <hr class="p-2"></hr>
+
+      <h6 class="font-bold">Work Information</h6>
+      <div class="p-3">
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Employee ID </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.employee_id %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Job Title </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.job_title %> </p>   
+            </div>
+        </div>
+
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Hire Date </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.hire_date.strftime("%B %d, %Y")  %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Employment Status</label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.employment_status %> </p>   
+            </div>
+        </div>
+
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Salary </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.salary %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Net Salary </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.net_salary %> </p>   
+            </div>
+        </div>
+
+      <hr class="p-2"></hr>
+      
+      <h6 class="font-bold">Account Information</h6>
+      <div class="p-3">
+        <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Role </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @user.role %> </p>   
+            </div>
+            <div class="w-full md:w-1/2">
+                
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Temporary Password </label>
+                <div class="relative">
+                    <input type="password" autocomplete="current_password" readonly value="<%= @user.temporary_password %>" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                        placeholder="Password" id="current_password">
+                    <button type="button" onclick="toggleCurrentPassword()" class="absolute inset-y-0 right-3 flex items-center">
+                        <i id="eye-icon-password" class="bi bi-eye-slash text-gray-500 cursor-pointer"></i>
+                    </button>
+                </div>
+                                
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Account Created </label>
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.created_at.strftime("%B %d, %Y")  %> </p>   
+            </div>
+        </div>
+      </div>
+  </div>
+</div>
+<script>
+function toggleCurrentPassword() {
+    const passwordInput = document.getElementById("current_password");
+    const eyeIcon = document.getElementById("eye-icon-password");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeIcon.classList.replace("bi-eye-slash", "bi-eye");
+    } else {
+        passwordInput.type = "password";
+        eyeIcon.classList.replace("bi-eye", "bi-eye-slash");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const previewImage = document.getElementById("preview-image");
+    if (previewImage.src && previewImage.src !== window.location.href && previewImage.src !== "") {
+      previewImage.classList.remove("hidden");
+      document.getElementById("upload-placeholder").classList.add("hidden");
+      document.getElementById("remove-image").classList.remove("hidden");
+    }
+  });
+</script>

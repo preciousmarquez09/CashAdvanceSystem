@@ -6,7 +6,10 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   namespace :admin do
-    resources :users
+    resources :users do
+      post :reset_password, on: :member
+    end
   end
+  
   
 end

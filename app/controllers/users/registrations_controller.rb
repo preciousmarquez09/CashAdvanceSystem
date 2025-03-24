@@ -6,12 +6,33 @@ class Users::RegistrationsController < Devise::RegistrationsController
   prepend_before_action :check_user_authentication, only: [:new, :create]
   skip_before_action :require_no_authentication, only: [:new, :create]
   def new
+    session[:temporary_password] = generate_password()
     super
   end
 
   def create
-    super
+    params[:user][:password] = session[:temporary_password] if session[:temporary_password].present?
+    super do |resource|
+      if resource.persisted?
+        case resource.role
+          when "admin" then resource.add_role(:admin)
+          when "employee" then resource.add_role(:employee)
+          when "finance" then resource.add_role(:finance)
+        end
+
+        # Compute and save net salary
+        salary = resource.salary.to_f
+        contributions = gov_contribution(salary)
+        resource.net_salary = salary - (contributions[:sss] + contributions[:pagibig] + contributions[:philhealth])
+
+        flash[:notice] = "User successfully created"
+        resource.save
+        session.delete(:temporary_password)
+        return redirect_to admin_users_path, notice: "User successfully created"
+      end
+    end
   end
+
   # GET /resource/sign_up
   # def new
   #   super
@@ -70,6 +91,22 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
+  def gov_contribution(salary)
+    sss = salary < 20000 ? 500 : 1000
+    pagibig = 200
+    philhealth = (salary * 0.05) / 2
+
+    { sss: sss, pagibig: pagibig, philhealth: philhealth }
+  end
+
+  def generate_password
+    loop do
+      password = SecureRandom.alphanumeric(6)
+      return password if password.match?(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/)
+    end
+  end
+  
+
   def redirect_if_not_authenticated
     unless user_signed_in?
       redirect_to new_user_session_path, alert: "You must be logged in to register a new account."
@@ -81,18 +118,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
       redirect_to new_user_session_path, alert: "You must be logged in to register a new account."
     end
   end
-  
-  # This ensures flash messages are preserved through the redirect
-  def set_flash_message!(*args)
-    return super(*args) if signed_in?
-    super(*args) if is_flashing_format?
-  end
-  
+
   # Allow logged-in users to register
   def require_no_authentication
     assert_is_devise_resource!
     return if action_name == 'new' || action_name == 'create'
-    # For other actions, use the default behavior
     super
   end
 end

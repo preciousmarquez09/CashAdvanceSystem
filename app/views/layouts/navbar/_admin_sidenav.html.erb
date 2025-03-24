@@ -42,6 +42,11 @@
             </a>
          </li>
          <li>
+            <a href="<%= admin_users_path %>" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <i class="bi bi-person-lock text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white text-lg"></i>
+               <span class="hidden sm:inline ms-3">Change Password</span>
+            </a>
+         </li>
          <li>
          <%= form_with url: destroy_user_session_path, method: :delete, html: { id: "logout-form" } do %>
            <a href="#" onclick="confirmLogout(event)" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
