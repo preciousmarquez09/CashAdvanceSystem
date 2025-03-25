@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_22_032329) do
+ActiveRecord::Schema.define(version: 2025_03_25_065848) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -31,6 +31,29 @@ ActiveRecord::Schema.define(version: 2025_03_22_032329) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "audit_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "action"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
+  end
+
+  create_table "cash_adv_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "employee_id"
+    t.integer "amount"
+    t.text "reason"
+    t.binary "supporting_docs"
+    t.integer "repayment_months"
+    t.integer "cut_off"
+    t.string "status"
+    t.integer "approver_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["approver_id"], name: "fk_rails_6fa0998d64"
+    t.index ["employee_id"], name: "fk_rails_0e77492908"
   end
 
   create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -94,4 +117,7 @@ ActiveRecord::Schema.define(version: 2025_03_22_032329) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_logs", "users"
+  add_foreign_key "cash_adv_requests", "users", column: "approver_id", primary_key: "employee_id"
+  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
 end
