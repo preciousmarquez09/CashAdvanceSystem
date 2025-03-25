@@ -74,23 +74,12 @@ class Admin::UsersController < ApplicationController
     private
 
     def user_params
-        params.require(:user).permit(:f_name, :m_name, :l_name, :birthday, :civil_status, :email, 
-        :gender, :employee_id, :job_title, :hire_date, :employment_status, :salary, :role, :password, :temporary_password, 
-        :profile_picture, :remove_profile)
-    end
-
-    def user_params
-      permitted_params = [
-        :f_name, :m_name, :l_name, :birthday, :civil_status, :email, 
-        :gender, :employee_id, :job_title, :hire_date, :employment_status, :salary, :role, :temporary_password, 
-        :profile_picture, :remove_profile
-      ]
+      permitted_params = [ :f_name, :m_name, :l_name, :birthday, :civil_status, :email, :gender, :employee_id, :job_title, :hire_date, :employment_status, 
+                            :salary, :role, :temporary_password, :profile_picture, :remove_profile ]
     
       permitted_params << :password if params[:user][:password].present?
-    
       params.require(:user).permit(permitted_params)
     end
-    
     
     def generate_password
       loop do
