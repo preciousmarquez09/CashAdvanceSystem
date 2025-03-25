@@ -7,8 +7,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "f_name", "m_name", "l_name", "employee_id", "job_title", "employment_status", "role", "salary" ]
+  end
+
   validates :email, presence: true, uniqueness: { case_sensitive: true }, format: { 
-    with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]{3,}\z/i, message: "must be a valid email address" }
+            with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]{3,}\z/i, message: "must be a valid email address" }
   
   validates :employment_status, :gender, presence: true
   validates :f_name, presence: true, length: { minimum: 2 }, if: -> { f_name.present? }, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
@@ -18,11 +22,12 @@ class User < ApplicationRecord
   validates :employee_id, presence: true, numericality: { only_integer: true }, format: { with: /\A\d+\z/, message: "only allows numbers" }
   validates :employee_id, uniqueness: true
   validates :salary, presence: true, length: { minimum: 4 }, numericality: { only_integer: true }, format: { with: /\A\d+\z/, message: "only allows numbers" }
-  validates :password, format: { with: /\A(?=.*[A-Z])(?=.*\d)(?=.*[a-zA-Z]).{6,}\z/, message: "must contain at least one uppercase letter, one number, and be at least 6 characters long" }
+
+  validates :password, format: { with: /\A(?=.*[A-Z])(?=.*\d).{6,}\z/, message: "must have at least one uppercase letter, one number, and be at least 6 characters" 
+            }, if: -> { password.present? }
 
   validate :age_is_18_above
   validate :legal_age
-
 
   private
   def age_is_18_above
@@ -38,5 +43,6 @@ class User < ApplicationRecord
       end
     end
   end
+  
 
 end
