@@ -4,21 +4,32 @@
 
         <%= link_to new_user_registration_path, class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" do %>
             <i class="bi bi-person-fill-add text-lg sm:text-xl"></i> 
-            <span>Add New User</span>
+            <span class="font-semibold">Add New User</span>
         <% end %>
     </div>
 
 
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
-        <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400">
+        <div class="mb-5 w-full ">
+            <%= search_form_for @q, url: admin_users_path, method: :get, class: "flex items-center gap-2" do |f| %>
+            <%= f.search_field :f_name_or_m_name_or_l_name_or_employee_id_or_job_title_or_employment_status_or_roles_name_cont, 
+                class: "w-full p-2 border border-gray-300 rounded-lg", 
+                placeholder: "Search users" %>
+            
+            <%= f.submit "Search", 
+                class: "w-auto px-10 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold" %>
+            <% end %>
+        </div>
+  
+        <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-7">
             <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2  text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-2 py-2 w-24 whitespace-nowrap">Employee ID</th>
-                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap">Name</th>
-                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap">Job Title</th>
-                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap">Employment Status</th> 
-                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap">Salary</th>
-                    <th scope="col" class="px-3 py-2 w-24 hidden lg:table-cell whitespace-nowrap">Role</th>
+                    <th scope="col" class="px-2 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
+                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, :f_name, "Name") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :job_title, "Job Title") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :employment_status, "Employment Status") %></th> 
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :salary, "Salary") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden lg:table-cell whitespace-nowrap"><%= sort_link(@q, :role, "Role") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
             </thead>
@@ -46,6 +57,9 @@
                 <% end %>
             </tbody>
         </table>
+        <% if @pagy.pages > 1 %>
+            <%= render "/layouts/pagy/pagination", pagy: @pagy %>
+        <% end %>
     </div>
 </div>
 
