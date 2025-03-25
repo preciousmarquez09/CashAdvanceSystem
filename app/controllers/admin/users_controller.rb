@@ -58,7 +58,11 @@ class Admin::UsersController < ApplicationController
         flash[:alert] = "Temporary password is missing."
         return redirect_to edit_admin_user_path(@user)
       end
-      @user.is_first = false
+      
+      if current_user.has_role?(:admin) && @user.id != current_user.id
+        @user.is_first = false
+      end
+
       if @user.update(password: new_password, password_confirmation: new_password, temporary_password: new_password)
         if @user.id == current_user.id && current_user.has_role?(:admin)
             bypass_sign_in(@user)
