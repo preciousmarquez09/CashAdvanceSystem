@@ -15,10 +15,10 @@ class User < ApplicationRecord
             with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]{3,}\z/i, message: "must be a valid email address" }
   
   validates :employment_status, :gender, presence: true
-  validates :f_name, presence: true, length: { minimum: 2 }, if: -> { f_name.present? }, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
-  validates :m_name, presence: true, length: { minimum: 2 }, if: -> { m_name.present? }, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
-  validates :l_name, presence: true, length: { minimum: 2 }, if: -> { l_name.present? }, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
-  validates :job_title, presence: true, length: { minimum: 2 }, if: -> { job_title.present? }, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
+  validates :f_name, presence: true, length: { minimum: 2 }, if: -> { f_name.present? }, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters" }
+  validates :m_name, presence: true, length: { minimum: 2 }, if: -> { m_name.present? }, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters" }
+  validates :l_name, presence: true, length: { minimum: 2 }, if: -> { l_name.present? }, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters" }
+  validates :job_title, presence: true, length: { minimum: 2 }, if: -> { job_title.present? }, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters" }
   validates :employee_id, presence: true, numericality: { only_integer: true }, format: { with: /\A\d+\z/, message: "only allows numbers" }
   validates :employee_id, uniqueness: true
   validates :salary, presence: true, length: { minimum: 4 }, numericality: { only_integer: true }, format: { with: /\A\d+\z/, message: "only allows numbers" }

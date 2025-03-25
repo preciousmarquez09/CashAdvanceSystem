@@ -38,3 +38,8 @@ en:
         m_name: "Middle Name"
         l_name: "Last Name"
         employee_id: "Employee ID"
+      eligibility:
+        percentage_cash_limit: "Percentage cash advance limit"
+        min_net_salary: "Minimum net salary"
+        req_decline_days: "Reapply after cash advance decline"
+        req_approve_days: "Reapply after full cash advance payment"

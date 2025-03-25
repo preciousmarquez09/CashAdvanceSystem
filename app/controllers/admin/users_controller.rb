@@ -1,8 +1,9 @@
 class Admin::UsersController < ApplicationController
-
+  load_and_authorize_resource
+  
     def index
       @q = User.includes(:roles).ransack(params[:q])
-      @pagy, @users = pagy(@q.result(distinct: true), items: 12)
+      @pagy, @users = pagy(@q.result(distinct: true), items: 10)
     end
 
     def edit
@@ -29,7 +30,6 @@ class Admin::UsersController < ApplicationController
         bypass_sign_in(@user) if is_current_user
         redirect_to admin_users_path, notice: "User updated successfully."
       else
-        Rails.logger.error "Update failed: #{@user.errors.full_messages.join(', ')}"
         render action: :edit, status: :unprocessable_entity
       end
     end
@@ -58,7 +58,7 @@ class Admin::UsersController < ApplicationController
         flash[:alert] = "Temporary password is missing."
         return redirect_to edit_admin_user_path(@user)
       end
-      
+      @user.is_first = false
       if @user.update(password: new_password, password_confirmation: new_password, temporary_password: new_password)
         if @user.id == current_user.id && current_user.has_role?(:admin)
             bypass_sign_in(@user)

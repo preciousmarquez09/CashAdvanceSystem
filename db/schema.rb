@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_22_032329) do
+ActiveRecord::Schema.define(version: 2025_03_25_055806) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -31,6 +31,16 @@ ActiveRecord::Schema.define(version: 2025_03_22_032329) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "eligibilities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.decimal "percentage_cash_limit", precision: 5, scale: 2
+    t.integer "min_net_salary"
+    t.integer "req_decline_days"
+    t.integer "req_approve_days"
+    t.decimal "interest_rate", precision: 10, scale: 4
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -78,6 +88,7 @@ ActiveRecord::Schema.define(version: 2025_03_22_032329) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "net_salary", precision: 10
     t.string "temporary_password"
+    t.boolean "is_first", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["employee_id"], name: "index_users_on_employee_id", unique: true

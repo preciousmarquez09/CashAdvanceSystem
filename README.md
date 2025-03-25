@@ -23,8 +23,11 @@ Things you may want to cover:
 
 * ...
 
-rails db:create
-rails db:migrate
-rails webpacker:install
-yarn add sweetalert2
+* rails db:create
+
+* rails db:migrate
+
+* rails webpacker:install
+
+* yarn add sweetalert2
 

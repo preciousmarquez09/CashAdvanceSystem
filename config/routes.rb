@@ -15,5 +15,7 @@ Rails.application.routes.draw do
   get 'change_password', to: 'change_password#edit_password', as: :edit_password
   patch 'change_password', to: 'change_password#update_password', as: :update_password
   
+  get 'eligibilities', to: 'eligibilities#edit_eligibility', as: :edit_eligibility
+  patch 'eligibilities', to: 'eligibilities#update_eligibility', as: :update_eligibility
   
 end
