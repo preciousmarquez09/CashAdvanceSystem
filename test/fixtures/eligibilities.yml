@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  percentage_cash_limit: 1
+  min_net_salary: 1
+  req_decline_days: 1
+  req_approve_days: 1
+  interest_rate: 9.99
+
+two:
+  percentage_cash_limit: 1
+  min_net_salary: 1
+  req_decline_days: 1
+  req_approve_days: 1
+  interest_rate: 9.99

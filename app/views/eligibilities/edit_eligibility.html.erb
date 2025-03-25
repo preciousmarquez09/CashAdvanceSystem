@@ -1,0 +1,83 @@
+<div class="p-5">
+    <div class="flex justify-between items-center mb-5 p-3 flex-wrap gap-2">
+        <span class="text-2xl sm:text-3xl font-bold">Eligibility</span>
+    </div>
+
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+        <%= form_with model: @eligibility, url: update_eligibility_path, method: :patch, local: true do |f| %>
+            <div class="w-full mb-5">
+                <label for="percentage_cash_limit" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> 
+                    Percentage Cash Advance Limit 
+                    <em class="text-xs"> (Must between 1 - 100) </em>
+                </label>
+                <div class="relative">
+                    <%= f.number_field :percentage_cash_limit, value: @eligibility.percentage_cash_limit.to_i, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                    <span class="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400"> % </span>
+                </div>
+            
+                <% if @eligibility.errors[:percentage_cash_limit].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @eligibility.errors.full_messages_for(:percentage_cash_limit).first %></p>
+                <% end %>  
+            </div>
+
+            <div class="w-full mb-5">
+                <label for="min_net_salary" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Minimum Net Salary </label>
+                <div class="relative">
+                    <%= f.number_field :min_net_salary, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                    <span class="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400"> ₱ </span>
+                </div>
+            
+                <% if @eligibility.errors[:min_net_salary].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @eligibility.errors.full_messages_for(:min_net_salary).first %></p>
+                <% end %>  
+            </div>
+
+            <div class="w-full mb-5">
+                <label for="req_decline_days" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> 
+                    Reapply After Cash Advance Decline 
+                    <em class="text-xs"> (Must between 1 - 31) </em>
+                </label>
+                <div class="relative">
+                    <%= f.number_field :req_decline_days, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                    <span class="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400"> days </span>
+                </div>
+            
+                <% if @eligibility.errors[:req_decline_days].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @eligibility.errors.full_messages_for(:req_decline_days).first %></p>
+                <% end %>  
+            </div>
+
+            <div class="w-full mb-5">
+                <label for="req_approve_days" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> 
+                    Reapply After Full Cash Advance Payment 
+                    <em class="text-xs"> (Must between 1 - 31) </em>
+                </label>
+                <div class="relative">
+                    <%= f.number_field :req_approve_days, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                    <span class="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400"> days </span>
+                </div>
+            
+                <% if @eligibility.errors[:req_approve_days].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @eligibility.errors.full_messages_for(:req_approve_days).first %></p>
+                <% end %>  
+            </div>
+
+            <div class="w-full mb-5">
+                <label for="interest_rate" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> 
+                    Interest Rate 
+                    <em class="text-xs"> (Must between 1 - 100) </em>
+                </label>
+                <div class="relative">
+                    <%= f.number_field :interest_rate, value: @eligibility.interest_rate.to_i, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                    <span class="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400"> % </span>
+                </div>
+            
+                <% if @eligibility.errors[:interest_rate].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @eligibility.errors.full_messages_for(:interest_rate).first %></p>
+                <% end %>  
+            </div>
+          
+            <%= f.submit "Update Eligibility", class: "p-3 bg-green-500 text-white font-bold rounded-lg cursor-pointer px-8"%>
+        <% end %>
+    </div>
+</div>

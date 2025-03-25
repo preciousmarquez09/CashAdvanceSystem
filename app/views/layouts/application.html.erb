@@ -14,9 +14,14 @@
   </head>
 
 
-  <% if user_signed_in? && current_user.has_role?(:admin) %>
-  <%= render "layouts/navbar/admin_sidenav" %>
+  <% if user_signed_in? %>
+  <% if current_user.has_role?(:admin) %>
+    <%= render "layouts/navbar/admin_sidenav" %>
+  <% elsif current_user.has_role?(:employee) && current_user.is_first %>
+    <%= render "layouts/navbar/employee_sidenav" %>
   <% end %>
+<% end %>
+
   <body>
   <% if flash[:notice] %>
     <script>
@@ -38,12 +43,14 @@
     </script>
   <% end %>
 
-  <% if user_signed_in? %>
+  <% if user_signed_in? && current_user.is_first %>
     <div class="p-4 ml-16 sm:ml-64 transition-all">
       <%= yield %>
     </div>
   <% else %>
+  <div class="p-10 px-36">
     <%= yield %>
+  </div>
   <% end %>
 
 

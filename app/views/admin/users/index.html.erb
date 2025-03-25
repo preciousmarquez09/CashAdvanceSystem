@@ -37,9 +37,9 @@
                 <% @users.each do |user| %>
                     <tr class=" text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-3 py-2 w-24 text-gray-900 dark:text-white"> <%= user.employee_id %> </th>
-                        <td class="px-3 py-2 w-24 capitalize"> <%= user.f_name + " " + user.l_name %> </td>
-                        <td class="px-3 py-2 w-24 capitalize hidden sm:table-cell"> <%= user.job_title %> </td>
-                        <td class="px-3 py-2 w-24 capitalize hidden md:table-cell"> <%= user.employment_status %> </td>  
+                        <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden"> <%= user.f_name + " " + user.l_name %> </td>
+                        <td class="px-3 py-2 w-24 capitalize max-w-[150px] truncate overflow-hidden hidden sm:table-cell"> <%= user.job_title %> </td>
+                        <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell"> <%= user.employment_status %> </td>  
                         <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= user.salary %> </td>
                         <td class="px-3 py-2 w-24 capitalize hidden lg:table-cell"> <%= user.roles.pluck(:name).join(", ") %> </td>
                         <td class="px-3 py-2 w-24">
