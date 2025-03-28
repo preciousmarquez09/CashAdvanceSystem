@@ -14,7 +14,7 @@ class ChangePasswordController < ApplicationController
       # Keep the user signed in after password change
       @user.update(is_first: true)
       bypass_sign_in(@user)
-      redirect_to first_loggedin ? edit_password_path : root_path, notice: "Password updated successfully."
+      redirect_to first_loggedin ? edit_password_path : after_sign_in_path_for(current_user), notice: "Password updated successfully."
     else
       render :edit_password, status: :unprocessable_entity
     end

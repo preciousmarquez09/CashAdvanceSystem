@@ -17,7 +17,7 @@
   <% if user_signed_in? %>
   <% if current_user.has_role?(:admin) %>
     <%= render "layouts/navbar/admin_sidenav" %>
-  <% elsif current_user.has_role?(:employee) && current_user.is_first %>
+  <% elsif (current_user.has_role?(:employee) || current_user.has_role?(:finance)) && current_user.is_first %>
     <%= render "layouts/navbar/employee_sidenav" %>
   <% end %>
 <% end %>
