@@ -40,6 +40,10 @@ class Admin::UsersController < ApplicationController
 
     def destroy
       @user = User.find(params[:id])
+
+      @user.cash_adv_requests.destroy_all
+      @user.approved_cash_adv_requests.destroy_all
+      @user.audit_logs.destroy_all
     
       if @user.destroy
         redirect_to admin_users_path, status: :see_other, notice: "User deleted successfully."
