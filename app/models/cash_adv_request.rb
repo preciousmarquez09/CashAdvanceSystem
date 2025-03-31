@@ -37,6 +37,9 @@ class CashAdvRequest < ApplicationRecord
     end
   end
 
+
+  
+
   private
   def check_status
     return if status.blank?
@@ -47,8 +50,9 @@ class CashAdvRequest < ApplicationRecord
     end
 
     invalid_transitions = {
+      "pending" => ["pending", "released", "on-going", "settled"],
       "approved" => ["pending", "declined"],
-      "released" => ["pending", "declined"],
+      "released" => ["pending", "declined", ],
       "on-going" => ["pending", "declined", "approved", "released", "declined"],
       "settled" => ["pending", "declined", "approved", "released", "on-going", "declined"],
       "declined" => ["pending", "declined", "approved", "released", "on-going", "settled"]
