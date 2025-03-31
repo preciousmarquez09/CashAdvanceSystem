@@ -14,6 +14,8 @@ class CashAdvRequest < ApplicationRecord
 
   validate :check_status
 
+  scope :pending, -> { where(status: 'pending') }
+  scope :approved, -> { where(status: 'approved') }
 
   after_create :log_creation
   after_update :log_status_change, if: :saved_change_to_status?
@@ -24,6 +26,15 @@ class CashAdvRequest < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     super + ["employee"]
+  end
+
+  def status_class
+    case status
+    when 'approved' then 'text-green-600 font-bold'
+    when 'pending' then 'text-yellow-600 font-bold'
+    when 'rejected' then 'text-red-600 font-bold'
+    else ''
+    end
   end
 
   private
@@ -49,16 +60,10 @@ class CashAdvRequest < ApplicationRecord
   end
 
   def log_creation
-    AuditLog.create!(
-      user_id: employee.id,  # Directly use employee (which is a User)
-      action: "Request Cash Advance"
-    )
+    AuditLog.create!(user_id: employee.id, action: "Request Cash Advance")
   end
 
   def log_status_change
-    AuditLog.create!(
-      user_id: approver&.id || employee.id, 
-      action: status
-    )
+    AuditLog.create!(user_id: approver&.id || employee.id, action: status)
   end
 end

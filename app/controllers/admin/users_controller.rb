@@ -47,6 +47,10 @@ class Admin::UsersController < ApplicationController
 
     def destroy
       @user = User.find(params[:id])
+
+      @user.cash_adv_requests.destroy_all
+      @user.approved_cash_adv_requests.destroy_all
+      @user.audit_logs.destroy_all
     
       if @user.destroy
         redirect_to admin_users_path, status: :see_other, notice: "User deleted successfully."
@@ -65,8 +69,8 @@ class Admin::UsersController < ApplicationController
         flash[:alert] = "Temporary password is missing."
         return redirect_to edit_admin_user_path(@user)
       end
-
-      if !@user.has_role?(:admin)
+      
+      if (current_user.has_role?(:admin) && @user.id != current_user.id) || !@user.has_role?(:admin)
         @user.is_first = false
       end
 
