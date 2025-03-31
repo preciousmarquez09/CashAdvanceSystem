@@ -11,48 +11,47 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <meta name="turbo-cache-control" content="no-cache">
+
   </head>
 
-
-  <% if user_signed_in? %>
-  <% if current_user.has_role?(:admin) %>
-    <%= render "layouts/navbar/admin_sidenav" %>
-  <% elsif current_user.has_role?(:employee) && current_user.is_first %>
-    <%= render "layouts/navbar/employee_sidenav" %>
-  <% end %>
-<% end %>
-
   <body>
-  <% if flash[:notice] %>
-    <script>
-      Swal.fire({
-        title: "Success!",
-        text: "<%= j flash[:notice] %>",
-        icon: "success",
-        confirmButtonText: "OK"
-      });
-    </script>
-  <% elsif flash[:alert] %>
-    <script>
-      Swal.fire({
-        title: "Error!",
-        text: "<%= j flash[:alert] %>",
-        icon: "error",
-        confirmButtonText: "OK"
-      });
-    </script>
-  <% end %>
 
-  <% if user_signed_in? && current_user.is_first %>
-    <div class="p-4 ml-16 sm:ml-64 transition-all">
-      <%= yield %>
-    </div>
-  <% else %>
-  <div class="p-10 px-36">
-    <%= yield %>
-  </div>
-  <% end %>
+    <% if user_signed_in? && current_user.is_first%>
+      <% if current_user.has_role?(:admin) %>
+        <%= render "layouts/navbar/admin_sidenav" %>
+      <% elsif current_user.has_role?(:employee) %>
+        <%= render "layouts/navbar/employee_sidenav" %>
+      <% end %>
+    <% end %>
+    <% if flash[:notice] %>
+      <script>
+        Swal.fire({
+          title: "Success!",
+          text: "<%= j flash[:notice] %>",
+          icon: "success",
+          confirmButtonText: "OK"
+        });
+      </script>
+    <% elsif flash[:alert] %>
+      <script>
+        Swal.fire({
+          title: "Error!",
+          text: "<%= j flash[:alert] %>",
+          icon: "error",
+          confirmButtonText: "OK"
+        });
+      </script>
+    <% end %>
 
-
+    <% if user_signed_in? && current_user.is_first %>
+      <div class="p-4 ml-16 sm:ml-64 transition-all">
+        <%= yield %>
+      </div>
+    <% else %>
+      <div class="p-10 px-36">
+        <%= yield %>
+      </div>
+    <% end %>
   </body>
 </html>

@@ -17,3 +17,39 @@ window.Swal = Swal;
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
+
+document.addEventListener('DOMContentLoaded', function () {
+    function setupModalToggle() {
+        const modals = document.querySelectorAll('[id$="-modal"]');
+
+        modals.forEach(modal => {
+            const modalId = modal.id;
+            const openModalButtons = document.querySelectorAll(`[data-modal-toggle="${modalId}"]`);
+            const closeModalButtons = document.querySelectorAll(`[data-modal-hide="${modalId}"]`);
+
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
+            });
+
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                });
+            });
+        });
+    }
+
+    setupModalToggle();
+
+    if (window.Turbo) {
+        document.addEventListener('turbo:load', setupModalToggle);
+    } else if (window.Turbolinks) {
+        document.addEventListener('turbolinks:load', setupModalToggle);
+    }
+});
+
+

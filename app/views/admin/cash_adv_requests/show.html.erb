@@ -1,0 +1,130 @@
+<div class="p-10">
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+    <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
+      <p class="text-xl font-bold">Cash Advance Request </p>
+      <%= link_to admin_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+        <i class="bi bi-arrow-left"></i> 
+        <span>Back</span>
+      <% end %>
+    </div>
+    <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
+        <p class="font-bold text-md md:text-3xl sm:text-3xl mb-3"> <%= @cash_adv_request.employee_id %> : <%= @cash_adv_request.employee.f_name + " " + @cash_adv_request.employee.m_name + " " + @cash_adv_request.employee.l_name%></p>
+    </div>
+    <div class="w-full md:w-full mb-5">
+        <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Reason </label>
+        <p class="h-36 text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 overflow-y-auto"> <%= @cash_adv_request.request_reason %> </p>   
+    </div>
+    <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Cash Advance Amount </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.amount, unit: "₱ ", precision: (@cash_adv_request.amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Payment Every </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @cash_adv_request.cut_off == "cutoff" ? "Cut-off" : @cash_adv_request.cut_off %>  </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Terms </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @cash_adv_request.repayment_months %> <%= @cash_adv_request.repayment_months > 1 ? "Months" : "Month" %>  </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Interest Amount </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Amount </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.monthly_cost, unit: "₱ ", precision: (@cash_adv_request.monthly_cost % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+    </div>
+
+    <div class="w-full">
+    <% images = @cash_adv_request.attachments.select { |a| a.content_type.start_with?('image/') } %>
+    <% pdfs = @cash_adv_request.attachments.select { |a| a.content_type == "application/pdf" } %>
+    <% if images.any? || pdfs.any? %>
+        <h5 class="text-lg font-semibold mb-2">Supporting Documents</h5>
+    <% end %>
+    <% if images.any? %>
+        <div class="w-full">
+            <h5 class="text-md mb-2">Images</h5>
+            <div class="flex flex-wrap gap-2">
+                <% images.each do |image| %>
+                <div class="h-48 flex-1 flex justify-center items-center border border-gray-300 p-1 rounded-lg shadow bg-white relative">
+                    <%= image_tag image, class: "h-full w-full object-contain cursor-pointer zoomable", data: { zoom: url_for(image) }, onclick: "openImageModal('#{url_for(image)}')" %>
+                    <a href="<%= url_for(image) %>" download class="absolute top-2 right-2 bg-gray-700 text-white p-1 px-2 rounded-md text-xs hover:bg-gray-900">
+                        <i class="bi bi-download"></i>
+                    </a>
+                </div>
+                <% end %>
+            </div>
+        </div>
+        <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center hidden" onclick="closeImageModal()">
+            <img id="modalImage" class="max-h-full max-w-full object-contain">
+        </div>
+    <% end %>
+    
+    <% if pdfs.any? %>
+        <div class="w-full mt-4">
+            <h5 class="text-md mb-2">PDF Files</h5>
+            <div class="flex flex-wrap -mx-2">
+            <% if pdfs.size == 1 %>
+                <div class="w-full p-2 flex justify-center border border-gray-300 mb-5">
+                    <iframe src="<%= url_for(pdfs.first) %>" class="w-full h-[500px] border-none"></iframe>
+                </div>
+            <% else %>
+                <% pdfs.each_slice(2).with_index do |pdf_pair, index| %>
+                <div class="w-full flex flex-wrap">
+                    <% pdf_pair.each_with_index do |pdf, pdf_index| %>
+                    <div class="<%= pdfs.size == 3 && index == 1 ? 'w-full' : 'w-full sm:w-1/2' %> p-2 flex justify-center border border-gray-300 mb-5">
+                        <iframe src="<%= url_for(pdf) %>" class="w-full h-[500px] border-none"></iframe>
+                    </div>
+                    <% end %>
+                </div>
+                <% end %>
+            <% end %>
+            </div>
+        </div>
+    <% end %>
+  </div>
+    <% if ["declined", "on-going", "settled", "released", "approved"].include?(@cash_adv_request.status) %>
+        <hr class="p-3 mt-5"></hr>
+        <div class="w-full md:w-1/2 mb-5">
+            <span class="px-3 py-2 text-xl font-semibold rounded
+                            <%= case @cash_adv_request.status
+                            when 'pending' then 'bg-yellow-200 text-yellow-600'
+                            when 'declined' then 'bg-red-200 text-red-600'
+                            when 'approved' then 'bg-green-200 text-green-600'
+                            when 'released' then 'bg-blue-200 text-blue-600'
+                            when 'on-going' then 'bg-orange-200 text-orange-600'
+                            when 'settled' then 'bg-purple-200 text-purple-600'
+                            else 'bg-gray-300' # Default color
+                            end %>">
+                            <%= @cash_adv_request.status.capitalize %>
+                        </span>
+        </div>
+        <div class="w-full md:w-full mb-5">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Approver </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @approver.f_name + " " + @approver.l_name%> </p>   
+        </div>
+        <% if @cash_adv_request.approver_reason.present? %>
+            <div class="w-full md:w-full mb-5">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Approver Reason </label>
+                <p class="h-36 text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 overflow-y-auto"> <%= @cash_adv_request.approver_reason %> </p>   
+            </div>
+        <% end %>
+    <% end %>
+    <% if ["on-going", "settled", "released"].include?(@cash_adv_request.status) %>
+        <%= render "repayment_schedules/schedule_table", repayment_schedules: @cash_adv_request.repayment_schedules %>
+    <% end %>
+  </div>
+</div>
+<script>
+
+function openImageModal(imageUrl) {
+    document.getElementById("modalImage").src = imageUrl;
+    document.getElementById("imageModal").classList.remove("hidden");
+  }
+
+  function closeImageModal() {
+    document.getElementById("imageModal").classList.add("hidden");
+  }
+</script>
