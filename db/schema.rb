@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
     t.decimal "monthly_cost", precision: 10, scale: 2
     t.string "approver_reason"
     t.index ["approver_id"], name: "fk_rails_6fa0998d64"
-    t.index ["employee_id"], name: "fk_rails_0e77492908"
+    t.index ["employee_id"], name: "fk_employee_id"
   end
 
   create_table "eligibilities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["employee_id"], name: "index_users_on_employee_id", unique: true
+    t.index ["employee_id"], name: "unique_employee_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
@@ -141,8 +142,8 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "audit_logs", "users"
+  add_foreign_key "audit_logs", "users", on_delete: :cascade
   add_foreign_key "cash_adv_requests", "users", column: "approver_id", primary_key: "employee_id"
-  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
+  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id", name: "fk_employee_id", on_delete: :cascade
   add_foreign_key "repayment_schedules", "cash_adv_requests"
 end
