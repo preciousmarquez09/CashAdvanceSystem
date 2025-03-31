@@ -11,6 +11,8 @@ class ChangePasswordController < ApplicationController
     first_loggedin = @user.is_first
   
     if @user.update(user_params)
+      
+      @user.update_columns(is_first: true)
       # Keep the user signed in after password change
       @user.update(is_first: true)
       bypass_sign_in(@user)

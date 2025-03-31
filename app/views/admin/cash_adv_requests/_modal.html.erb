@@ -1,0 +1,67 @@
+<div id="<%= modal_id %>" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-4xl h-[700px] max-h-[80vh]"> <!-- Limit modal height -->
+        <div class="relative bg-white rounded-lg shadow-md dark:bg-gray-700 border border-black-1 flex flex-col h-full">
+            <div class="flex items-center justify-between p-5 sm:px-5 sm:py-3 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Terms and Conditions
+                </h3>
+            </div>
+            <div class="p-4 md:p-5 space-y-4 overflow-y-auto flex-1"> <!-- Make content scrollable -->
+                <p class="text-md leading-relaxed">
+                    By submitting a cash advance request, you acknowledge and agree to comply with the rules and repayment terms set by the company. Failure to adhere to these terms may result in consequences as outlined in this policy.
+                </p>
+                <ol class="text-md leading-relaxed text-gray-800 dark:text-gray-400 text-justify">
+                    <li class="font-semibold">
+                        1. The cash advance request must be for a reasonable purpose, such as:
+                        <ul class="ml-5 font-normal"> 
+                            <li> • Emergency medical expenses </li>
+                            <li> • Unexpected family emergencies </li>
+                            <li> • Educational expenses </li>
+                            <li> • Other (please specify) </li>
+                        </ul>
+                    </li>
+                    <li class="font-semibold">
+                        2. Possible reasons for a declined request:
+                        <ul class="ml-5 font-normal"> 
+                            <li> • Budget Constraints </li>
+                            <p class="ml-5"> - Finance may decline requests due to insufficient budget availability for cash advances. </p>
+                            <li> • Employment Record Issues </li>
+                            <p class="ml-5"> - Employee has a record of disciplinary violations or unresolved financial concerns. </p>
+                            <li> • Lack of Supporting Documents </li>
+                            <p class="ml-5"> - Employee failed to provide valid documentation for the requested purpose. </p>
+                            <li> • Unreasonable Purpose </li>
+                            <p class="ml-5"> - The stated purpose does not qualify as an acceptable reason (e.g., non-essential expenses). </p>
+                        </ul>
+                    </li>
+                    <li class="font-semibold">
+                        3. The cash advance has an interest rate of <%= eligibility.interest_rate.to_i %>%.
+                    </li>
+                    <li class="font-semibold">
+                        4. The repayment period will start in the following month after the loan is approved.
+                    </li>
+                    <li class="font-semibold">
+                        5. For monthly repayment: The monthly due date is based on the date the cash advance is disbursed to the employee's account, aligned with the payroll schedule.
+                        <p class="ml-5 font-normal"> The repayment method will follow the corresponding payroll cut-off based on the cash advance approval date: </p>
+                        <ul class="ml-5 font-normal"> 
+                            <li> • If the cash advance is approved between the <b>1st and 15th</b> of the month, repayment will be deducted from the <b>15th salary</b>. </li>
+                            <li> • If the cash advance is approved between the <b>16th and 30th</b>, repayment will be deducted from the <b>30th salary</b>. </li>
+                        </ul>
+                    </li>
+                    <li class="font-semibold">
+                        6. If the employee is terminated, any remaining cash advance balance will be deducted from their final pay.
+                        <ul class="ml-5 font-normal"> 
+                            <li> • If the final pay is insufficient to cover the remaining balance, the employee must pay the remaining amount. </li>
+                            <li> • If the employee fails to pay the outstanding balance, the company may pursue legal action. </li>
+                        </ul>
+                    </li>
+                </ol>
+                <p class="font-semibold italic text-justify"> By submitting a cash advance request, you acknowledge and agree to the above terms and conditions. </p>
+            </div>
+            
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <%= link_to "I accept, Proceed", new_admin_cash_adv_request_path, data: { modal_hide: "default-modal" }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+            </div>
+        </div>
+    </div>
+</div>

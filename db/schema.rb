@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_25_065848) do
-
+ActiveRecord::Schema.define(version: 2025_03_31_012859) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -34,16 +33,6 @@ ActiveRecord::Schema.define(version: 2025_03_25_065848) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-
-  create_table "eligibilities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.decimal "percentage_cash_limit", precision: 5, scale: 2
-    t.integer "min_net_salary"
-    t.integer "req_decline_days"
-    t.integer "req_approve_days"
-    t.decimal "interest_rate", precision: 10, scale: 4
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-
   create_table "audit_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "action"
@@ -55,17 +44,39 @@ ActiveRecord::Schema.define(version: 2025_03_25_065848) do
   create_table "cash_adv_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "employee_id"
     t.integer "amount"
-    t.text "reason"
+    t.text "request_reason"
     t.binary "supporting_docs"
     t.integer "repayment_months"
-    t.integer "cut_off"
+    t.string "cut_off"
     t.string "status"
     t.integer "approver_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.decimal "interest_amount", precision: 5, scale: 2
+    t.decimal "monthly_cost", precision: 10, scale: 2
+    t.string "approver_reason"
     t.index ["approver_id"], name: "fk_rails_6fa0998d64"
     t.index ["employee_id"], name: "fk_rails_0e77492908"
+  end
 
+  create_table "eligibilities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "percentage_cash_limit"
+    t.integer "min_net_salary"
+    t.integer "req_decline_days"
+    t.integer "req_approve_days"
+    t.integer "interest_rate"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "repayment_schedules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "cash_adv_request_id", null: false
+    t.decimal "amount", precision: 10, scale: 2
+    t.date "due_date"
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["cash_adv_request_id"], name: "index_repayment_schedules_on_cash_adv_request_id"
   end
 
   create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -133,4 +144,5 @@ ActiveRecord::Schema.define(version: 2025_03_25_065848) do
   add_foreign_key "audit_logs", "users"
   add_foreign_key "cash_adv_requests", "users", column: "approver_id", primary_key: "employee_id"
   add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
+  add_foreign_key "repayment_schedules", "cash_adv_requests"
 end

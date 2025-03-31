@@ -9,6 +9,8 @@ class Admin::UsersController < ApplicationController
     def edit
       @temporary_password = generate_password()
       @user = User.includes(:roles).find(params[:id])
+      @employee = User.find_by(employee_id: @user.employee_id)
+      @current_cash_adv_request = @employee&.cash_adv_requests 
     end
 
     def update
@@ -25,11 +27,16 @@ class Admin::UsersController < ApplicationController
       end
     
       is_current_user = (@user.id == current_user.id)
-    
+      
+      salary = params[:user][:salary].to_f
+      contributions = gov_contribution(params[:user][:salary].to_f)
+      @user.net_salary = params[:user][:salary].to_f - (contributions[:sss] + contributions[:pagibig] + contributions[:philhealth])
+
       if @user.update(user_params)
         bypass_sign_in(@user) if is_current_user
         redirect_to admin_users_path, notice: "User updated successfully."
       else
+        flash[:alert] = "Failed to update user." 
         render action: :edit, status: :unprocessable_entity
       end
     end
@@ -63,7 +70,7 @@ class Admin::UsersController < ApplicationController
         return redirect_to edit_admin_user_path(@user)
       end
       
-      if current_user.has_role?(:admin) && @user.id != current_user.id
+      if (current_user.has_role?(:admin) && @user.id != current_user.id) || !@user.has_role?(:admin)
         @user.is_first = false
       end
 
@@ -80,7 +87,6 @@ class Admin::UsersController < ApplicationController
 
       
     private
-
     def user_params
       permitted_params = [ :f_name, :m_name, :l_name, :birthday, :civil_status, :email, :gender, :employee_id, :job_title, :hire_date, :employment_status, 
                             :salary, :role, :temporary_password, :profile_picture, :remove_profile ]
@@ -94,6 +100,14 @@ class Admin::UsersController < ApplicationController
         password = SecureRandom.alphanumeric(6)
         return password if password.match?(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/)
       end
+    end
+
+    def gov_contribution(salary)
+      sss = salary < 20000 ? 500 : 1000
+      pagibig = 200
+      philhealth = (salary * 0.05) / 2
+  
+      { sss: sss, pagibig: pagibig, philhealth: philhealth }
     end
 
 end

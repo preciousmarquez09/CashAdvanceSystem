@@ -1,0 +1,2 @@
+module RepaymentSchedulesHelper
+end
