@@ -95,8 +95,6 @@ class User < ApplicationRecord
     # If there are no cash advance requests, allow a new request
     user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
   end
-  
-  
 
   private
   def age_is_18_above
