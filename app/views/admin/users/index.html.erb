@@ -40,7 +40,7 @@
                         <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden"> <%= user.f_name + " " + user.l_name %> </td>
                         <td class="px-3 py-2 w-24 capitalize max-w-[150px] truncate overflow-hidden hidden sm:table-cell"> <%= user.job_title %> </td>
                         <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell"> <%= user.employment_status %> </td>  
-                        <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= user.salary %> </td>
+                        <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= number_to_currency(user.salary, unit: "₱ ", precision: (user.salary % 1 == 0 ? 0 : 2)) %> </td>
                         <td class="px-3 py-2 w-24 capitalize hidden lg:table-cell"> <%= user.roles.pluck(:name).join(", ") %> </td>
                         <td class="px-3 py-2 w-24">
                             <%= link_to admin_user_path(user.id), class: "px-2 py-1 text-blue-600" do %>

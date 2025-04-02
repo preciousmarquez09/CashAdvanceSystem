@@ -97,11 +97,11 @@
         <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
             <div class="w-full md:w-1/2">
                 <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Salary </label>
-                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.salary %> </p>   
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@user.salary, unit: "₱ ", precision: (@user.salary % 1 == 0 ? 0 : 2)) %> </p>   
             </div>
             <div class="w-full md:w-1/2">
                 <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Net Salary </label>
-                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @user.net_salary %> </p>   
+                <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@user.net_salary, unit: "₱ ", precision: (@user.net_salary % 1 == 0 ? 0 : 2)) %> </p>   
             </div>
         </div>
 

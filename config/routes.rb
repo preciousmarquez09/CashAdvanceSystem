@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   root to: "home#index"
  
   devise_for :users, controllers: {
@@ -27,6 +26,7 @@ Rails.application.routes.draw do
   # Finance
   namespace :finance do
     get "dashboard", to: "dashboard#index"
+    resources :users
   end
 
   

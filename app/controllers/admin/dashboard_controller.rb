@@ -1,4 +1,5 @@
 class Admin::DashboardController < ApplicationController
+  
     def index
       @pending_requests = CashAdvRequest.where(status: "pending").count
       @approved_requests = CashAdvRequest.where(status: "approved").count

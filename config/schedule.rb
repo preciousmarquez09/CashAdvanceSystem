@@ -19,6 +19,8 @@
 
 # Learn more: http://github.com/javan/whenever
 
+# whenever --update-cron
+
 #change every 1.minute for testing
 #every 1.minute do
 
