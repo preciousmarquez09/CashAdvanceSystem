@@ -34,6 +34,70 @@ class User < ApplicationRecord
   validate :age_is_18_above
   validate :legal_age
 
+  #get the incoming due date and amount
+  def self.user_due_cash_advance_amount(user)
+    user_cash_adv_requests = CashAdvRequest.where(employee_id: user.employee_id)
+  
+    user_cash_adv_requests.each do |cash_adv_request|
+      # Check if any repayment schedule for this request has a due_date on the 15th or 30th
+      due_schedule = cash_adv_request.repayment_schedules.where(
+        due_date: [15.days.from_now.beginning_of_month + 14.days, 15.days.from_now.beginning_of_month + 29.days]
+      ).first
+  
+      if due_schedule
+        return { amount: due_schedule.amount, cash_adv_request: user_cash_adv_requests }
+      else
+        return { cash_adv_request: user_cash_adv_requests }
+      end
+    end
+    nil
+  end
+  
+  def self.gov_contribution(salary)
+    sss = salary < 20000 ? 500 : 1000
+    pagibig = 200
+    philhealth = (salary * 0.05) / 2
+
+    { sss: sss, pagibig: pagibig, philhealth: philhealth }
+  end
+
+  def self.can_request_cashadv(user)
+    return false unless user.employment_status == 'regular'
+    
+    eligibility = Eligibility.first
+    return false unless user.net_salary.to_f >= eligibility.min_net_salary.to_f
+  
+    user_cash_adv_requests = CashAdvRequest.where(employee_id: user.employee_id).order(created_at: :desc)
+  
+    # Check if the user has an existing request with a status that prevent new requests
+    user_cash_adv_requests.each do |cash_adv_request|
+      case cash_adv_request.status
+      when 'pending', 'approved', 'released', 'on-going'
+        # Block new requests if the current status is any of the above
+        return false
+      when 'settled'
+        # Check if enough time has passed since the settled request
+        if (cash_adv_request.updated_at.to_date - Date.today).to_i < eligibility.req_approve_days
+          return false
+        else
+          return true
+        end
+      when 'declined'
+        # Check if enough time has passed since the declined request
+        if (cash_adv_request.updated_at.to_date - Date.today).to_i < eligibility.req_decline_days
+          return false
+        else
+          return true
+        end
+      end
+    end
+  
+    # If there are no cash advance requests, allow a new request
+    user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
+  end
+  
+  
+
   private
   def age_is_18_above
     if birthday.present? && birthday > 18.years.ago.to_date

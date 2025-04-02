@@ -28,8 +28,10 @@ class RepaymentSchedule < ApplicationRecord
   
     # Update 'settled' status if all repayment schedules for a request are 'paid'
     settled_requests = CashAdvRequest.all.select do |cash_adv_request|
-      cash_adv_request.repayment_schedules.where.not(status: 'paid').empty?
+      # Ensure there's at least one repayment schedule, and check if all are paid
+      cash_adv_request.repayment_schedules.any? && cash_adv_request.repayment_schedules.where.not(status: 'paid').empty?
     end.map(&:id)
+    
   
     if settled_requests.any?
       settled_count = CashAdvRequest.where(id: settled_requests).update_all(status: 'settled', updated_at: Time.current)

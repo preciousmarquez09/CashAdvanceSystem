@@ -22,7 +22,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
         # Compute and save net salary
         salary = resource.salary.to_f
-        contributions = gov_contribution(salary)
+        contributions = User.gov_contribution(salary)  
         resource.net_salary = salary - (contributions[:sss] + contributions[:pagibig] + contributions[:philhealth])
 
         flash[:notice] = "User successfully created"
@@ -90,15 +90,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   private
-
-  def gov_contribution(salary)
-    sss = salary < 20000 ? 500 : 1000
-    pagibig = 200
-    philhealth = (salary * 0.05) / 2
-
-    { sss: sss, pagibig: pagibig, philhealth: philhealth }
-  end
-
   def generate_password
     loop do
       password = SecureRandom.alphanumeric(6)

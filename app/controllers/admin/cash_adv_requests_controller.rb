@@ -1,11 +1,8 @@
 class Admin::CashAdvRequestsController < ApplicationController
-
+  load_and_authorize_resource
     def index
         @eligibility = Eligibility.first
         @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f
-
-        @user = User.find_by(employee_id: current_user.employee_id)
-        @current_cash_adv_request = @user&.cash_adv_requests 
         @q = CashAdvRequest.includes(:employee).ransack(params[:q])
         @pagy, @cash_adv_requests = pagy(@q.result(distinct: false).order(created_at: :desc), items: 10)
     end

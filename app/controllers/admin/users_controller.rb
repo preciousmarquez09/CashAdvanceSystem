@@ -29,7 +29,7 @@ class Admin::UsersController < ApplicationController
       is_current_user = (@user.id == current_user.id)
       
       salary = params[:user][:salary].to_f
-      contributions = gov_contribution(params[:user][:salary].to_f)
+      contributions = User.gov_contribution(params[:user][:salary].to_f)
       @user.net_salary = params[:user][:salary].to_f - (contributions[:sss] + contributions[:pagibig] + contributions[:philhealth])
 
       if @user.update(user_params)
@@ -100,14 +100,6 @@ class Admin::UsersController < ApplicationController
         password = SecureRandom.alphanumeric(6)
         return password if password.match?(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/)
       end
-    end
-
-    def gov_contribution(salary)
-      sss = salary < 20000 ? 500 : 1000
-      pagibig = 200
-      philhealth = (salary * 0.05) / 2
-  
-      { sss: sss, pagibig: pagibig, philhealth: philhealth }
     end
 
 end

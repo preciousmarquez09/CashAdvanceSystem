@@ -1,0 +1,63 @@
+<div class="p-5">
+    <div class="flex justify-between items-center mb-5 p-3 flex-wrap gap-2">
+        <span class="text-2xl sm:text-3xl font-bold">Users List</span>
+    </div>
+
+
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+        <div class="mb-5 w-full ">
+            <%= search_form_for @q, url: admin_users_path, method: :get, class: "flex items-center gap-2" do |f| %>
+            <%= f.search_field :f_name_or_m_name_or_l_name_or_employee_id_or_job_title_or_employment_status_or_roles_name_cont, 
+                class: "w-full p-2 border border-gray-300 rounded-lg", 
+                placeholder: "Search users" %>
+            
+            <%= f.submit "Search", 
+                class: "w-auto px-10 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold" %>
+            <% end %>
+        </div>
+  
+        <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-7">
+            <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2  text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-2 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
+                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, :f_name, "Name") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :employment_status, "Employment Status") %></th> 
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :salary, "Salary") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"> Eligible </th>
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @users.each do |user| %>
+                    <tr class=" text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-3 py-2 w-24 text-gray-900 dark:text-white"> <%= user.employee_id %> </th>
+                        <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden"> <%= user.f_name + " " + user.l_name %> </td>
+                        <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell"> <%= user.employment_status %> </td>  
+                        <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= number_to_currency(user.salary, unit: "₱ ", precision: (user.salary % 1 == 0 ? 0 : 2))%> </td>
+                        <td class="px-3 py-2 w-24 hidden md:table-cell"> 
+                            <% value = @users_with_cash_adv.include?(user) ? "No" : (user.net_salary >= @eligibility.min_net_salary && user.employment_status == "regular" ? "Yes" : "No") %> 
+                            <span class="<%= value == 'No' ? 'text-red-500' : 'text-green-500' %>"><%= value %></span>
+                        </td>
+
+                        <td class="px-3 py-2 w-24"> 
+                            <button onclick="openModal(<%= user.id %>)" class="bg-blue-500 px-3 py-1 text-white rounded">View</button>
+                        </td>
+                    </tr>
+                    <%= render "showModal", user: user, next_payroll: @next_payroll %>
+                <% end %>
+            </tbody>
+        </table>
+        <% if @pagy.pages > 1 %>
+            <%= render "/layouts/pagy/pagination", pagy: @pagy %>
+        <% end %>
+    </div>
+</div>
+<script>
+function openModal(userId) {
+  document.getElementById(`user-modal-${userId}`).classList.remove("hidden");
+}
+
+function closeModal(userId) {
+  document.getElementById(`user-modal-${userId}`).classList.add("hidden");
+}
+</script>

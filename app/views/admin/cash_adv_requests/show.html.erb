@@ -101,10 +101,12 @@
                             <%= @cash_adv_request.status.capitalize %>
                         </span>
         </div>
+        <% if @cash_adv_request.approver_id.present? %>
         <div class="w-full md:w-full mb-5">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Approver </label>
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @approver.f_name + " " + @approver.l_name%> </p>   
         </div>
+        <% end %>
         <% if @cash_adv_request.approver_reason.present? %>
             <div class="w-full md:w-full mb-5">
                 <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Approver Reason </label>

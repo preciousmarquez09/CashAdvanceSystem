@@ -1,0 +1,128 @@
+<div id="user-modal-<%= user.id %>" class="hidden fixed inset-0 z-50 flex justify-center items-center w-full bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-4xl sm:h-auto h-auto max-h-screen overflow-y-auto">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 flex flex-col h-auto">
+            <div class="flex items-center justify-between p-2 md:p-3 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl px-3 font-semibold text-gray-900 dark:text-white">
+                    <%= user.f_name + " " + user.m_name + " " + user.l_name %>
+                </h3>
+                <button type="button" onclick="closeModal(<%= user.id %>)" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            
+            <div class="flex-1 p-4 md:p-5 space-y-2 overflow-y-auto" style="max-height: calc(80vh - 60px);">
+                
+                <!-- User Information -->
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Employee ID: <span class="ml-2 font-medium text-md text-gray-900"> <%= user.employee_id %> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white capitalize"> Employment Status: <span class="ml-2 font-medium text-md text-gray-900"> <%= user.employment_status %> </span> </label>
+                    </div>
+                </div>
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white capitalize"> Job Title: <span class="ml-2 font-medium text-md text-gray-900"> <%= user.job_title %> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Hire Date: <span class="ml-2 font-medium text-md text-gray-900"> <%= user.hire_date.strftime("%B %d, %Y") %> </span> </label>
+                    </div>
+                </div>
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Salary: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(user.salary, unit: "₱ ", precision: (user.salary % 1 == 0 ? 0 : 2))%> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Net Salary: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(user.net_salary, unit: "₱ ", precision: (user.net_salary % 1 == 0 ? 0 : 2))%> </span> </label>
+                    </div>
+                </div>
+
+                <hr class="px-2"></hr>
+
+                <p class="font-semibold text-md "> Payroll for <%= @next_payroll.strftime("%B %d, %Y") %></p>
+                <label class="block text-sm font-bold text-gray-600 dark:text-white"> Deductions </label>
+                <% salary = user.salary.to_f %>
+                <% contributions = User.gov_contribution(salary) %> 
+                <% cash_advance = User.user_due_cash_advance_amount(user) %> 
+
+                <% # Determine if today is between the 16th and 30th for deductions %>
+                <!-- TESTING Modify all the date Date.new(Date.today.year, Date.today.month, 25) -->
+                <% deductions_included = (Date.today.day >= 16) %>
+
+                <% total_contributions = 0 %>
+                
+                <% total_contributions = cash_advance[:amount] if cash_advance && cash_advance[:amount].present? %>
+                <% if deductions_included %>
+                    <% total_contributions += contributions[:sss] + contributions[:pagibig] + contributions[:philhealth].ceil %>
+                <% end %>
+
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> SSS: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:sss] : 0 %> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">                                                                                                  <!-- TESTING Modify all the date Date.new(Date.today.year, Date.today.month, 25) -->
+                        <label class="block text-sm text-gray-600 dark:text-white capitalize"> Pagibig: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:pagibig] : 0 %> </span> </label>
+                    </div>
+                </div>
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white capitalize"> Philhealth: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:philhealth].ceil : 0 %> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Cash Advance: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(cash_advance && cash_advance[:amount] || 0, unit: "₱ ", precision: (cash_advance && cash_advance[:amount].present? && cash_advance[:amount] % 1 != 0 ? 2 : 0)) %> </span> </label>
+                    </div>
+                </div>
+                <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-gray-600 dark:text-white"> Total Deduction: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(total_contributions, unit: "₱ ", precision: (total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>   
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block mb-2 text-sm dark:text-white"> <span class="p-1 text-center font-medium text-md text-white bg-green-500 rounded">  Net Pay: <%= number_to_currency(user.salary - total_contributions, unit: "₱ ", precision: (user.net_salary - total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>
+                    </div>
+                </div>
+
+                <% if cash_advance && cash_advance[:cash_adv_request] %>
+                    <hr class="px-2"></hr>
+                    <p class="font-semibold text-md">Cash Advance History</p>
+
+                    <div class="grid grid-cols-4 gap-2 px-2">
+                        <div>
+                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Requested At </label>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Amount</label>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Status </label>
+                        </div>
+                        <div class="ml-5">
+                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Action </label>
+                        </div>
+                    </div>
+                
+                    <% cash_advance[:cash_adv_request].sort_by(&:created_at).reverse.each do |cash_adv| %>
+                        <div class="grid grid-cols-4 gap-2 px-2">
+                            <div>
+                                <label class="block text-sm text-black font-semibold dark:text-white capitalize">  <%= cash_adv.created_at.strftime("%B %d, %Y") %> </label>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-black font-semibold dark:text-white"> <%= cash_adv.amount %> </label>
+                            </div>
+                            <div>
+                                <label class="block <%= cash_adv.status_class %>"> <%= cash_adv.status %> </label>
+                            </div>
+                            <div class="ml-5">
+                                <%= link_to "View", admin_cash_adv_request_path(cash_adv.id), class: "px-5 py-1 text-white bg-blue-500 rounded" %>
+                            </div>
+                        </div>
+                    <% end %>
+                <% end %>
+
+            </div>
+        </div>
+    </div>
+</div>
