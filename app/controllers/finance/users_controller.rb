@@ -6,7 +6,7 @@ class Finance::UsersController < ApplicationController
     @next_payroll = next_payroll_date()
     @q = User.includes(:roles, :cash_adv_requests)
              .ransack(params[:q])
-    @pagy, @users = pagy(@q.result(distinct: true), items: 5)
+    @pagy, @users = pagy(@q.result(distinct: true), items: 10)
   
     # Users with at least one cash advance request matching specific statuses
     @users_with_cash_adv = User.joins(:cash_adv_requests)

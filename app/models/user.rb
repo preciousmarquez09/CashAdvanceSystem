@@ -96,8 +96,6 @@ class User < ApplicationRecord
     user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
   end
   
-  
-
   private
   def age_is_18_above
     if birthday.present? && birthday > 18.years.ago.to_date
