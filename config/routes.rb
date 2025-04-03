@@ -20,12 +20,15 @@ Rails.application.routes.draw do
   # Employee 
   namespace :employee do
     get "dashboard", to: "dashboard#index"
-    
+    get '/profile', to: 'profile#index', as: 'profile'
+     patch '/profile', to: 'profile#update'
   end
 
   # Finance
   namespace :finance do
     get "dashboard", to: "dashboard#index"
+    get '/profile', to: 'profile#index', as: 'profile'
+     patch '/profile', to: 'profile#update'
     resources :users
   end
 

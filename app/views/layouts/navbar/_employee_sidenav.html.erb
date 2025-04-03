@@ -4,10 +4,13 @@
       <ul class="space-y-2 font-medium">
             <% if current_user.has_role?(:employee) %>
                <% dashboard_path = employee_dashboard_path %>
+               <% profile_path = employee_profile_path %>
             <% elsif current_user.has_role?(:finance) %>
                <% dashboard_path = finance_dashboard_path %>
+               <% profile_path = finance_profile_path %> 
             <% else %>
-               <% dashboard_path = root_path %> <%# Fallback if no matching role %>
+               <% dashboard_path = root_path %> 
+               <% profile_path = root_path %> 
             <% end %>
          <li>
             <a href="<%= dashboard_path %>" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -37,7 +40,7 @@
             </a>
          </li>
          <li>
-            <a href="<%=  %>" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="<%= profile_path  %>" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <i class="bi bi-people-fill text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white text-lg"></i>
                <span class="hidden sm:inline ms-3">Profile</span>
             </a>

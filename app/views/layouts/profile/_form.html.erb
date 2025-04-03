@@ -1,0 +1,126 @@
+<%= form_with model: current_user, 
+              url: (current_user.role == 'employee' ? employee_profile_path : finance_profile_path), 
+              method: :patch, 
+              local: true, 
+              html: { multipart: true } do |f| %>
+    <div class="flex items-center justify-center w-full mb-5">
+      <div class="relative w-40 h-40">
+        <label for="profile_picture_input" id="profile_picture_label" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 overflow-hidden relative">
+          <div id="upload-placeholder" class="<%= 'hidden' if current_user.profile_picture.attached? %> flex flex-col items-center justify-center pt-5 pb-6">
+            <svg class="w-10 h-10 mb-2 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 16">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            </svg>
+            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Click to upload <br> profile picture</p>
+          </div>
+
+          <% if current_user.profile_picture.attached? %>
+            <%= image_tag current_user.profile_picture, id: "preview-image", class: "w-full h-full object-cover rounded-full" %>
+          <% else %>
+            <img id="preview-image" class="hidden w-full h-full object-cover rounded-full" src="" />
+          <% end %>
+        </label>
+        <input type="file" id="profile_picture_input" name="user[profile_picture]" accept="image/*" class="hidden" onchange="previewImage(event)" />
+      </div>
+    </div>
+
+    <div class="p-2">
+    <h6 class="font-bold">Personal Information</h6>
+    <div class="p-3">
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+        <div class="w-full md:w-1/3">
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> First Name </label>
+          <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.f_name %> </p>   
+        </div>
+      
+        <div class="w-full md:w-1/3">
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Middle Name </label>
+          <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.m_name %> </p>   
+        </div>
+        <div class="w-full md:w-1/3">
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Last Name </label>
+          <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.l_name %> </p>   
+        </div>
+      </div>
+  
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Birthday </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @current_user.birthday.strftime("%B %d, %Y") %> </p>   
+          </div>
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Civil Status </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize "> <%= @current_user.civil_status %> </p>   
+          </div>
+      </div>
+
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-2">
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Email </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @current_user.email %> </p>   
+          </div>
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Gender</label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.gender %> </p>   
+          </div>
+      </div>
+  </div>
+
+      <hr class="p-2"></hr>
+
+      <h6 class="font-bold">Work Information</h6>
+    <div class="p-3">
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Employee ID </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @current_user.employee_id %> </p>   
+          </div>
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Job Title </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.job_title %> </p>   
+          </div>
+      </div>
+
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Hire Date </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @current_user.hire_date.strftime("%B %d, %Y")  %> </p>   
+          </div>
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Employment Status</label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @current_user.employment_status %> </p>   
+          </div>
+      </div>
+
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Salary </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@current_user.salary, unit: "₱ ", precision: (@user.salary % 1 == 0 ? 0 : 2)) %> </p>   
+          </div>
+          <div class="w-full md:w-1/2">
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Net Salary </label>
+              <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@current_user.net_salary, unit: "₱ ", precision: (@user.net_salary % 1 == 0 ? 0 : 2)) %> </p>   
+          </div>
+      </div>
+
+    <hr class="p-2"></hr>
+
+    <h6 class="font-bold">Account Information</h6>
+    <div class="p-3">
+      <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+        <div class="w-full md:w-1/2">
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Role </label>
+          <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= current_user.role %> </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Account Created </label>
+          <p class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= current_user.created_at.strftime("%B %d, %Y")  %> </p>   
+        </div>
+      </div>
+    </div>
+
+   
+    <div class="flex justify-center mt-4">
+      <%= f.submit "Save", class: "bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200" %>
+    </div>
+  <% end %>
+</div>
