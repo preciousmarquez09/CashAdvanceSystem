@@ -1,4 +1,4 @@
-# app/controllers/finance/dashboard_controller.rb
+
 class Finance::DashboardController < ApplicationController
     
   
