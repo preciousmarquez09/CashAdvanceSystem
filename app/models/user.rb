@@ -4,8 +4,9 @@ class User < ApplicationRecord
   has_many :cash_adv_requests, foreign_key: "employee_id", primary_key: "employee_id", dependent: :destroy
   has_many :approved_cash_adv_requests, foreign_key: "approver_id", class_name: "CashAdvRequest", dependent: :destroy
   has_many :audit_logs, dependent: :destroy
+  has_many :notifications, as: :recipient, dependent: :destroy
 
-  
+
   rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -93,7 +94,7 @@ class User < ApplicationRecord
     end
   
     # If there are no cash advance requests, allow a new request
-    user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
+    user_cash_adv_requests.nil? || user_cash_adv_requests.empty? 
   end
 
   private

@@ -17,6 +17,8 @@ class Ability
         can :manage, CashAdvRequest
       else
         can :update_password, User, id: user.id
+        can :can_request_cashadv, User
+        can [:new, :create, :show, :index], CashAdvRequest
       end
     #   return unless user.present?
     #   can :read, :all

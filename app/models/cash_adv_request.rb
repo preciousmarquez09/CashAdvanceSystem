@@ -1,6 +1,8 @@
 class CashAdvRequest < ApplicationRecord
   has_many_attached :attachments
   has_many :repayment_schedules, dependent: :destroy
+  has_many :notifications, dependent: :destroy
+  
   # Associate employee_id with User, because the `users` table contains employee_id
   belongs_to :employee, class_name: "User", foreign_key: "employee_id", primary_key: "employee_id"
 
@@ -39,10 +41,6 @@ class CashAdvRequest < ApplicationRecord
     else 'bg-gray-300' # Default color
     end
   end
-
-
-  
-
   private
   def check_status
     return if status.blank?

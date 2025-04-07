@@ -1,0 +1,50 @@
+<nav class="flex justify-end">
+  <ul class="inline-flex items-center space-x-1 text-sm">
+    <% if @pagy_other.prev %>
+      <li>
+        <%= link_to "Prev", pagy_url_for(@pagy_other, @pagy_other.prev), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+      </li>
+    <% else %>
+      <li class="px-4 py-2 border border-gray-300 text-gray-400 cursor-not-allowed">Prev</li>
+    <% end %>
+
+    <% 
+      if @pagy_other.page <= 2
+        start_page = 1
+      elsif @pagy_other.page >= @pagy_other.last - 1
+        start_page = [@pagy_other.last - 2, 1].max
+      else
+        start_page = @pagy_other.page - 1
+      end
+      
+      end_page = [start_page + 2, @pagy_other.last].min
+      if start_page > 1  
+    %>
+      <li class="px-3 py-2 text-gray-500">...</li>
+
+    <% end %>
+
+    <% (start_page..end_page).each do |page_num| %>
+      <li>
+        <% if page_num == @pagy_other.page %>
+          <div class="px-4 py-2 bg-blue-500 text-white rounded"><%= page_num %></div>
+        <% else %>
+          <%= link_to page_num, pagy_url_for(@pagy_other, page_num), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% if end_page < @pagy_other.last %>
+      <li class="px-3 py-2 text-gray-500">...</li>
+    <% end %>
+
+    <% if @pagy_other.next %>
+      <li>
+        <%= link_to "Next", pagy_url_for(@pagy_other, @pagy_other.next), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+      </li>
+    <% else %>
+      <li class="px-4 py-2 border border-gray-300 text-gray-400 cursor-not-allowed">Next</li>
+    <% end %>
+  </ul>
+</nav>
+
