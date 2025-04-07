@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_31_012859) do
+ActiveRecord::Schema.define(version: 2025_04_03_052219) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
     t.decimal "monthly_cost", precision: 10, scale: 2
     t.string "approver_reason"
     t.index ["approver_id"], name: "fk_rails_6fa0998d64"
-    t.index ["employee_id"], name: "fk_employee_id"
+    t.index ["employee_id"], name: "fk_rails_0e77492908"
   end
 
   create_table "eligibilities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -67,6 +67,24 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
     t.integer "interest_rate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.string "type", null: false
+    t.json "params"
+    t.datetime "read_at"
+    t.integer "employee_id"
+    t.string "action"
+    t.bigint "cash_adv_request_id"
+    t.bigint "repayment_schedule_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["cash_adv_request_id"], name: "index_notifications_on_cash_adv_request_id"
+    t.index ["read_at"], name: "index_notifications_on_read_at"
+    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient_type_and_recipient_id"
+    t.index ["repayment_schedule_id"], name: "index_notifications_on_repayment_schedule_id"
   end
 
   create_table "repayment_schedules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -128,7 +146,6 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["employee_id"], name: "index_users_on_employee_id", unique: true
-    t.index ["employee_id"], name: "unique_employee_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
@@ -142,8 +159,10 @@ ActiveRecord::Schema.define(version: 2025_03_31_012859) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "audit_logs", "users", on_delete: :cascade
+  add_foreign_key "audit_logs", "users"
   add_foreign_key "cash_adv_requests", "users", column: "approver_id", primary_key: "employee_id"
-  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id", name: "fk_employee_id", on_delete: :cascade
+  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
+  add_foreign_key "notifications", "cash_adv_requests"
+  add_foreign_key "notifications", "repayment_schedules"
   add_foreign_key "repayment_schedules", "cash_adv_requests"
 end

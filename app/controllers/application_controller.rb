@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include Pagy::Backend
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :notification_counter, if: :user_signed_in?
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = "You don’t have permission to access this page"
@@ -13,7 +14,6 @@ class ApplicationController < ActionController::Base
     # Redirect first-time login to change password
     return edit_password_path if (user.has_role?(:employee) || user.has_role?(:finance)) && user.is_first == false
    
-
     # Redirect users based on role
     if user.has_role?(:admin)
       admin_dashboard_path
@@ -38,6 +38,16 @@ class ApplicationController < ActionController::Base
       employee_dashboard_path
     else
       root_path
+    end
+  end
+  
+  private
+  def notification_counter
+    if current_user.has_role?(:finance)
+      @fown_notif = current_user.notifications.where(employee_id: current_user.employee_id).where.not(action: 'pending').where(read_at: nil).count 
+      @other_notif = current_user.notifications.where(action: 'pending').where("employee_id = ? OR employee_id != ?", current_user.employee_id, current_user.employee_id).where(read_at: nil).count
+    elsif current_user.has_role?(:employee)
+      @own_notif = current_user.notifications.where(read_at: nil).count
     end
   end
 

@@ -1,23 +1,23 @@
 <nav class="flex justify-end">
   <ul class="inline-flex items-center space-x-1 text-sm">
-    <% if @pagy.prev %>
+    <% if @pagy_own.prev %>
       <li>
-        <%= link_to "Prev", pagy_url_for(@pagy, @pagy.prev), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+        <%= link_to "Prev", pagy_url_for(@pagy_own, @pagy_own.prev), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
       </li>
     <% else %>
       <li class="px-4 py-2 border border-gray-300 text-gray-400 cursor-not-allowed">Prev</li>
     <% end %>
 
     <% 
-      if @pagy.page <= 2
+      if @pagy_own.page <= 2
         start_page = 1
-      elsif @pagy.page >= @pagy.last - 1
-        start_page = [@pagy.last - 2, 1].max
+      elsif @pagy_own.page >= @pagy_own.last - 1
+        start_page = [@pagy_own.last - 2, 1].max
       else
-        start_page = @pagy.page - 1
+        start_page = @pagy_own.page - 1
       end
       
-      end_page = [start_page + 2, @pagy.last].min
+      end_page = [start_page + 2, @pagy_own.last].min
       if start_page > 1  
     %>
       <li class="px-3 py-2 text-gray-500">...</li>
@@ -26,21 +26,21 @@
 
     <% (start_page..end_page).each do |page_num| %>
       <li>
-        <% if page_num == @pagy.page %>
+        <% if page_num == @pagy_own.page %>
           <div class="px-4 py-2 bg-blue-500 text-white rounded"><%= page_num %></div>
         <% else %>
-          <%= link_to page_num, pagy_url_for(@pagy, page_num), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+          <%= link_to page_num, pagy_url_for(@pagy_own, page_num), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
         <% end %>
       </li>
     <% end %>
 
-    <% if end_page < @pagy.last %>
+    <% if end_page < @pagy_own.last %>
       <li class="px-3 py-2 text-gray-500">...</li>
     <% end %>
 
-    <% if @pagy.next %>
+    <% if @pagy_own.next %>
       <li>
-        <%= link_to "Next", pagy_url_for(@pagy, @pagy.next), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
+        <%= link_to "Next", pagy_url_for(@pagy_own, @pagy_own.next), class: "px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded" %>
       </li>
     <% else %>
       <li class="px-4 py-2 border border-gray-300 text-gray-400 cursor-not-allowed">Next</li>

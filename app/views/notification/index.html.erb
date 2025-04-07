@@ -1,0 +1,138 @@
+<div class="container mx-auto max-w-screen-2xl py-2">
+  <div class="card shadow-sm bg-white rounded-lg">
+    
+      <% if current_user.has_role?(:employee) %>
+      <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+       <h4 class="text-xl font-semibold">Your Notifications</h4>
+        <% if @grouped_notifications.any? %>
+          <% @grouped_notifications.each do |date, notifications| %>
+            <h5 class="mt-3 text-lg font-medium">
+              <%= date == Date.today ? "Today" : date.strftime("%B %d, %Y") %>
+            </h5>
+            <ul class="list-none">
+              <% notifications.each do |notification| %>
+                <% post_notification = notification.to_notification %>
+                <% bgColor = notification.read? ? 'bg-white' : 'bg-gray-100' %>
+                <%= link_to read_and_redirect_notification_path(notification), class: "block text-black hover:no-underline #{bgColor} rounded-md mb-3" do %>
+                  <li class="flex items-center p-3 border-b last:border-0 <%= 'bg-gray-200' if !notification.read? %> notification-item">
+                    <div class="me-3">
+                      <% user = notification.recipient %>
+                      <% if user && user.profile_picture.attached? %>
+                        <img src="<%= url_for(user.profile_picture) %>" alt="Profile Picture" class="rounded-full w-12 h-12 object-cover">
+                      <% else %>
+                        <img src="../img/logo.png" alt="Default profile_picture" class="rounded-full w-12 h-12 object-contain">
+                      <% end %>
+                    </div>
+                    <div class="flex-grow ml-4">
+                      <p class="mb-1 text-sm font-medium">
+                        <%= post_notification.message %>
+                      </p>
+                      <% if notification.created_at > 24.hours.ago %>
+                        <span class="text-xs text-gray-500"><%= time_ago_in_words(notification.created_at) %> ago</span>
+                      <% else %>
+                        <span class="text-xs text-gray-500"><%= notification.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+                      <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          <% end %>
+          <% if @pagy.pages > 1 %>
+              <%= render "/layouts/pagy/pagination", pagy: @pagy %>
+            <% end %>
+        <% else %>
+          <p class="text-gray-500">You have no notifications.</p>
+        <% end %>
+      <% end %>
+    </div>
+      <% if current_user.has_role?(:finance) %>
+      <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 mb-5 border-t border-gray-200">
+        <h4 class="text-xl font-semibold">Your Notifications</h4>
+        <% if @grouped_own_notifications.any? %>
+          <% @grouped_own_notifications.each do |date, notifications| %>
+            <h5 class="mt-3 text-lg font-medium">
+              <%= date == Date.today ? "Today" : date.strftime("%B %d, %Y") %>
+            </h5>
+            <ul class="list-none">
+              <% notifications.each do |notification| %>
+                <% post_notification = notification.to_notification %>
+                <% bgColor = notification.read? ? 'bg-white' : 'bg-gray-100' %>
+                <%= link_to read_and_redirect_notification_path(notification), class: "block text-black hover:no-underline #{bgColor} rounded-md mb-3" do %>
+                  <li class="flex items-center p-3 border-b last:border-0 <%= 'bg-gray-200' if !notification.read? %> notification-item">
+                    <div class="me-3">
+                      <% user = notification.recipient %>
+                      <% if user && user.profile_picture.attached? %>
+                        <img src="<%= url_for(user.profile_picture) %>" alt="Profile Picture" class="rounded-full w-12 h-12 object-cover">
+                      <% else %>
+                        <img src="../img/logo.png" alt="Default profile_picture" class="rounded-full w-12 h-12 object-contain">
+                      <% end %>
+                    </div>
+                    <div class="flex-grow ml-4">
+                      <p class="mb-1 text-sm font-medium">
+                        <%= post_notification.message %>
+                      </p>
+                      <% if notification.created_at > 24.hours.ago %>
+                        <span class="text-xs text-gray-500"><%= time_ago_in_words(notification.created_at) %> ago</span>
+                      <% else %>
+                        <span class="text-xs text-gray-500"><%= notification.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+                      <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          <% end %>
+            <% if @pagy_own.pages > 1 %>
+              <%= render "/layouts/pagy/fnotif_own_pagination", pagy_own: @pagy_own %>
+            <% end %>
+        <% else %>
+          <p class="text-gray-500">You have no notifications.</p>
+        <% end %>
+      </div>
+        <% if @grouped_other_notifications.any? %>
+        <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+          <h4 class="text-xl font-semibold">Cash Advance Notifications</h4>
+          <% @grouped_other_notifications.each do |date, notifications| %>
+            <h5 class="mt-3 text-lg font-medium">
+              <%= date == Date.today ? "Today" : date.strftime("%B %d, %Y") %>
+            </h5>
+            <ul class="list-none">
+              <% notifications.each do |notification| %>
+                <% post_notification = notification.to_notification %>
+                <% bgColor = notification.read? ? 'bg-white' : 'bg-gray-100' %>
+                <%= link_to read_and_redirect_notification_path(notification), class: "block text-black hover:no-underline #{bgColor} rounded-md mb-3" do %>
+                  <li class="flex items-center p-3 border-b last:border-0 <%= 'bg-gray-200' if !notification.read? %> notification-item">
+                    <div class="me-3">
+                      <% user = notification.recipient %>
+                      <% if user && user.profile_picture.attached? %>
+                        <img src="<%= url_for(user.profile_picture) %>" alt="Profile Picture" class="rounded-full w-12 h-12 object-cover">
+                      <% else %>
+                        <img src="../img/logo.png" alt="Default profile_picture" class="rounded-full w-12 h-12 object-contain">
+                      <% end %>
+                    </div>
+                    <div class="flex-grow ml-4">
+                      <p class="mb-1 text-sm font-medium">
+                        <%= post_notification.message %>
+                      </p>
+                      <% if notification.created_at > 24.hours.ago %>
+                        <span class="text-xs text-gray-500"><%= time_ago_in_words(notification.created_at) %> ago</span>
+                      <% else %>
+                        <span class="text-xs text-gray-500"><%= notification.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+                      <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          <% end %>
+            <% if @pagy_other.pages > 1 %>
+              <%= render "/layouts/pagy/fnotif_other_pagination", pagy_other: @pagy_other %>
+            <% end %>
+        <% else %>
+          <p class="text-gray-500">You have no notifications.</p>
+        <% end %>
+        </div>
+      <% end %>
+    </div>
+</div>

@@ -29,7 +29,11 @@ Rails.application.routes.draw do
     resources :users
   end
 
-  
+  resources :notification do
+    member do
+      get :read_and_redirect
+    end
+  end
   get 'change_password', to: 'change_password#edit_password', as: :edit_password
   patch 'change_password', to: 'change_password#update_password', as: :update_password
 end

@@ -31,9 +31,33 @@
             </a>
          </li>
          <li>
-            <a href="#" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <i class="bi bi-bell-fill text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white text-lg"></i>
-               <span class="hidden sm:inline ms-3">Notification</span>
+            <a href="<%= notification_index_path %>" class="flex flex-col sm:flex-row items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <div class="relative">
+                  <i class="bi bi-bell-fill text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white text-lg"></i>
+
+                  <% if current_user.has_role?(:finance) && (@fown_notif.to_i > 0 || @other_notif.to_i > 0) %>
+                     <span class="absolute -top-0 -right-0.5 sm:hidden inline-flex items-center justify-center w-3 h-3 text-xs font-medium text-white bg-red-600 rounded-full">
+                     </span>
+                  <% elsif current_user.has_role?(:employee) && @own_notif.to_i > 0 %>
+                     <span class="absolute -top-0 -right-0.5 sm:hidden inline-flex items-center justify-center w-3 h-3 text-xs font-medium text-white bg-red-600 rounded-full">
+                     </span>
+                  <% end %>
+               </div>
+
+               <span class="flex-1 ms-3 whitespace-nowrap hidden sm:inline">Notification</span>
+
+               <% if current_user.has_role?(:finance) %>
+                  <% if @fown_notif.to_i > 0 %>
+                     <span class="hidden sm:inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-white bg-blue-600 rounded-full dark:bg-blue-600 dark:text-blue-600"><%= @fown_notif %></span>
+                  <% end %>
+                  <% if @other_notif.to_i > 0 %>
+                     <span class="hidden sm:inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-white bg-red-500 rounded-full dark:bg-blue-900 dark:text-blue-300"><%= @other_notif %></span>
+                  <% end %>
+               <% elsif current_user.has_role?(:employee) %>
+                  <% if @own_notif.to_i > 0 %>
+                     <span class="hidden sm:inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"><%= @own_notif %></span>
+                  <% end %>
+               <% end %>
             </a>
          </li>
          <li>

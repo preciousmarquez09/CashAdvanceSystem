@@ -25,15 +25,26 @@
 #every 1.minute do
 
 #update repayment schedule status
-#every */1 - (every minute) , * - (every hour), 15,31 - (every 15th and 30th day), * * - (every month and every day of the week)
-every '*/1 * 15,31 * *' do
-    #use command since it needs the default environment of runner is production
-    command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_due_statuses' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
-end
+#every */1 - (every minute) , * - (every hour), 15,30 - (every 15th and 30th day), * * - (every month and every day of the week)
 
 #update cash advance status
+#every 1.minute do
+ #   command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_ongoing' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
+#end
+
+#every */1 * 15,30 * * do
+    #use command since it needs the default environment of runner is production
+ #   command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_due_statuses' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
+#end
+#every 1.minute do
+ #   command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_settled' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
+#end
+
 every 1.minute do
-    command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_ongoing' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
-end
+    command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_ongoing' >> /home/precious/code/cash_advance/log/cron.log 2>&1 && \
+            cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_due_statuses' >> /home/precious/code/cash_advance/log/cron.log 2>&1 && \
+            cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_settled' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
+  end
+  
 
   

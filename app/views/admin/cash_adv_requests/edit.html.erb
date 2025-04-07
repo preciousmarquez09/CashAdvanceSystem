@@ -100,13 +100,16 @@
             <% end %>  
         </div>
         <div class="w-full md:w-full mb-8">
-            <%= f.label :approver_reason, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
-                Reason to decline
-            <% end %>
-            <%= f.text_area :approver_reason, required: true, class: "h-36 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
-            <% if @cash_adv_request.errors[:approver_reason].present? %>
-                <p class="text-red-500 text-xs mt-1 ml-2"><%= @cash_adv_request.errors.full_messages_for(:approver_reason).first %></p>
-            <% end %>  
+        
+            <% if @cash_adv_request.status == "pending" || @cash_adv_request.status == "declined" %>
+                <%= f.label :approver_reason, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
+                    Reason to decline
+                <% end %>
+                <%= f.text_area :approver_reason, required: true, class: "h-36 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                <% if @cash_adv_request.errors[:approver_reason].present? %>
+                    <p class="text-red-500 text-xs mt-1 ml-2"><%= @cash_adv_request.errors.full_messages_for(:approver_reason).first %></p>
+                <% end %> 
+            <% end %>   
         </div>
         <div class="p-3 flex justify-center">
             <%= f.submit "Update Request", id: "submit-btn", class: "p-3 bg-green-500 text-white font-bold rounded-lg w-3/4 cursor-pointer" %>
