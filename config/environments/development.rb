@@ -69,7 +69,7 @@ Rails.application.configure do
     port: 587,
     domain: 'gmail.com',
     user_name: 'prcsmrqz09@gmail.com',  # Use your Gmail address here
-    password: 'jmvybcgnyjuylwug',    # Use your Gmail password (or app password)
+    password: 'djxsgwyijsaaopyv',    # Use your Gmail password (or app password)
     authentication: 'plain',
     enable_starttls_auto: true,
     open_timeout: 60,

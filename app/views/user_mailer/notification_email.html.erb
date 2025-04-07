@@ -4,32 +4,41 @@
 
 <% if @repayment_schedule.present? && @repayment_schedule.status == "paid" %>
   <p>
-    Your cash advance payment for <b><%= @repayment_schedule.due_date.strftime("%B %d, %Y") %></b> 
-    with the amount of <b><%= number_to_currency(@repayment_schedule.amount, unit: "₱ ") %></b> is already paid.
+    We are pleased to inform you that your cash advance payment for the due date of <b><%= @repayment_schedule.due_date.strftime("%B %d, %Y") %></b> 
+    with the amount of <b><%= number_to_currency(@repayment_schedule.amount, unit: "₱ ") %></b> has been successfully paid.
   </p>
 <% else %>
   <% if @cash_advance_request.status == "declined" %>
     <p>
-      Your cash advance request amounting to 
-      <b><%= number_to_currency(@cash_advance_request.amount, unit: "₱ ") %></b> is declined 
+      We regret to inform you that your cash advance request, amounting to
+      <b><%= number_to_currency(@cash_advance_request.amount, unit: "₱ ") %></b> , has been declined. The reason for the decline is as follows:
       because <%= @cash_advance_request.approver_reason %>. 
     </p>
-    <p> You may re-apply again <b><%= @eligibility.req_decline_days > 0 ? "after #{@eligibility.req_decline_days} days." : "now." %></b> </p>
+    <p>
+    </p>
+    <p> We understand that this may be disappointing, and we encourage you to review the reason for the decline and take the necessary steps to address the matter. 
+        Please note that you are eligible to re-apply for a cash advance <b><%= @eligibility.req_decline_days > 0 ? "after #{@eligibility.req_decline_days} days" : "now" %></b>. </p>
   <% else %>
     <p>
-      Your cash advance request amounting to 
+      This is to inform you that your cash advance request for the amount of
       <b><%= number_to_currency(@cash_advance_request.amount, unit: "₱ ") %></b> 
-      with interest of <b><%= number_to_currency(@cash_advance_request.interest_amount, unit: "₱ ") %></b> is already 
+      with interest amount of <b><%= number_to_currency(@cash_advance_request.interest_amount, unit: "₱ ") %></b> is already 
       <b><%= @cash_advance_request.status %></b>.
     </p>
-    <p> Your total cash advance is <b><%= @cash_advance_request.amount + @cash_advance_request.interest_amount %></b> </p>
+    <p> 
+      The total amount of your cash advance, including the principal and interest, is <b><%= @cash_advance_request.amount + @cash_advance_request.interest_amount %></b> 
+    </p>
 
     <% if @cash_advance_request.status == "released" %>
-      <p>Please log in to your cash advance account to view your repayment schedule.</p>
-    <% elsif @cash_adv_request.status == "settled" %>
-      <p> You may re-apply again <b><%= @eligibility.req_approve_days > 0 ? "after #{@eligibility.req_approve_days} days." : "now." %></b> </p>
+      <p>
+        As your cash advance has been successfully released, we kindly ask that you log in to your account to view and manage your repayment schedule. 
+        You can find detailed information regarding the due dates and amounts for repayment there.
+      </p>
+    <% elsif @cash_advance_request.status == "settled" %>
+      <p> If you wish to submit a new application, you may do <b><%= @eligibility.req_approve_days > 0 ? "after #{@eligibility.req_approve_days} days" : "now" %></b>. </p>
     <% end %>
   <% end %>
 <% end %>
 
-<p>Regards,<br>Company</p>
+<p> Should you need further clarification or assistance, please do not hesitate to contact our team. </p>
+<p>Regards,<br>Cash Advance System</p>
