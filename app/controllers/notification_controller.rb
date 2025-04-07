@@ -27,14 +27,20 @@ class NotificationController < ApplicationController
     end
   end
   
-  
 
   def read_and_redirect
     notification = current_user.notifications.find(params[:id])
     cash_adv_status = CashAdvRequest.find(notification.params[:cash_adv_request_id])
     status_choice = ['pending', 'approved', 'released']
 
-    notification.mark_as_read! # Mark the notification as read
+    if current_user.has_role?(:finance)
+      mark_read = Notification.where(cash_adv_request_id: notification.cash_adv_request_id, action: notification.action)
+      mark_read.each do |notif|
+        notif.mark_as_read! # Mark the notification for the finance as read
+      end
+    else
+      notification.mark_as_read! # Mark the personal notification as read
+    end
 
     if (status_choice.include?(cash_adv_status.status) && current_user.has_role?(:finance))
       redirect_to edit_admin_cash_adv_request_path(notification.params[:cash_adv_request_id])

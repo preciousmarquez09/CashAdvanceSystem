@@ -57,7 +57,7 @@ class RepaymentSchedule < ApplicationRecord
     
     updated_count = 0
     
-    if cash_adv_request_ids.any?
+    if cash_adv_request_ids.present?
       CashAdvRequest.where(id: cash_adv_request_ids, status: 'released').each do |cash_adv_request|
         begin
           ActiveRecord::Base.transaction do
