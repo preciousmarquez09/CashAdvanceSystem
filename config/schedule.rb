@@ -50,7 +50,8 @@ every 1.minute do
 
 
   
-  every 1.minute do
+every 10.minutes do #change to 1 min to test
     command "cd /home/john/code/cash && RAILS_ENV=development bundle exec rails runner 'GeneratePayroll.perform' >> /home/john/code/cash/log/cron.log 2>&1"
-  end
+end
+  
   

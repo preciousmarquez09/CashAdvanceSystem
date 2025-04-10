@@ -6,7 +6,7 @@ class Finance::DashboardController < ApplicationController
     if @cash_adv_request.present?
       @repayment_schedules = @cash_adv_request.repayment_schedules
     else
-      @repayment_schedules = [] # or handle this case differently if needed
+      @repayment_schedules = [] 
     end
 
     @total_pending_requests = CashAdvRequest.where(status: 'pending').count

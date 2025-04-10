@@ -87,7 +87,9 @@
           <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
           <td class="p-2 font-semibold text-green-600">PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %></td>
           <td class="p-2">
-          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs">View</button>
+          <%= button_to preview_payroll_path(payroll, format: :pdf), method: :get, form: { target: "_blank" }, class: "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs" do %>
+            View
+          <% end %>
           </td>
         </tr>
       <% end %>
