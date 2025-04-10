@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :approved_cash_adv_requests, foreign_key: "approver_id", class_name: "CashAdvRequest", dependent: :destroy
   has_many :audit_logs, dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy
+  has_many :payrolls, foreign_key: 'user_id'
 
 
   rolify
@@ -34,6 +35,7 @@ class User < ApplicationRecord
 
   validate :age_is_18_above
   validate :legal_age
+  validates :salary, numericality: { greater_than_or_equal_to: 0 }
 
   #get the incoming due date and amount
   def self.user_due_cash_advance_amount(user)

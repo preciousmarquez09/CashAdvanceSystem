@@ -32,6 +32,14 @@ Rails.application.routes.draw do
     resources :users
   end
 
+ 
+resources :payrolls do
+  member do
+    get :preview, defaults: { format: :pdf }
+  end
+end
+
+
   resources :notification do
     member do
       get :read_and_redirect

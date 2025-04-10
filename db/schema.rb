@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_03_052219) do
+ActiveRecord::Schema.define(version: 2025_04_08_061254) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -87,6 +87,20 @@ ActiveRecord::Schema.define(version: 2025_04_03_052219) do
     t.index ["repayment_schedule_id"], name: "index_notifications_on_repayment_schedule_id"
   end
 
+  create_table "payrolls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "description"
+    t.decimal "basic", precision: 10
+    t.decimal "sss", precision: 10
+    t.decimal "philhealth", precision: 10
+    t.decimal "pagibig", precision: 10
+    t.integer "cashadv"
+    t.decimal "net_amount", precision: 10
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_payrolls_on_user_id"
+  end
+
   create_table "repayment_schedules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "cash_adv_request_id", null: false
     t.decimal "amount", precision: 10, scale: 2
@@ -146,6 +160,7 @@ ActiveRecord::Schema.define(version: 2025_04_03_052219) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["employee_id"], name: "index_users_on_employee_id", unique: true
+    t.index ["employee_id"], name: "unique_employee_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
@@ -159,10 +174,12 @@ ActiveRecord::Schema.define(version: 2025_04_03_052219) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "audit_logs", "users"
+  add_foreign_key "audit_logs", "users", on_delete: :cascade
   add_foreign_key "cash_adv_requests", "users", column: "approver_id", primary_key: "employee_id"
   add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
+  add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id", name: "fk_employee_id", on_delete: :cascade
   add_foreign_key "notifications", "cash_adv_requests"
   add_foreign_key "notifications", "repayment_schedules"
+  add_foreign_key "payrolls", "users"
   add_foreign_key "repayment_schedules", "cash_adv_requests"
 end
