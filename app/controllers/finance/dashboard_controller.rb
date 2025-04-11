@@ -18,14 +18,17 @@ class Finance::DashboardController < ApplicationController
                                             .distinct
                                             .count(:cash_adv_request_id)
 
-    @pagy, @due_next_payroll = pagy(
-      RepaymentSchedule
-        .includes(cash_adv_request: :employee)
-        .where("DAY(due_date) IN (15, 30)")
-        .where("due_date <= ?", Time.current.end_of_month)
-        .order(:due_date),
-      items: 10
-    )
-    @payrolls = current_user.payrolls.order(created_at: :desc)
+    @pagy_due_next_payroll, @due_next_payroll = pagy(RepaymentSchedule
+                                                .includes(cash_adv_request: :employee)
+                                                .where("DAY(due_date) IN (15, 30)")
+                                                .where("due_date <= ?", Time.current.end_of_month)
+                                                .order(:due_date),
+                                                items: 10,
+                                                page_param: :page_due_next_payroll
+                                                )
+    @pagy_payrolls, @payrolls = pagy(current_user.payrolls.order(created_at: :desc),
+                                items: 10,
+                                page_param: :page_payrolls
+                                )
   end
 end
