@@ -47,66 +47,78 @@
                 <td class="p-2">PHP <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
               </tr>
             <% end %>
-        <% else %>
-          <tr>
-            <td colspan="3" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
-          </tr>
-        <% end %>
+          <% else %>
+            <tr>
+              <td colspan="3" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
-      <% if @pagy.pages > 1 %>
-        <%= render "/layouts/pagy/pagination", pagy: @pagy_due_next_payroll %>
+      <% if @pagy_due_next_payroll&.pages.to_i > 1 %>
+        <div class="mt-4">
+          <%= render "/layouts/pagy/pagination1", pagy: @pagy_due_next_payroll, page_param: "page_due_next_payroll" %>
+        </div>
       <% end %>
     </div>
     <hr class="mt-10">
     <h1 class="text-3xl font-bold mb-6">My Account</h1>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
       <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400">
-  <thead class="text-xs sm:text-sm md:text-md lg:text-md text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-    <tr>
-      <th class="p-2">Description</th>
-      <th class="p-2">Basic</th>
-      <th class="p-2">SSS</th>
-      <th class="p-2">PhilHealth</th>
-      <th class="p-2">PAGIBIG</th>
-      <th class="p-2">Cash Advance</th>
-      <th class="p-2">Net Amount</th>
-      <th class="p-2">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @payrolls.any? %>
-      <% @payrolls.each do |payroll| %>
-        <tr class="odd:bg-gray-50 even:bg-white">
-          <td class="p-2"><%= payroll.description %></td>
-          <td class="p-2">PHP <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2">PHP <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2">PHP <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2">PHP <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2 font-semibold text-green-600">PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %></td>
-          <td class="p-2">
-          <%= button_to preview_payroll_path(payroll, format: :pdf), method: :get, form: { target: "_blank" }, class: "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs" do %>
-            View
+      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">
+        <thead class="text-xs sm:text-sm md:text-md lg:text-md text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th class="p-2">Description</th>
+            <th class="p-2">Basic</th>
+            <th class="p-2">SSS</th>
+            <th class="p-2">PhilHealth</th>
+            <th class="p-2">PAGIBIG</th>
+            <th class="p-2">Cash Advance</th>
+            <th class="p-2">Net Amount</th>
+            <th class="p-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @payrolls.any? %>
+            <% @payrolls.each do |payroll| %>
+              <tr class="odd:bg-gray-50 even:bg-white">
+                <td class="p-2"><%= payroll.description %></td>
+                <td class="p-2">PHP <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">PHP <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">PHP <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">PHP <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2 font-semibold text-green-600">
+                  PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %>
+                </td>
+                <td class="p-2">
+                  <%= button_to preview_payroll_path(payroll, format: :pdf),
+                    method: :get,
+                    form: { target: "_blank" },
+                    class: "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs" do %>
+                    View
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="8" class="p-2 text-center text-gray-500">No payroll records available.</td>
+            </tr>
           <% end %>
-          </td>
-        </tr>
+        </tbody>
+      </table>
+      <% if @pagy_payrolls&.pages.to_i > 1 %>
+        <div class="mt-4">
+          <%= render "/layouts/pagy/pagination1", pagy: @pagy_payrolls, page_param: "page_payrolls" %>
+        </div>
       <% end %>
-    <% else %>
-      <tr>
-        <td colspan="7" class="p-2 text-center text-gray-500">No payroll records available.</td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    </div>
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
+      <% if @repayment_schedules.present? %>
+        <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
+      <% else %>
+        <p class="text-center text-gray-500">No due dates available</p>
+      <% end %>
     </div>
   </div>
-  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-    <% if @repayment_schedules.present? %>
-      <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
-    <% else %>
-      <p class="text-center text-gray-500">No due dates available</p>
-    <% end %>
-</div>
 </div>
