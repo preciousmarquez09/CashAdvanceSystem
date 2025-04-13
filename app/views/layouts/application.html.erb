@@ -32,25 +32,24 @@
         <%= render "layouts/navbar/employee_sidenav" %>
       <% end %>
     <% end %>
-    <% if flash[:notice] %>
-      <script>
+
+
+    <% if flash[:notice] || flash[:alert] %>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!sessionStorage.getItem("flash_shown")) {
+        sessionStorage.setItem("flash_shown", "true");
+
         Swal.fire({
-          title: "Success!",
-          text: "<%= j flash[:notice] %>",
-          icon: "success",
+          title: "<%= flash[:notice] ? 'Success!' : 'Error!' %>",
+          text: "<%= j flash[:notice] || flash[:alert] %>",
+          icon: "<%= flash[:notice] ? 'success' : 'error' %>",
           confirmButtonText: "OK"
         });
-      </script>
-    <% elsif flash[:alert] %>
-      <script>
-        Swal.fire({
-          title: "Error!",
-          text: "<%= j flash[:alert] %>",
-          icon: "error",
-          confirmButtonText: "OK"
-        });
-      </script>
-    <% end %>
+      }
+    });
+  </script>
+<% end %>
 
     <% if user_signed_in? && current_user.is_first %>
       <div class="p-4 ml-16 sm:ml-64 transition-all">
