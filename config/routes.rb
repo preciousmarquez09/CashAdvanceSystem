@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users do
       post :reset_password, on: :member
+      collection do
+        get :pdf_file
+      end
     end
     resources :cash_adv_requests do
       collection do

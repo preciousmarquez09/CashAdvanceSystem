@@ -1,11 +1,23 @@
 <div class="p-5">
-    <div class="flex justify-between items-center mb-5 p-3 flex-wrap gap-2">
+    <div class="flex justify-between items-center p-3 flex-wrap gap-2">
         <span class="text-2xl sm:text-3xl font-bold">Users List</span>
-        <%= link_to new_user_registration_path, class: "text-sm sm:text-base px-3 sm:px-5 py-2 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" do %>
-            <i class="bi bi-person-fill-add text-lg sm:text-xl"></i> 
-            <span class="font-semibold">Add New User</span>
+
+        <% if current_user.has_role?(:admin) %>
+            <div class="flex items-center gap-2 ml-auto">
+                <%= link_to pdf_file_admin_users_path(q: params[:q]&.permit!.to_h), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-red-500 hover:bg-red-600 flex items-center space-x-2" do %>
+                    <i class="bi bi-filetype-pdf text-lg sm:text-xl"></i>
+                    <span class="font-semibold">Export to PDF</span>
+                <% end %>
+
+                
+            </div>
         <% end %>
     </div>
+
+    <%= link_to new_user_registration_path, class: "text-sm sm:text-base px-3 sm:px-5 py-2 mb-5 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2", style: "width: 12%;" do %>
+        <i class="bi bi-person-fill-add text-lg sm:text-xl"></i> 
+        <span class="font-semibold">Add New User</span>
+    <% end %>
 
 
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
