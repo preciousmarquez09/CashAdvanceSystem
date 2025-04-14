@@ -48,19 +48,4 @@ Rails.application.routes.draw do
   get 'change_password', to: 'change_password#edit_password', as: :edit_password
   patch 'change_password', to: 'change_password#update_password', as: :update_password
 
-  resources :cashadv_file_generator
-
-  get 'user_pdf_generator/user', to: 'user_pdf_generator#user', as: :user_pdf_generator_user
-  get 'audit_logs_pdf_generator', to: 'user_pdf_generator#audit_logs'
-
-
-  get 'download_complete', to: 'user_pdf_generator#download_complete'
-
-  get 'cashadv_file_generator/select_type', to: 'cashadv_file_generator#select_type'
-  post 'cashadv_file_generator/select_type', to: 'cashadv_file_generator#select_type'
-
-  get 'cashadv_file_generator/pdf_file', to: 'cashadv_file_generator#pdf_file'
-  post 'cashadv_file_generator/pdf_file', to: 'cashadv_file_generator#pdf_file'
-  
-  get 'cashadv_file_generator/excel_file', to: 'cashadv_file_generator#excel_file'
 end
