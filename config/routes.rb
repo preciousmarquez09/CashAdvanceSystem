@@ -6,16 +6,22 @@ Rails.application.routes.draw do
   }
 
   # Admin 
-  namespace :admin do
-    resources :users do
-      post :reset_password, on: :member
-    end
-    resources :cash_adv_requests
-    
-    get 'eligibilities', to: 'eligibilities#edit_eligibility', as: :edit_eligibility
-    patch 'eligibilities', to: 'eligibilities#update_eligibility', as: :update_eligibility
-    get "dashboard", to: "dashboard#index"
+namespace :admin do
+  resources :users do
+    post :reset_password, on: :member
   end
+  resources :cash_adv_requests
+  resources :auditlogs, only: [:index] do
+    collection do
+      get :export_pdf  # Add this for the export_pdf action
+    end
+  end
+  
+  get 'eligibilities', to: 'eligibilities#edit_eligibility', as: :edit_eligibility
+  patch 'eligibilities', to: 'eligibilities#update_eligibility', as: :update_eligibility
+  get "dashboard", to: "dashboard#index"
+  
+end
 
   # Employee 
   namespace :employee do
