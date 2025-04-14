@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.addEventListener('click', function () {
                     modal.classList.remove('hidden');
                     modal.classList.add('flex');
+                    modal.setAttribute('aria-hidden', 'false');
                 });
             });
 
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.addEventListener('click', function () {
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
+                    modal.setAttribute('aria-hidden', 'true');
                 });
             });
         });

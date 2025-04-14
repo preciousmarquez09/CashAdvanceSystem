@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_03_052219) do
+ActiveRecord::Schema.define(version: 2025_04_10_052111) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 2025_04_03_052219) do
     t.bigint "repayment_schedule_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "message"
     t.index ["cash_adv_request_id"], name: "index_notifications_on_cash_adv_request_id"
     t.index ["read_at"], name: "index_notifications_on_read_at"
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient_type_and_recipient_id"

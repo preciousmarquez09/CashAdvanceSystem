@@ -47,7 +47,7 @@
                 <label class="block text-sm font-bold text-gray-600 dark:text-white"> Deductions </label>
                 <% salary = user.salary.to_f %>
                 <% contributions = User.gov_contribution(salary) %> 
-                <% cash_advance = User.user_due_cash_advance_amount(user) %> 
+                <% cash_advance = User.user_due_cash_advance_amount(user) %>
 
                 <% # Determine if today is between the 16th and 30th for deductions %>
                 <!-- TESTING Modify all the date Date.new(Date.today.year, Date.today.month, 25) -->
@@ -81,7 +81,7 @@
                         <label class="block text-sm text-gray-600 dark:text-white"> Total Deduction: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(total_contributions, unit: "₱ ", precision: (total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>   
                     </div>
                     <div class="w-full md:w-1/2">
-                        <label class="block mb-2 text-sm dark:text-white"> <span class="p-1 text-center font-medium text-md text-white bg-green-500 rounded">  Net Pay: <%= number_to_currency(user.salary - total_contributions, unit: "₱ ", precision: (user.net_salary - total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>
+                        <label class="block mb-2 text-sm dark:text-white"> <span class="p-1 text-center font-medium text-md text-white bg-green-500 rounded">  Net Pay: <%= number_to_currency((user.salary / 2 )- total_contributions, unit: "₱ ", precision: ((user.salary / 2 ) - total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>
                     </div>
                 </div>
 
@@ -110,7 +110,7 @@
                                 <label class="block text-sm text-black font-semibold dark:text-white capitalize">  <%= cash_adv.created_at.strftime("%B %d, %Y") %> </label>
                             </div>
                             <div>
-                                <label class="block text-sm text-black font-semibold dark:text-white"> <%= cash_adv.amount %> </label>
+                                <label class="block text-sm text-black font-semibold dark:text-white"> <%= number_to_currency(cash_adv.amount + cash_adv.interest_amount, unit: "₱ ", precision: (cash_adv.amount + cash_adv.interest_amount % 1 == 0 ? 0 : 2))  %> </label>
                             </div>
                             <div>
                                 <label class="block <%= cash_adv.status_class %>"> <%= cash_adv.status %> </label>

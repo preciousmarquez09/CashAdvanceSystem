@@ -12,4 +12,6 @@ class UserMailer < ApplicationMailer
     mail(to: @employee.email, subject: "Cash Advance Request #{notification_data[:action].capitalize}")
 
   end
+
+  
 end

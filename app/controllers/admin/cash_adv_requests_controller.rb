@@ -70,7 +70,7 @@ class Admin::CashAdvRequestsController < ApplicationController
       @cash_adv_request = CashAdvRequest.find(params[:id])
     
       if @cash_adv_request.update(cash_adv_request_params)
-        if @cash_adv_request.status == "approved" && @cash_adv_request.approver_id.nil?
+        if (@cash_adv_request.status == "approved" || @cash_adv_request.status == "declined") && @cash_adv_request.approver_id.nil?
           @cash_adv_request.update_column(:approver_id, current_user.employee_id)
         end      
         GenerateSchedule.new(@cash_adv_request).perform if @cash_adv_request.status == "released"
@@ -79,7 +79,7 @@ class Admin::CashAdvRequestsController < ApplicationController
         repayment_schedule = RepaymentSchedule.find_by(cash_adv_request_id: @cash_adv_request.id)
         
         notification_data = {
-          employee_id: current_user.employee_id,
+          employee_id: employee.employee_id,
           cash_adv_request_id: @cash_adv_request.id,
           action: @cash_adv_request.status,
         }

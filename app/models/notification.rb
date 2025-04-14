@@ -27,6 +27,7 @@ class Notification < ApplicationRecord
   
     # Conditionally add repayment_schedule_id if present
     attributes[:repayment_schedule_id] = params[:repayment_schedule_id] if params[:repayment_schedule_id].present?
+    attributes[:message] = params[:message] if params[:message].present?
   
     # Update the columns with the prepared attributes
     update_columns(attributes)
