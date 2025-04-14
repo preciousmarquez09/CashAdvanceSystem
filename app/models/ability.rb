@@ -10,7 +10,7 @@ class Ability
       if user.has_role?(:admin)
         can :manage, User
         can :manage, Eligibility
-        can [:index, :show], CashAdvRequest
+        can [:index, :show, :pdf_file], CashAdvRequest
       elsif user.has_role?(:finance)
         can [:index, :show], User
         can :update_password, User, id: user.id

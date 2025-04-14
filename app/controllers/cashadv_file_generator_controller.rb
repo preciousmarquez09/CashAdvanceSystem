@@ -25,36 +25,36 @@ class CashadvFileGeneratorController < ApplicationController
     def pdf_file
       Rails.logger.info(params.inspect)
     
-      if params[:status].include?("all")
-      @cashadvreq = CashAdvRequest.includes(:employee, :approver, :repayment_schedules).order(Arel.sql(
-                        "CASE status 
-                          WHEN 'pending' THEN 1
-                          WHEN 'approved' THEN 2
-                          WHEN 'released' THEN 3
-                          WHEN 'on-going' THEN 4
-                          WHEN 'settled' THEN 5
-                          WHEN 'declined' THEN 6
-                          ELSE 7 END"
-                      ),created_at: :desc)
-      else
-      @cashadvreq =   CashAdvRequest.includes(:employee, :approver, :repayment_schedules).where(status: [params[:status]]).order(created_at: :desc)
-                      if @cashadvreq.empty?
-                        flash[:error] = "No cash advance has a status of: #{params[:status].join(', ').capitalize}"
-                        redirect_to cashadv_file_generator_index_path and return
-                      end
+      @q = CashAdvRequest.ransack(params[:q])
+      @cashadvreq = @q.result.order(created_at: :desc)
+    
+      # Apply status filter if present
+      if params[:status].present?
+        @cashadvreq = @cashadvreq.where(status: params[:status])
       end
     
-      pdf = Prawn::Document.new( margin: 36)
+       if @cashadvreq.empty?
+        
+        flash[:alert] = "No cash advance found"
+        redirect_to admin_cash_adv_requests_path
+        return
+      end
+  
+
+      # Determine the title for the current status filter
+      title_status = params[:status].present? ? params[:status].titleize : "All"
+    
+      pdf = Prawn::Document.new(margin: 36)
     
       # Header
       pdf.text "CASH ADVANCE SYSTEM", size: 24, style: :bold, align: :center
       pdf.text "Generated: #{Date.today.strftime('%B %-d, %Y')}", size: 12, align: :center
       pdf.move_down 20
     
-      pdf.text "CASH ADVANCE LIST", size: 18, style: :bold, align: :center
+      pdf.text "CASH ADVANCE LIST – #{title_status}", size: 18, style: :bold, align: :center
       pdf.move_down 20
       previous_status = nil
-
+    
       @cashadvreq.each do |cashadv|
         # Check if there's enough space
         needed_height = 200 # Base height for cash advance info
@@ -63,11 +63,11 @@ class CashadvFileGeneratorController < ApplicationController
           # Add extra space for repayment table (header + rows * row_height)
           needed_height += 30 + (cashadv.repayment_schedules.size * 20)
         end
-        
+    
         if pdf.cursor < needed_height
           pdf.start_new_page
         end
-
+    
         if cashadv.status != previous_status
           pdf.move_down 10
           pdf.text cashadv.status.upcase, size: 20, align: :center, style: :bold, color: '333399'
@@ -96,14 +96,14 @@ class CashadvFileGeneratorController < ApplicationController
             pdf.move_down 5
     
             pdf.text "Cash Advance Information:", style: :bold, size: 10
-
+    
             data_reason_text = cashadv.request_reason.presence || "N/A"
             request_reason = [
-                  [{ content: "Reason:", borders: [], padding: [2, 5], size: 10 }],
-                  [{ content: data_reason_text, borders: [], padding: [2, 30], size: 10 }]
-                ]
+              [{ content: "Reason:", borders: [], padding: [2, 5], size: 10 }],
+              [{ content: data_reason_text, borders: [], padding: [2, 30], size: 10 }]
+            ]
             pdf.table(request_reason, cell_style: { borders: [], size: 10 }, width: pdf.bounds.width)
-
+    
             total_amount = (cashadv.amount.to_f + cashadv.interest_amount.to_f).round(2)
             attachment_count = cashadv.attachments&.attached? ? cashadv.attachments.count : 0
             column_widths = [pdf.bounds.width / 4, pdf.bounds.width / 4, pdf.bounds.width / 3, pdf.bounds.width / 6]
@@ -114,16 +114,16 @@ class CashadvFileGeneratorController < ApplicationController
               ["Status:", cashadv.status.capitalize || "N/A", "No. of Attachment:", attachment_count],
             ]
     
-            pdf.table(data, width: pdf.bounds.width,column_widths: column_widths, cell_style: {borders: [], padding: [2, 2], size: 10, overflow: :shrink_to_fit})
-            
-
+            pdf.table(data, width: pdf.bounds.width, column_widths: column_widths, cell_style: { borders: [], padding: [2, 2], size: 10, overflow: :shrink_to_fit })
+    
             approver_status = ['approved', 'declined', 'released', 'on-going', 'settled']
-
+    
             if approver_status.include?(cashadv.status)
               dataApprover = [
-                ["Approver:",  (cashadv.approver&.f_name.to_s + " " + cashadv.approver&.l_name.to_s).presence || "N/A", "Updated At:", cashadv.updated_at.strftime('%B %-d, %Y')  || "N/A"]
+                ["Approver:", (cashadv.approver&.f_name.to_s + " " + cashadv.approver&.l_name.to_s).presence || "N/A", "Updated At:", cashadv.updated_at.strftime('%B %-d, %Y') || "N/A"]
               ]
-              pdf.table(dataApprover, width: pdf.bounds.width, column_widths: column_widths,cell_style: {borders: [], padding: [2, 2], size: 10, overflow: :shrink_to_fit}) 
+              pdf.table(dataApprover, width: pdf.bounds.width, column_widths: column_widths, cell_style: { borders: [], padding: [2, 2], size: 10, overflow: :shrink_to_fit })
+              
               if cashadv.status == 'declined'
                 approver_reason_text = cashadv.approver_reason.presence || "N/A"
                 approver_reason = [
@@ -133,7 +133,6 @@ class CashadvFileGeneratorController < ApplicationController
                 pdf.table(approver_reason, cell_style: { borders: [], size: 10 }, width: pdf.bounds.width)
               elsif ['released', 'on-going', 'settled'].include?(cashadv.status)
                 if cashadv.repayment_schedules.size >= 1
-
                   pdf.move_down 10
                   pdf.text "Repayment Schedule:", style: :bold, size: 10
                   pdf.move_down 10
@@ -145,9 +144,8 @@ class CashadvFileGeneratorController < ApplicationController
                                   schedule.status.capitalize || "N/A"
                                 ]
                               end
-                
-                  pdf.table(repayments, width: pdf.bounds.width, cell_style: { borders: [:bottom, :top, :left, :right], padding: [5, 10], size: 10, border_color: '000000', align: :center}) 
-                   
+    
+                  pdf.table(repayments, width: pdf.bounds.width, cell_style: { borders: [:bottom, :top, :left, :right], padding: [5, 10], size: 10, border_color: '000000', align: :center })
                 end
               end
             end
@@ -159,11 +157,13 @@ class CashadvFileGeneratorController < ApplicationController
         end
       end
     
-      send_data pdf.render, filename: 'cashadvs_list.pdf', type: 'application/pdf', disposition: params[:file_action] == 'download' ? 'attachment' : 'inline'
-     
+      send_data pdf.render, filename: 'cashadvs_list.pdf', type: 'application/pdf', disposition: 'attachment' #params[:file_action] == 'download' ? 'attachment' : 'inline'
     end
     
 
+    def show
+      redirect_to admin_cash_adv_requests_path
+    end
     def excel_file
        
     end

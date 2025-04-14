@@ -1,11 +1,16 @@
 <div class="p-5">
     <div class="flex justify-between items-center mb-5 p-3 flex-wrap gap-2">
         <span class="text-2xl sm:text-3xl font-bold">Cash Advance List</span>
-        <% if @eligible && (User.can_request_cashadv(current_user) == true) && (current_user.has_role?(:finance) || current_user.has_role?(:employee)) %>
+        <% if @eligible && User.can_request_cashadv(current_user) == true && (current_user.has_role?(:finance) || current_user.has_role?(:employee)) %>
             <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" type="button">
                 <i class="bi bi-file-earmark-plus-fill text-xl"></i>
                 <span class="font-semibold">Request Cash Advance</span>
             </button>
+        <% end %>
+
+        <%= link_to pdf_file_admin_cash_adv_requests_path(q: params[:q]&.permit!.to_h, status: @status), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" do %>
+          <i class="bi bi-person-fill-add text-lg sm:text-xl"></i>
+          <span class="font-semibold">Export to PDF</span>
         <% end %>
     </div>
 

@@ -107,8 +107,7 @@ class User < ApplicationRecord
         end
       end
     end
-  
-    # If there are no cash advance requests, allow a new request
+
     if user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
       Rails.logger.debug "No previous cash advance requests, allowing new one"
       return true
