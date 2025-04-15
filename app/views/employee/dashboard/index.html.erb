@@ -17,7 +17,7 @@
     </div>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-6">
       <h2 class="text-xl font-semibold mb-4">History of Cash Advances</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">
+      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400">
         <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th class="p-2">
@@ -37,16 +37,7 @@
               <td class="p-2"><%= request.created_at.strftime("%Y-%m-%d") %></td>
               <td class="p-2">PHP <%= number_with_precision(request.amount, precision: 2, delimiter: ",") %></td>
               <td class="p-2">
-                <span class="px-2 py-1 text-xs font-semibold rounded-md border 
-                            <%= case request.status
-                                when "approved" then "bg-green-100 text-green-800 border-green-200"
-                                when "pending" then "bg-yellow-100 text-yellow-800 border-yellow-200"
-                                when "released" then "bg-blue-100 text-blue-800 border-blue-200"
-                                when "on-going" then "bg-indigo-100 text-indigo-800 border-indigo-200"
-                                when "settled" then "bg-gray-100 text-gray-800 border-gray-200"
-                                when "declined", "rejected" then "bg-red-100 text-red-800 border-red-200"
-                                else "bg-gray-100 text-gray-600 border-gray-200"
-                            end %>">
+                <span class="<%= request.status_class %>">
                   <%= request.status.titleize %>
                 </span>
               </td>

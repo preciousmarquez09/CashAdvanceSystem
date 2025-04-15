@@ -42,19 +42,19 @@ class User < ApplicationRecord
     user_cash_adv_requests = CashAdvRequest.where(employee_id: user.employee_id)
   
     user_cash_adv_requests.each do |cash_adv_request|
-      # Check if any repayment schedule for this request has a due_date on the 15th or 30th
-      due_schedule = cash_adv_request.repayment_schedules.where(
-        due_date: [15.days.from_now.beginning_of_month + 14.days, 15.days.from_now.beginning_of_month + 29.days]
-      ).first
+      fifteenth = Date.current.change(day: 15).all_day
+      thirtieth = Date.current.change(day: 30).all_day
+  
+      due_schedule = cash_adv_request.repayment_schedules.where(due_date: fifteenth)
+        .or(cash_adv_request.repayment_schedules.where(due_date: thirtieth)).first
   
       if due_schedule
         return { amount: due_schedule.amount, cash_adv_request: user_cash_adv_requests }
-      else
-        return { cash_adv_request: user_cash_adv_requests }
       end
     end
     nil
   end
+  
   
   def self.gov_contribution(salary)
     sss = salary < 20000 ? 500 : 1000
@@ -65,40 +65,57 @@ class User < ApplicationRecord
   end
 
   def self.can_request_cashadv(user)
-    return false unless user.employment_status == 'regular'
-    
+    unless user
+      Rails.logger.debug "User not found"
+      return false
+    end
+  
+    unless user.employment_status == 'regular'
+      Rails.logger.debug "User is not regular"
+      return false
+    end
+  
     eligibility = Eligibility.first
-    return false unless user.net_salary.to_f >= eligibility.min_net_salary.to_f
+    unless user.net_salary.to_f >= eligibility.min_net_salary.to_f
+      Rails.logger.debug "User's net salary is too low"
+      return false
+    end
   
     user_cash_adv_requests = CashAdvRequest.where(employee_id: user.employee_id).order(created_at: :desc)
   
-    # Check if the user has an existing request with a status that prevent new requests
     user_cash_adv_requests.each do |cash_adv_request|
       case cash_adv_request.status
       when 'pending', 'approved', 'released', 'on-going'
-        # Block new requests if the current status is any of the above
+        Rails.logger.debug "Request status #{cash_adv_request.status} prevents new request"
         return false
       when 'settled'
-        # Check if enough time has passed since the settled request
-        if (cash_adv_request.updated_at.to_date - Date.today).to_i < eligibility.req_approve_days
+          days_since_settled = (cash_adv_request.updated_at.to_date - Date.today).to_i
+          days_since_settled = [days_since_settled, 0].max  # Ensure non-negative days
+        if  days_since_settled < eligibility.req_approve_days
+          Rails.logger.debug "Request settled too recently to allow new request"
           return false
         else
           return true
         end
       when 'declined'
-        # Check if enough time has passed since the declined request
-        if (cash_adv_request.updated_at.to_date - Date.today).to_i < eligibility.req_decline_days
+        days_since_decline = (cash_adv_request.updated_at.to_date - Date.today).to_i
+        days_since_decline = [days_since_decline, 0].max  # Ensure non-negative days
+        if days_since_decline < eligibility.req_decline_days
+          Rails.logger.info days_since_decline
+          Rails.logger.debug "Request declined too recently to allow new request"
           return false
         else
           return true
         end
       end
     end
-  
-    # If there are no cash advance requests, allow a new request
-    return true if user_cash_adv_requests.nil? || user_cash_adv_requests.empty? 
-    
+
+    if user_cash_adv_requests.nil? || user_cash_adv_requests.empty?
+      Rails.logger.debug "No previous cash advance requests, allowing new one"
+      return true
+    end
   end
+  
 
   private
   def age_is_18_above

@@ -24,27 +24,30 @@ class CashAdvNotification < Noticed::Base
     if user.nil?
       return "User not found for employee ID: #{params[:employee_id]}"
     end
+
+    cash_adv_request = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
+    if cash_adv_request.nil?
+      return "Cash advance request not found for ID: #{params[:cash_adv_request_id]}"
+    end
   
     cash_adv_status = [ "declined", "approved"]
     if params[:action] == "pending"
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
       "#{user.f_name} #{user.l_name} requested a new cash advance."
     elsif cash_adv_status.include?(params[:action])
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
       "Your cash advance updated to #{params[:action]}"
     elsif params[:action] == "released"
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
       "Your cash advance is already #{params[:action]}."
     elsif params[:action] == "on-going"
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
       "Your cash advance is #{params[:action]}. It will deduct to your next payroll"
     elsif params[:action] == "paid"
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
       repayment_schedule_id = RepaymentSchedule.find_by(id: params[:repayment_schedule_id])
       "Your cash advance for #{repayment_schedule_id&.due_date&.strftime('%B %d, %Y') || 'unknown date'} successfully paid."
     elsif params[:action] == "settled"
-      cash_adv_request_id = CashAdvRequest.find_by(id: params[:cash_adv_request_id])
-      "Your cash advance successfully settled."
+      if params[:message]
+        "#{user.f_name} #{user.l_name} cash advance successfully settled."
+      else
+        "Your cash advance successfully settled."
+      end
     end
   end
   

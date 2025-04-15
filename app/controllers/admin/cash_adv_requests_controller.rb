@@ -9,6 +9,11 @@ class Admin::CashAdvRequestsController < ApplicationController
     
       # Get the status from params or default to 'all'
       @status = params[:status] || 'all'
+
+      if params[:q].present? && params[:status].blank?
+        @status = 'all'
+      end
+    
     
       # Apply the search query but keep status count
       @filtered_results = @q.result(distinct: false)
@@ -70,18 +75,21 @@ class Admin::CashAdvRequestsController < ApplicationController
       @cash_adv_request = CashAdvRequest.find(params[:id])
     
       # Set approver_id before updating
-      if params.dig(:cash_adv_request, :status) == "approved" || "declined" && @cash_adv_request.approver_id.nil?
-        @cash_adv_request.approver_id = current_user.employee_id
-      end
+      #if params.dig(:cash_adv_request, :status) == "approved" || "declined" && @cash_adv_request.approver_id.nil?
+        #@cash_adv_request.approver_id = current_user.employee_id
+      #end
     
       if @cash_adv_request.update(cash_adv_request_params)
+        if (@cash_adv_request.status == "approved" || @cash_adv_request.status == "declined") && @cash_adv_request.approver_id.nil?
+          @cash_adv_request.update_column(:approver_id, current_user.employee_id)
+        end      
         GenerateSchedule.new(@cash_adv_request).perform if @cash_adv_request.status == "released"
         
         employee = User.find_by(employee_id: @cash_adv_request.employee_id)
         repayment_schedule = RepaymentSchedule.find_by(cash_adv_request_id: @cash_adv_request.id)
     
         notification_data = {
-          employee_id: current_user.employee_id,
+          employee_id: employee.employee_id,
           cash_adv_request_id: @cash_adv_request.id,
           action: @cash_adv_request.status,
         }
@@ -125,8 +133,20 @@ class Admin::CashAdvRequestsController < ApplicationController
         redirect_to admin_cash_adv_requests_path, alert: "Failed to delete cash advance request."
       end
     end
-    
 
+    def pdf_file
+      pdfgenerator = Pdf::CashAdvRequestPdfGenerator.new(params)
+    
+      if pdfgenerator.empty?
+        flash[:alert] = "No cash advance found"
+        redirect_to admin_cash_adv_requests_path
+        return
+      end
+    
+      send_data pdfgenerator.generate, filename: "Cash Advance List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf", type: 'application/pdf',disposition: 'attachment'
+    end
+    
+  
     private
 
     def cash_adv_request_params

@@ -23,7 +23,7 @@ class GenerateSchedule
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date:  Date.today  , #change Date.today for testing (paid all - settled), Date.todaynext_month(i) (on-going 1 - 1 paid)
+            due_date: Date.new(Date.today.year, 4, 15)  , #change Date.today for testing (paid all - settled), Date.todaynext_month(i) (on-going 1 - 1 paid)
             status: "pending"
           )
         end
@@ -35,14 +35,14 @@ class GenerateSchedule
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date: Date.today,
+            due_date: date_15 ,
             status: "pending"
           )
         
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date: Date.today,
+            due_date: date_30 ,
             status: "pending"
           )
         end

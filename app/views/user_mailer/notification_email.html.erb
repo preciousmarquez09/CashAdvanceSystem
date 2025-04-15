@@ -1,3 +1,8 @@
+
+<% if @notification_data[:message].present? %>
+  <p><%= @employee.f_name + " " + @employee.l_name %> cash advance successfully settled.</p>
+
+<% else %>
 <h1>Cash Advance Request</h1>
 
 <p>Hello <%= @employee.f_name + " " + @employee.l_name %>,</p>
@@ -31,7 +36,7 @@
 
     <% if @cash_advance_request.status == "released" %>
       <p>
-        As your cash advance has been successfully released, we kindly ask that you log in to your account to view and manage your repayment schedule. 
+        As your cash advance has been successfully released, we kindly ask that you log in to your account to view your repayment schedule. 
         You can find detailed information regarding the due dates and amounts for repayment there.
       </p>
     <% elsif @cash_advance_request.status == "settled" %>
@@ -42,3 +47,6 @@
 
 <p> Should you need further clarification or assistance, please do not hesitate to contact our team. </p>
 <p>Regards,<br>Cash Advance System</p>
+
+
+<% end %>

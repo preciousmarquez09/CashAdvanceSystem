@@ -85,6 +85,18 @@ class Admin::UsersController < ApplicationController
       redirect_to edit_admin_user_path(@user)
     end
 
+    def pdf_file
+      pdfgenerator = Pdf::UserPdfGenerator.new(params)
+    
+      if pdfgenerator.empty?
+        flash[:alert] = "No users found"
+        redirect_to admin_users_path
+        return
+      end
+    
+      send_data pdfgenerator.generate, filename: "Users List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf" , type: 'application/pdf',disposition: 'attachment'
+    end
+
       
     private
     def user_params

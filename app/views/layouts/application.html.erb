@@ -32,6 +32,8 @@
         <%= render "layouts/navbar/employee_sidenav" %>
       <% end %>
     <% end %>
+
+
     <% if flash[:notice] %>
       <script>
         Swal.fire({
@@ -53,7 +55,7 @@
     <% end %>
 
     <% if user_signed_in? && current_user.is_first %>
-      <div class="p-4 ml-16 sm:ml-64 transition-all">
+      <div class="p-4 ml-16 sm:ml-72 transition-all">
         <%= yield %>
       </div>
     <% else %>
@@ -62,4 +64,6 @@
       </div>
     <% end %>
   </body>
+
+  
 </html>

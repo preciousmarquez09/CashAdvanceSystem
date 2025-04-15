@@ -88,52 +88,65 @@ class RepaymentSchedule < ApplicationRecord
   
 
   def self.update_cashadvreq_status_to_settled
-    settled_requests = CashAdvRequest.all.select do |cash_adv_request| 
-      cash_adv_request.repayment_schedules.any? && 
-      cash_adv_request.repayment_schedules.where.not(status: 'paid').empty? && 
-      cash_adv_request.status != 'settled'
+    settled_requests = CashAdvRequest.includes(:repayment_schedules).select do |req|
+      req.repayment_schedules.any? &&
+        req.repayment_schedules.where.not(status: 'paid').empty? &&
+        req.status != 'settled'
     end
   
-    if settled_requests.any?
-      # Process each request individually
-      updated_count = 0
+    return Rails.logger.info "[CRON] No cash advance requests to update to 'settled'." if settled_requests.empty?
   
-      settled_requests.each do |cash_adv_request|
-        begin
-          ActiveRecord::Base.transaction do
-            # Update the status to 'settled'
-            cash_adv_request.update!(status: 'settled')
+    updated_count = 0
   
-            # Find the employee to notify
-            employee = User.find_by(employee_id: cash_adv_request.employee_id)
+    settled_requests.each do |cash_adv_request|
+      begin
+        ActiveRecord::Base.transaction do
+          cash_adv_request.update!(status: 'settled')
   
-            if employee
-              notification_data = {
+          employee = User.find_by(employee_id: cash_adv_request.employee_id)
+  
+          if employee
+            notification_data = {
+              employee_id: employee.employee_id,
+              cash_adv_request_id: cash_adv_request.id,
+              action: 'settled'
+            }
+  
+            # Notify employee
+            CashAdvNotification.with(notification_data).deliver(employee)
+            UserMailer.notification_email(employee, notification_data).deliver_now
+  
+            Rails.logger.info "[CRON] Settlement notification sent to employee #{employee.employee_id} for request ID #{cash_adv_request.id}"
+  
+            # Immediately notify finance users after notifying employee
+            User.with_role(:finance).find_each do |finance_user|
+              next unless finance_user.present?
+              finance_notification_data = {
                 employee_id: employee.employee_id,
                 cash_adv_request_id: cash_adv_request.id,
-                action: 'settled'
+                action: 'settled',
+                message: 'finance notif'
               }
-              UserMailer.notification_email(employee, notification_data).deliver_now
-                # Deliver the notification
-              CashAdvNotification.with(notification_data).deliver(employee)
+              CashAdvNotification.with(finance_notification_data).deliver(finance_user)
+              UserMailer.notification_email(finance_user, finance_notification_data).deliver_now
   
-              Rails.logger.info "[CRON] Settlement notification sent to employee #{employee.employee_id} for request ID #{cash_adv_request.id}"
-            else
-              Rails.logger.info "[CRON] No user found for employee_id: #{cash_adv_request.employee_id}, no settlement notification sent."
+              Rails.logger.info "[CRON] Settlement notification also sent to FINANCE user #{finance_user.email} for request ID #{cash_adv_request.id}"
             end
-  
-            updated_count += 1
+          else
+            Rails.logger.info "[CRON] No user found for employee_id: #{cash_adv_request.employee_id}, no settlement notification sent."
           end
-        rescue => e
-          Rails.logger.error "[CRON] Error updating cash advance request #{cash_adv_request.id}: #{e.message}"
-        end
-      end
   
-      Rails.logger.info "[CRON] Updated #{updated_count} cash advance requests to 'settled'."
-    else
-      Rails.logger.info "[CRON] No cash advance requests to update to 'settled'."
+          updated_count += 1
+        end
+      rescue => e
+        Rails.logger.error "[CRON] Error updating cash advance request #{cash_adv_request.id}: #{e.message}"
+      end
     end
+  
+    Rails.logger.info "[CRON] Updated #{updated_count} cash advance requests to 'settled'."
   end
+  
+  
   
 
 
