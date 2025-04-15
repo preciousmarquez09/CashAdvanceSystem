@@ -86,7 +86,7 @@ class Admin::UsersController < ApplicationController
     end
 
     def pdf_file
-      pdfgenerator = UserPdfGenerator.new(params)
+      pdfgenerator = Pdf::UserPdfGenerator.new(params)
     
       if pdfgenerator.empty?
         flash[:alert] = "No users found"
@@ -94,7 +94,7 @@ class Admin::UsersController < ApplicationController
         return
       end
     
-      send_data pdfgenerator.generate, filename: 'users_list.pdf', type: 'application/pdf',disposition: 'attachment'
+      send_data pdfgenerator.generate, filename: "Users List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf" , type: 'application/pdf',disposition: 'attachment'
     end
 
       

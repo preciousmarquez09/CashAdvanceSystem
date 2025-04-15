@@ -74,6 +74,11 @@ class Admin::CashAdvRequestsController < ApplicationController
     def update
       @cash_adv_request = CashAdvRequest.find(params[:id])
     
+      # Set approver_id before updating
+      #if params.dig(:cash_adv_request, :status) == "approved" || "declined" && @cash_adv_request.approver_id.nil?
+        #@cash_adv_request.approver_id = current_user.employee_id
+      #end
+    
       if @cash_adv_request.update(cash_adv_request_params)
         if (@cash_adv_request.status == "approved" || @cash_adv_request.status == "declined") && @cash_adv_request.approver_id.nil?
           @cash_adv_request.update_column(:approver_id, current_user.employee_id)
@@ -82,19 +87,21 @@ class Admin::CashAdvRequestsController < ApplicationController
         
         employee = User.find_by(employee_id: @cash_adv_request.employee_id)
         repayment_schedule = RepaymentSchedule.find_by(cash_adv_request_id: @cash_adv_request.id)
-        
+    
         notification_data = {
           employee_id: employee.employee_id,
           cash_adv_request_id: @cash_adv_request.id,
           action: @cash_adv_request.status,
         }
+    
         if repayment_schedule.present?
           notification_data[:repayment_schedule_id] = repayment_schedule.id
         end
-
+    
         if @cash_adv_request.status == "released" || @cash_adv_request.status == "declined"
           UserMailer.notification_email(employee, notification_data).deliver_now 
         end
+    
         # Deliver the notification
         CashAdvNotification.with(notification_data).deliver(employee)
     
@@ -128,7 +135,7 @@ class Admin::CashAdvRequestsController < ApplicationController
     end
 
     def pdf_file
-      pdfgenerator = CashAdvRequestPdfGenerator.new(params)
+      pdfgenerator = Pdf::CashAdvRequestPdfGenerator.new(params)
     
       if pdfgenerator.empty?
         flash[:alert] = "No cash advance found"
@@ -136,7 +143,7 @@ class Admin::CashAdvRequestsController < ApplicationController
         return
       end
     
-      send_data pdfgenerator.generate, filename: 'cashadvance_list.pdf', type: 'application/pdf',disposition: 'attachment'
+      send_data pdfgenerator.generate, filename: "Cash Advance List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf", type: 'application/pdf',disposition: 'attachment'
     end
     
   

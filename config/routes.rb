@@ -17,13 +17,18 @@ Rails.application.routes.draw do
       collection do
         get :pdf_file
       end
-
+    end
+    resources :auditlogs, only: [:index] do
+      collection do
+        get :pdf_file  # Add this for the export_pdf action
+      end
     end
     
     get 'eligibilities', to: 'eligibilities#edit_eligibility', as: :edit_eligibility
     patch 'eligibilities', to: 'eligibilities#update_eligibility', as: :update_eligibility
     get "dashboard", to: "dashboard#index"
-  end
+
+end
 
   # Employee 
   namespace :employee do
@@ -39,6 +44,14 @@ Rails.application.routes.draw do
      patch '/profile', to: 'profile#update'
     resources :users
   end
+
+ 
+resources :payrolls do
+  member do
+    get :preview, defaults: { format: :pdf }
+  end
+end
+
 
   resources :notification do
     member do

@@ -88,6 +88,20 @@ ActiveRecord::Schema.define(version: 2025_04_10_052111) do
     t.index ["repayment_schedule_id"], name: "index_notifications_on_repayment_schedule_id"
   end
 
+  create_table "payrolls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "description"
+    t.decimal "basic", precision: 10
+    t.decimal "sss", precision: 10
+    t.decimal "philhealth", precision: 10
+    t.decimal "pagibig", precision: 10
+    t.integer "cashadv"
+    t.decimal "net_amount", precision: 10
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_payrolls_on_user_id"
+  end
+
   create_table "repayment_schedules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "cash_adv_request_id", null: false
     t.decimal "amount", precision: 10, scale: 2
@@ -165,5 +179,6 @@ ActiveRecord::Schema.define(version: 2025_04_10_052111) do
   add_foreign_key "cash_adv_requests", "users", column: "employee_id", primary_key: "employee_id"
   add_foreign_key "notifications", "cash_adv_requests"
   add_foreign_key "notifications", "repayment_schedules"
+  add_foreign_key "payrolls", "users"
   add_foreign_key "repayment_schedules", "cash_adv_requests"
 end

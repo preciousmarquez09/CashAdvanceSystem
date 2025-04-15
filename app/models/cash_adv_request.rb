@@ -69,6 +69,16 @@ class CashAdvRequest < ApplicationRecord
   end
 
   def log_status_change
-    AuditLog.create!(user_id: approver&.id || employee.id, action: status)
+    approver_user = User.find_by(employee_id: approver_id)
+    requester_user = employee 
+  
+    
+    action_text = "Updated the status of #{requester_user.f_name} #{requester_user.l_name}’s cash advance request to #{status}"
+
+  
+    AuditLog.create!(
+      user_id: approver_user&.id || requester_user.id,
+      action: action_text
+    )
   end
 end
