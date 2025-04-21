@@ -16,7 +16,16 @@ module Employee
         
         @total_cash_advance = current_user.cash_adv_requests.where(status: 'released').sum(:amount)
 
-        @pending_cash_advances = current_user.cash_adv_requests.pending.count
+        @myaccount_pending_cash_advances = current_user.cash_adv_requests.pending.count
+
+        @released_cash_advances = current_user.cash_adv_requests.released.count
+
+        @due_next_payroll = RepaymentSchedule
+        .includes(cash_adv_request: :employee)
+        .where("DAY(due_date) IN (15, 30)")
+        .where("due_date <= ?", Time.current.end_of_month)
+        .where("cash_adv_requests.employee_id = ?", current_user.employee_id)  # Filter by current user
+        .sum(:amount)
       
         @q = current_user.cash_adv_requests.ransack(params[:q])
         @pagy_cash_advance_history, @cash_advance_history = pagy(@q.result.order(created_at: :desc), 

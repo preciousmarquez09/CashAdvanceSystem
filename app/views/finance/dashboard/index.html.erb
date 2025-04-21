@@ -16,14 +16,14 @@
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Ongoing Cash Advances</h2>
-        <p class="text-2xl font-bold text-blue-600">
+        <p class="text-2xl font-bold text-gray-600">
           <%= @total_ongoing_users %>
         </p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Cash Advances for the Year</h2>
-        <p class="text-2xl font-bold text-gray-800">
-          <%= number_to_currency(@total_cash_advances_year, unit: "PHP ", precision: 2) %>
+        <p class="text-2xl font-bold text-blue-800">
+        <%= number_to_currency(@total_cash_advances_year, unit: '₱', precision: 2, delimiter: ',') %>
         </p>
       </div>
     </div>
@@ -62,6 +62,33 @@
     </div>
     <hr class="mt-10">
     <h1 class="text-3xl font-bold mb-6">My Account</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold">Pending Requests</h2>
+      <p class="text-2xl font-bold text-yellow-600">
+        <%= @myaccount_pending_cash_advances %>
+      </p>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold">Released Requests</h2>
+      <p class="text-2xl font-bold text-green-600"><%= @myaccount_released_cash_advances %></p>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold">Total Cash Advance</h2>
+      <p class="text-2xl font-bold text-blue-600">
+        <%= number_to_currency(@myaccount_total_cash_advance, precision: 2, unit: '₱', delimiter: ',') %>
+      </p>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-lg font-semibold">Due Next Payroll</h2>
+    <p class="text-2xl font-bold text-red-600">
+      <%= number_to_currency(@myaccount_due_next_payroll, precision: 2, unit: '₱', delimiter: ',') %>
+    </p>
+  </div>
+  </div>
+
+  
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
       <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
       <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">

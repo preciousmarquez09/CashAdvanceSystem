@@ -5,15 +5,25 @@
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Pending Requests</h2>
         <p class="text-2xl font-bold text-yellow-600">
-          <%= @pending_cash_advances %>
+          <%= @myaccount_pending_cash_advances %>
         </p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold">Released Requests</h2>
+        <p class="text-2xl font-bold text-green-600"><%= @released_cash_advances %></p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Cash Advance</h2>
         <p class="text-2xl font-bold text-blue-600">
-          <%= @total_cash_advance %>
+           <%= number_to_currency(@total_cash_advance, unit: '₱', precision: 2, delimiter: ',') %>
         </p>
       </div>
+      <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold">Due Next Payroll</h2>
+      <p class="text-2xl font-bold text-red-600">
+        <%= number_to_currency(@due_next_payroll, precision: 2, unit: '₱', delimiter: ',') %>
+      </p>
+    </div>
     </div>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-6">
       <h2 class="text-xl font-semibold mb-4">History of Cash Advances</h2>
@@ -35,7 +45,7 @@
           <% @cash_advance_history.each do |request| %>
             <tr class="odd:bg-gray-50 even:bg-white">
               <td class="p-2"><%= request.created_at.strftime("%Y-%m-%d") %></td>
-              <td class="p-2">PHP <%= number_with_precision(request.amount, precision: 2, delimiter: ",") %></td>
+              <td class="p-2"><%= number_to_currency(request.amount, precision: 2, unit: '₱', delimiter: ",") %></td>
               <td class="p-2">
                 <span class="<%= request.status_class %>">
                   <%= request.status.titleize %>
@@ -71,13 +81,13 @@
             <% @employee_payrolls.each do |payroll| %>
               <tr class="odd:bg-gray-50 even:bg-white">
                 <td class="p-2"><%= payroll.description %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"> <%= number_to_currency(payroll.basic, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"> <%= number_to_currency(payroll.sss, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"> <%= number_to_currency(payroll.philhealth, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"> <%= number_to_currency(payroll.pagibig, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"> <%= number_to_currency(payroll.cashadv, unit: '₱', precision: 2, delimiter: ',') %></td>
                 <td class="p-2 font-semibold text-green-600">
-                  PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %>
+                   <%= number_to_currency(payroll.net_amount, unit: '₱', precision: 2, delimiter: ',') %>
                 </td>
                 <td class="p-2">
                   <%= button_to preview_payroll_path(payroll, format: :pdf),

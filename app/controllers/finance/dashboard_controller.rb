@@ -13,11 +13,26 @@ class Finance::DashboardController < ApplicationController
     @total_pending_requests = CashAdvRequest.where(status: 'pending').count
     @total_released_requests = CashAdvRequest.where(status: 'released').count
     @total_ongoing_cash_advances = CashAdvRequest.where(status: 'ongoing').count
-    @total_cash_advances_year = CashAdvRequest.where("created_at >= ?", Time.current.beginning_of_year).sum(:amount)
+    @total_cash_advances_year = CashAdvRequest
+    .where("created_at >= ? AND status = ?", Time.current.beginning_of_year, "released")
+    .sum(:amount)
     
     @total_ongoing_users = RepaymentSchedule.where(status: 'pending')
     .distinct
     .count(:cash_adv_request_id)
+
+    @myaccount_total_cash_advance = current_user.cash_adv_requests.where(status: 'released').sum(:amount)
+
+    @myaccount_pending_cash_advances = current_user.cash_adv_requests.pending.count
+
+    @myaccount_released_cash_advances = current_user.cash_adv_requests.released.count
+
+    @myaccount_due_next_payroll = RepaymentSchedule
+        .includes(cash_adv_request: :employee)
+        .where("DAY(due_date) IN (15, 30)")
+        .where("due_date <= ?", Time.current.end_of_month)
+        .where("cash_adv_requests.employee_id = ?", current_user.employee_id)  # Filter by current user
+        .sum(:amount)
 
     @pagy_due_next_payroll, @due_next_payroll = pagy(RepaymentSchedule
     .includes(cash_adv_request: :employee)

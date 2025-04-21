@@ -18,6 +18,7 @@ class CashAdvRequest < ApplicationRecord
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: 'approved') }
+  
 
   after_create :log_creation
   after_update :log_status_change, if: :saved_change_to_status?
