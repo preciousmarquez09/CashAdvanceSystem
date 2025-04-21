@@ -1,36 +1,30 @@
 <div class="p-6">
   <div class="mx-auto">
     <h1 class="text-3xl font-bold mb-6">Finance Dashboard</h1>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Pending Requests</h2>
-        <p class="text-2xl font-bold text-yellow-600">
-          <%= @total_pending_requests %>
-        </p>
+        <p class="text-2xl font-bold text-yellow-600"><%= @total_pending_requests %></p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Released Requests</h2>
-        <p class="text-2xl font-bold text-green-600">
-          <%= @total_released_requests %>
-        </p>
+        <p class="text-2xl font-bold text-green-600"><%= @total_released_requests %></p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Ongoing Cash Advances</h2>
-        <p class="text-2xl font-bold text-gray-600">
-          <%= @total_ongoing_users %>
-        </p>
+        <p class="text-2xl font-bold text-gray-600"><%= @total_ongoing_users %></p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Cash Advances for the Year</h2>
         <p class="text-2xl font-bold text-blue-800">
-        <%= number_to_currency(@total_cash_advances_year, unit: '₱', precision: 2, delimiter: ',') %>
+          <%= number_to_currency(@total_cash_advances_year, unit: '₱', precision: 2, delimiter: ',') %>
         </p>
       </div>
     </div>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
       <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">
-        <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
+        <thead class="text-gray-700 bg-gray-200">
           <tr>
             <th class="p-2">Employee Name</th>
             <th class="p-2">Due Date</th>
@@ -44,7 +38,7 @@
               <tr class="odd:bg-gray-50 even:bg-white">
                 <td class="p-2"><%= "#{employee.f_name} #{employee.l_name}" %></td>
                 <td class="p-2"><%= repayment.due_date.strftime("%Y-%m-%d") %></td>
-                <td class="p-2">PHP <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
               </tr>
             <% end %>
           <% else %>
@@ -61,38 +55,59 @@
       <% end %>
     </div>
     <hr class="mt-10">
-    <h1 class="text-3xl font-bold mb-6">My Account</h1>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-lg font-semibold">Pending Requests</h2>
-      <p class="text-2xl font-bold text-yellow-600">
-        <%= @myaccount_pending_cash_advances %>
-      </p>
+    <!-- My Account Summary -->
+    <h1 class="text-xl font-semibold mb-4">My Account</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <h3 class="text-md font-semibold text-gray-600">Pending Requests</h3>
+          <% if @myaccount_pending_cash_advances.to_i > 0 %>
+            <p class="text-2xl font-bold text-yellow-600">
+              <%= @myaccount_pending_cash_advances %>
+            </p>
+          <% elsif @myaccount_has_ongoing_repayment %>
+            <p class="text-sm text-red-500 italic">
+              You still have an ongoing cash advance.
+            </p>
+          <% else %>
+            <p class="text-sm text-gray-500 italic">
+              <span class="text-gray-600">No pending request. You can easily request for a cash advance!</span><br>
+              <%= link_to "Request now", new_admin_cash_adv_request_path, class: "text-blue-600 hover:underline font-medium" %>
+            </p>
+          <% end %>
+        </div>
+        <div>
+          <h3 class="text-md font-semibold text-gray-600">Released Requests</h3>
+          <p class="text-2xl font-bold text-green-600">
+            <%= @myaccount_released_cash_advances %>
+          </p>
+        </div>
+        <div>
+          <h3 class="text-md font-semibold text-gray-600">Total Cash Advance</h3>
+          <p class="text-2xl font-bold text-blue-600">
+            <%= number_to_currency(@myaccount_total_cash_advance, precision: 2, unit: '₱', delimiter: ',') %>
+          </p>
+        </div>
+        <div>
+          <h3 class="text-md font-semibold text-gray-600">Due Next Payroll</h3>
+          <p class="text-2xl font-bold text-red-600">
+            <%= number_to_currency(@myaccount_due_next_payroll_total, precision: 2, unit: '₱', delimiter: ',') %>
+          </p>
+          <% if @myaccount_due_next_payroll_date %>
+            <p class="text-sm text-gray-500">
+              Due on: <%= @myaccount_due_next_payroll_date.strftime("%B %d, %Y") %>
+            </p>
+          <% else %>
+            <p class="text-sm text-gray-400 italic">No upcoming dues.</p>
+          <% end %>
+        </div>
+      </div>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-lg font-semibold">Released Requests</h2>
-      <p class="text-2xl font-bold text-green-600"><%= @myaccount_released_cash_advances %></p>
-    </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-lg font-semibold">Total Cash Advance</h2>
-      <p class="text-2xl font-bold text-blue-600">
-        <%= number_to_currency(@myaccount_total_cash_advance, precision: 2, unit: '₱', delimiter: ',') %>
-      </p>
-    </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-    <h2 class="text-lg font-semibold">Due Next Payroll</h2>
-    <p class="text-2xl font-bold text-red-600">
-      <%= number_to_currency(@myaccount_due_next_payroll, precision: 2, unit: '₱', delimiter: ',') %>
-    </p>
-  </div>
-  </div>
-
-  
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
       <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">
-        <thead class="text-xs sm:text-sm md:text-md lg:text-md text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+
+      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
+        <thead class="text-gray-700 bg-gray-200">
           <tr>
             <th class="p-2">Description</th>
             <th class="p-2">Basic</th>
@@ -109,13 +124,13 @@
             <% @payrolls.each do |payroll| %>
               <tr class="odd:bg-gray-50 even:bg-white">
                 <td class="p-2"><%= payroll.description %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2">₱ <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
                 <td class="p-2 font-semibold text-green-600">
-                  PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %>
+                  ₱ <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %>
                 </td>
                 <td class="p-2">
                   <%= button_to preview_payroll_path(payroll, format: :pdf),

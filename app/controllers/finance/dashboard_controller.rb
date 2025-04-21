@@ -27,12 +27,21 @@ class Finance::DashboardController < ApplicationController
 
     @myaccount_released_cash_advances = current_user.cash_adv_requests.released.count
 
-    @myaccount_due_next_payroll = RepaymentSchedule
-        .includes(cash_adv_request: :employee)
-        .where("DAY(due_date) IN (15, 30)")
-        .where("due_date <= ?", Time.current.end_of_month)
-        .where("cash_adv_requests.employee_id = ?", current_user.employee_id)  # Filter by current user
-        .sum(:amount)
+    @myaccount_due_next_payroll_records = RepaymentSchedule
+    .includes(cash_adv_request: :employee)
+    .where("DAY(due_date) IN (15, 30)")
+    .where("due_date <= ?", Time.current.end_of_month)
+    .where("cash_adv_requests.employee_id = ?", current_user.employee_id)
+  
+    @myaccount_due_next_payroll_total = @myaccount_due_next_payroll_records.sum(:amount)
+    @myaccount_due_next_payroll_date = @myaccount_due_next_payroll_records.minimum(:due_date)
+
+    @myaccount_has_ongoing_repayment = RepaymentSchedule
+    .joins(cash_adv_request: :employee)
+    .where(cash_adv_requests: { employee_id: current_user.employee_id })
+    .where("repayment_schedules.due_date >= ?", Time.current)
+    .where.not(status: 'paid') # adjust if you track status differently
+    .exists?
 
     @pagy_due_next_payroll, @due_next_payroll = pagy(RepaymentSchedule
     .includes(cash_adv_request: :employee)
@@ -40,8 +49,8 @@ class Finance::DashboardController < ApplicationController
     .where("due_date <= ?", Time.current.end_of_month)
     .order(:due_date),
     items: 10,
-    page_param: :page_due_next_payroll
-    )
+    page_param: :page_due_next_payroll)
+
     @pagy_payrolls, @payrolls = pagy(current_user.payrolls.order(created_at: :desc),
     items: 10,
     page_param: :page_payrolls

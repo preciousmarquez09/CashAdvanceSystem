@@ -74,15 +74,15 @@ class Admin::CashAdvRequestsController < ApplicationController
     def update
       @cash_adv_request = CashAdvRequest.find(params[:id])
     
-      # Set approver_id before updating
-      #if params.dig(:cash_adv_request, :status) == "approved" || "declined" && @cash_adv_request.approver_id.nil?
-        #@cash_adv_request.approver_id = current_user.employee_id
-      #end
+      #Set approver_id before updating
+      if params.dig(:cash_adv_request, :status) == "approved" || "declined" && @cash_adv_request.approver_id.nil?
+        @cash_adv_request.approver_id = current_user.employee_id
+      end
     
       if @cash_adv_request.update(cash_adv_request_params)
-        if (@cash_adv_request.status == "approved" || @cash_adv_request.status == "declined") && @cash_adv_request.approver_id.nil?
-          @cash_adv_request.update_column(:approver_id, current_user.employee_id)
-        end      
+        # if (@cash_adv_request.status == "approved" || @cash_adv_request.status == "declined") && @cash_adv_request.approver_id.nil?
+        #   @cash_adv_request.update_column(:approver_id, current_user.employee_id)
+        # end      
         GenerateSchedule.new(@cash_adv_request).perform if @cash_adv_request.status == "released"
         
         employee = User.find_by(employee_id: @cash_adv_request.employee_id)

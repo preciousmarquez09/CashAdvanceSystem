@@ -1,0 +1,273 @@
+<div class="p-5">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 gap-4 sm:gap-2">
+        <span class="text-2xl sm:text-3xl font-bold">Cash Advance List</span>
+
+        <% if current_user.has_role?(:finance) %>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:ml-auto">
+                <%= link_to pdf_file_admin_cash_adv_requests_path(q: params[:q]&.permit!.to_h, status: @status), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-red-500 hover:bg-red-600 flex items-center space-x-2 justify-center" do %>
+                    <i class="bi bi-filetype-pdf text-lg sm:text-xl"></i>
+                    <span class="font-semibold">Export to PDF</span>
+                <% end %>
+
+                <%= link_to pdf_file_admin_cash_adv_requests_path(q: params[:q]&.permit!.to_h, status: @status), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-green-500 hover:bg-green-600 flex items-center space-x-2 justify-center" do %>
+                    <i class="bi bi-filetype-xlsx text-lg sm:text-xl"></i>
+                    <span class="font-semibold">Export to EXCEL</span>
+                <% end %>
+            </div>
+        <% end %>
+    </div>
+
+
+
+    <% if @eligible && User.can_request_cashadv(current_user) == true && (current_user.has_role?(:finance) || current_user.has_role?(:employee)) %>
+        <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base px-3 sm:px-4 py-2 mb-5 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" type="button">
+            <i class="bi bi-file-earmark-plus-fill text-xl"></i>
+            <span class="font-semibold">Request Cash Advance</span>
+        </button>
+    <% end %>
+
+    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'all', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'all' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    All
+                <% end %>
+            </li>
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'pending', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'pending' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    Pending 
+                    <% if @pending_count && @pending_count > 0 %>
+                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @pending_count %></span>
+                    <% end %>
+                <% end %>
+            </li>
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'approved', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'approved' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    Approved 
+                    <% if @approved_count && @approved_count > 0 %>
+                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @approved_count %></span>
+                    <% end %>
+                <% end %>
+            </li>
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'released', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'released' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    Released 
+                    <% if @released_count && @released_count > 0 %>
+                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @released_count %></span>
+                    <% end %>
+                <% end %>
+            </li>
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'on-going', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'on-going' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    On-Going 
+                    <% if @ongoing_count && @ongoing_count > 0 %>
+                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @ongoing_count %></span>
+                    <% end %>
+                <% end %>
+            </li>
+            <li class="mr-2">
+                <%= link_to employee_cash_adv_requests_path(status: 'settled', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'settled' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    Settled 
+                <% end %>
+            </li>
+            <li>
+                <%= link_to employee_cash_adv_requests_path(status: 'declined', q: params[:q]&.to_unsafe_h), 
+                    class: "inline-block p-4 #{@status == 'declined' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
+                    Declined 
+                <% end %>
+            </li>
+        </ul>
+    </div>
+
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+        <div class="mb-5 w-full">
+            <%= search_form_for @q, url: employee_cash_adv_requests_path, method: :get, class: "flex items-center gap-2" do |f| %>
+                <%= hidden_field_tag :status, @status %>
+                <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
+                    class: "w-full p-2 border border-gray-300 rounded-lg", 
+                    placeholder: "Search cash advance requests" %>
+                
+                <%= f.submit "Search", class: "w-auto px-10 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold" %>
+          <% end %>
+        </div>
+
+        <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
+            <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-2 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
+                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
+                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th> 
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% if @cash_adv_requests.empty? %>
+                <tr class="cash-advance-row">
+                    <td colspan="7" class="text-center py-3 text-lg">No data available</td>
+                </tr>
+            <% else %>
+                <% @cash_adv_requests.each do |cashadvreq| %>
+                <tr class="cash-advance-row text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-status="<%= cashadvreq.status.downcase %>">
+                    <th class="px-3 py-2 w-24 text-gray-900 dark:text-white hidden md:table-cell">
+                        <%= cashadvreq.employee_id %>
+                    </th>
+                    <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden">
+                        <%= cashadvreq.employee.f_name + " " + cashadvreq.employee.l_name %>
+                    </td>
+                    <td class="px-3 py-2 w-24 capitalize hidden md:table-cell">
+                        <%= number_to_currency(cashadvreq.amount, unit: "₱ ", precision: (cashadvreq.amount % 1 == 0 ? 0 : 2)) %>
+                    </td>
+                    <td class="px-3 py-2 w-24 hidden md:table-cell capitalize">
+                        <%= cashadvreq.cut_off %>
+                    </td>
+                    <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
+                        <%= cashadvreq.repayment_months %>
+                    </td>
+                    <td class="px-3 py-2 w-24 capitalize">
+                        <span class="<%= cashadvreq.status_class %>">
+                            <%= cashadvreq.status.capitalize %>
+                        </span>
+                    </td>
+                    <td class="px-3 py-2 w-24">
+                        <%= link_to employee_cash_adv_request_path(cashadvreq.id), class: "px-2 py-1 text-blue-600" do %>
+                            <i class="bi bi-eye-fill"></i>
+                        <% end %>
+                        <% if current_user.has_role?(:finance) %>
+                            <% if !["declined", "on-going", "settled", "released"].include?(cashadvreq.status) %>
+                                <%= link_to edit_admin_cash_adv_request_path(cashadvreq.id), class: "px-2 py-1 text-orange-600" do %>
+                                    <i class="bi bi-pencil-square"></i>
+                                <% end %>
+                            <% end %>
+
+                            <%= link_to employee_cash_adv_request_path(cashadvreq.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { cashadvreq_id: cashadvreq.id }, onclick: "confirmDelete(event, this); return false;" do %>
+                                <i class="bi bi-trash3-fill"></i>
+                            <% end %>
+                        <% end %>
+                    </td>
+                </tr>
+                <% end %>
+                <% end %>
+            </tbody>
+        </table>
+        
+        <div id="no-data-message" class="hidden text-center py-3 text-lg">
+            No requests found
+        </div>
+        
+        <% if @pagy.pages > 1 %>
+            <%= render "/layouts/pagy/pagination", pagy: @pagy %>
+        <% end %>
+    </div>
+
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
+      <% if @repayment_schedules.present? %>
+        <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
+      <% else %>
+        <p class="text-center text-gray-500">No due dates available</p>
+      <% end %>
+    </div>
+
+    
+</div>
+
+<%= render partial: "modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
+
+<script>
+
+document.addEventListener('turbolinks:load', function() {
+    const tabs = document.querySelectorAll('[data-target]'); // Tab title
+    const rows = document.querySelectorAll('.cash-advance-row'); // Tab body
+    const noDataMessage = document.getElementById('no-data-message'); // message for data not found
+    
+    // Tab selection and row filtering
+    function selectTab(status) {
+        // Update active tab
+        tabs.forEach(tab => {
+            const isActive = tab.getAttribute('data-target') === status;
+            tab.classList.toggle('text-blue-600', isActive);
+            tab.classList.toggle('border-blue-600', isActive);
+            tab.classList.toggle('active', isActive);
+            tab.classList.toggle('dark:text-blue-500', isActive);
+            tab.classList.toggle('dark:border-blue-500', isActive);
+            tab.classList.toggle('border-transparent', !isActive);
+        });
+
+        // Filter rows
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const isVisible = status === 'all' || row.getAttribute('data-status') === status;
+            row.classList.toggle('hidden', !isVisible);
+            if (isVisible) visibleCount++;
+        });
+
+        // Toggle "no data" message
+        noDataMessage.classList.toggle('hidden', visibleCount > 0 || rows.length === 0);
+
+        // Save selected tab in local storage to prevent going to all when searching
+        localStorage.setItem('activeTab', status);
+    }
+
+    // Initialize with default tab to "all"
+    const savedTab = localStorage.getItem('activeTab') || 'all';
+    selectTab(savedTab);
+
+    // Click events to tabs
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            selectTab(tab.getAttribute('data-target'));
+        });
+    });
+
+});
+
+function confirmDelete(event, element) {
+  event.preventDefault();
+  
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "This request will be deleted. This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Create a hidden form to submit a DELETE request
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = element.getAttribute('href');
+      form.style.display = 'none';
+      
+      // Add method-override input to recognize by rails as DELETE
+      const methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'delete';
+      form.appendChild(methodInput);
+      
+      // Add authenticity token using Rails CSRF protection
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const csrfInput = document.createElement('input');
+      csrfInput.name = 'authenticity_token';
+      csrfInput.value = csrfToken;
+      form.appendChild(csrfInput);
+      
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+}
+</script>
+
+

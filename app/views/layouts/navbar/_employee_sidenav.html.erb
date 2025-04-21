@@ -33,6 +33,16 @@
             </li>
          <% end %>
 
+          <% if current_user.has_role?(:employee) %>
+            <li>
+               <% active = request.path.starts_with?("/employee/cash_adv_requests") %>
+               <a href="<%= employee_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+                  <i class="bi bi-cash-stack text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
+                  <span class="hidden sm:inline ms-3">Cash Advance</span>
+               </a>
+            </li>
+         <% end %>
+
          <% if can?(:index, User) %>
             <li>
                <% active = request.path.starts_with?("/finance/users")%>
