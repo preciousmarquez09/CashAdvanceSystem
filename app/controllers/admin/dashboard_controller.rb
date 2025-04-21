@@ -5,10 +5,11 @@ class Admin::DashboardController < ApplicationController
   
   def index
     @pending_requests = CashAdvRequest.where(status: "pending").count
-    @approved_requests = CashAdvRequest.where(status: "approved").count
+    @released_requests = CashAdvRequest.where(status: 'released').count
     @ongoing_cash_advances = CashAdvRequest.where(status: "ongoing").count
-    @total_cash_advances = CashAdvRequest.where("created_at >= ?", Time.current.beginning_of_year).sum(:amount)
-
+    @total_cash_advances = CashAdvRequest
+    .where("created_at >= ? AND status = ?", Time.current.beginning_of_year, "released")
+    .sum(:amount)
    
     @q = AuditLog.ransack(params[:q])
     @pagy_audit_logs, @audit_logs = pagy(@q.result.order(created_at: :desc), items: 10)

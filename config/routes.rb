@@ -35,6 +35,7 @@ end
     get "dashboard", to: "dashboard#index"
     get '/profile', to: 'profile#index', as: 'profile'
      patch '/profile', to: 'profile#update'
+     resources :cash_adv_requests
   end
 
   # Finance

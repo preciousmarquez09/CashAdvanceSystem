@@ -2,17 +2,49 @@
   <div class="mx-auto">
     <h1 class="text-3xl font-bold mb-6">Employee Dashboard</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h2 class="text-lg font-semibold mb-2">Pending Requests</h2>
+        <% if @myaccount_pending_cash_advances.to_i > 0 %>
+          <p class="text-2xl font-bold text-yellow-600">
+            <%= @myaccount_pending_cash_advances %>
+          </p>
+        <% elsif @myaccount_has_ongoing_repayment %>
+          <p class="text-sm text-red-500 italic">
+            You still have an ongoing cash advance.
+          </p>
+        <% else %>
+          <p class="text-sm text-gray-500 italic">
+            No pending request. You can easily request for a cash advance!
+            <%= link_to "Apply now", new_employee_cash_adv_request_path, class: "text-blue-600 hover:underline font-medium" %>.
+          </p>
+        <% end %>
+      </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
-        <h2 class="text-lg font-semibold">Pending Requests</h2>
-        <p class="text-2xl font-bold text-yellow-600">
-          <%= @pending_cash_advances %>
+        <h2 class="text-lg font-semibold">Released Requests</h2>
+        <p class="text-2xl font-bold text-green-600">
+          <%= @released_cash_advances %>
         </p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Cash Advance</h2>
         <p class="text-2xl font-bold text-blue-600">
-          <%= @total_cash_advance %>
+          <%= number_to_currency(@total_cash_advance, unit: '₱', precision: 2, delimiter: ',') %>
         </p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold">Due Next Payroll</h2>
+        <p class="text-2xl font-bold text-red-600">
+          <%= number_to_currency(@due_next_payroll_total, precision: 2, unit: '₱', delimiter: ',') %>
+        </p>
+        <% if @due_next_payroll_date %>
+          <p class="text-sm text-gray-500">
+            Due on: <%= @due_next_payroll_date.strftime("%B %d, %Y") %>
+          </p>
+        <% else %>
+          <p class="text-sm text-gray-400 italic">
+            No upcoming dues.
+          </p>
+        <% end %>
       </div>
     </div>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-6">
@@ -20,22 +52,16 @@
       <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400">
         <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th class="p-2">
-              <%= sort_link(@q, :created_at, "Date") %> 
-            </th>
-            <th class="p-2">
-              <%= sort_link(@q, :amount, "Amount") %> 
-            </th>
-            <th class="p-2">
-              <%= sort_link(@q, :status, "Status") %>
-            </th>
+            <th class="p-2"><%= sort_link(@q, :created_at, "Date") %></th>
+            <th class="p-2"><%= sort_link(@q, :amount, "Amount") %></th>
+            <th class="p-2"><%= sort_link(@q, :status, "Status") %></th>
           </tr>
         </thead>
         <tbody>
           <% @cash_advance_history.each do |request| %>
             <tr class="odd:bg-gray-50 even:bg-white">
               <td class="p-2"><%= request.created_at.strftime("%Y-%m-%d") %></td>
-              <td class="p-2">PHP <%= number_with_precision(request.amount, precision: 2, delimiter: ",") %></td>
+              <td class="p-2"><%= number_to_currency(request.amount, precision: 2, unit: '₱', delimiter: ",") %></td>
               <td class="p-2">
                 <span class="<%= request.status_class %>">
                   <%= request.status.titleize %>
@@ -71,19 +97,19 @@
             <% @employee_payrolls.each do |payroll| %>
               <tr class="odd:bg-gray-50 even:bg-white">
                 <td class="p-2"><%= payroll.description %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.basic, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.sss, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.philhealth, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.pagibig, unit: '', precision: 2, delimiter: ',') %></td>
-                <td class="p-2">PHP <%= number_to_currency(payroll.cashadv, unit: '', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"><%= number_to_currency(payroll.basic, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"><%= number_to_currency(payroll.sss, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"><%= number_to_currency(payroll.philhealth, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"><%= number_to_currency(payroll.pagibig, unit: '₱', precision: 2, delimiter: ',') %></td>
+                <td class="p-2"><%= number_to_currency(payroll.cashadv, unit: '₱', precision: 2, delimiter: ',') %></td>
                 <td class="p-2 font-semibold text-green-600">
-                  PHP <%= number_to_currency(payroll.net_amount, unit: '', precision: 2, delimiter: ',') %>
+                  <%= number_to_currency(payroll.net_amount, unit: '₱', precision: 2, delimiter: ',') %>
                 </td>
                 <td class="p-2">
                   <%= button_to preview_payroll_path(payroll, format: :pdf),
-                    method: :get,
-                    form: { target: "_blank" },
-                    class: "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs" do %>
+                      method: :get,
+                      form: { target: "_blank" },
+                      class: "bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs" do %>
                     View
                   <% end %>
                 </td>
@@ -91,7 +117,9 @@
             <% end %>
           <% else %>
             <tr>
-              <td colspan="8" class="p-2 text-center text-gray-500">No payroll records available.</td>
+              <td colspan="8" class="p-2 text-center text-gray-500">
+                No payroll records available.
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -100,13 +128,6 @@
         <div class="mt-4">
           <%= render "/layouts/pagy/pagination1", pagy: @pagy_employee_payrolls, page_param: "page_employee_payrolls" %>
         </div>
-      <% end %>
-    </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-      <% if @repayment_schedules.present? %>
-        <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
-      <% else %>
-        <p class="text-center text-gray-500">No due dates available</p>
       <% end %>
     </div>
   </div>
