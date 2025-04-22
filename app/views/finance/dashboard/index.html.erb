@@ -1,112 +1,146 @@
 <div class="p-6">
   <div class="mx-auto">
     <h1 class="text-3xl font-bold mb-6">Finance Dashboard</h1>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Pending Requests</h2>
         <p class="text-2xl font-bold text-yellow-600"><%= @total_pending_requests %></p>
       </div>
+
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Released Requests</h2>
         <p class="text-2xl font-bold text-green-600"><%= @total_released_requests %></p>
       </div>
+
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Ongoing Cash Advances</h2>
-        <p class="text-2xl font-bold text-gray-600"><%= @total_ongoing_users %></p>
+        <p class="text-2xl font-bold text-gray-600"><%= @total_ongoing_cash_advances %></p>
       </div>
+    </div>
+
+    <!-- Cash Advances Details -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold">Total Cash Advances for the Year</h2>
         <p class="text-2xl font-bold text-blue-800">
           <%= number_to_currency(@total_cash_advances_year, unit: '₱', precision: 2, delimiter: ',') %>
         </p>
       </div>
-    </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
-      <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
-        <thead class="text-gray-700 bg-gray-200">
-          <tr>
-            <th class="p-2">Employee Name</th>
-            <th class="p-2">Due Date</th>
-            <th class="p-2">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if @due_next_payroll.any? %>
-            <% @due_next_payroll.each do |repayment| %>
-              <% employee = repayment.cash_adv_request.employee %>
-              <tr class="odd:bg-gray-50 even:bg-white">
-                <td class="p-2"><%= "#{employee.f_name} #{employee.l_name}" %></td>
-                <td class="p-2"><%= repayment.due_date.strftime("%Y-%m-%d") %></td>
-                <td class="p-2">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
-              </tr>
-            <% end %>
-          <% else %>
-            <tr>
-              <td colspan="3" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <% if @pagy_due_next_payroll&.pages.to_i > 1 %>
-        <div class="mt-4">
-          <%= render "/layouts/pagy/pagination1", pagy: @pagy_due_next_payroll, page_param: "page_due_next_payroll" %>
-        </div>
-      <% end %>
-    </div>
-    <hr class="mt-10">
-    <!-- My Account Summary -->
-    <h1 class="text-xl font-semibold mb-4">My Account</h1>
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div>
-          <h3 class="text-md font-semibold text-gray-600">Pending Requests</h3>
-          <% if @myaccount_pending_cash_advances.to_i > 0 %>
-            <p class="text-2xl font-bold text-yellow-600">
-              <%= @myaccount_pending_cash_advances %>
-            </p>
-          <% elsif @myaccount_has_ongoing_repayment %>
-            <p class="text-sm text-red-500 italic">
-              You still have an ongoing cash advance.
-            </p>
-          <% else %>
-            <p class="text-sm text-gray-500 italic">
-              <span class="text-gray-600">No pending request. You can easily request for a cash advance!</span><br>
-              <%= link_to "Request now", new_admin_cash_adv_request_path, class: "text-blue-600 hover:underline font-medium" %>
-            </p>
-          <% end %>
-        </div>
-        <div>
-          <h3 class="text-md font-semibold text-gray-600">Released Requests</h3>
-          <p class="text-2xl font-bold text-green-600">
-            <%= @myaccount_released_cash_advances %>
-          </p>
-        </div>
-        <div>
-          <h3 class="text-md font-semibold text-gray-600">Total Cash Advance</h3>
-          <p class="text-2xl font-bold text-blue-600">
-            <%= number_to_currency(@myaccount_total_cash_advance, precision: 2, unit: '₱', delimiter: ',') %>
-          </p>
-        </div>
-        <div>
-          <h3 class="text-md font-semibold text-gray-600">Due Next Payroll</h3>
-          <p class="text-2xl font-bold text-red-600">
-            <%= number_to_currency(@myaccount_due_next_payroll_total, precision: 2, unit: '₱', delimiter: ',') %>
-          </p>
-          <% if @myaccount_due_next_payroll_date %>
-            <p class="text-sm text-gray-500">
-              Due on: <%= @myaccount_due_next_payroll_date.strftime("%B %d, %Y") %>
-            </p>
-          <% else %>
-            <p class="text-sm text-gray-400 italic">No upcoming dues.</p>
-          <% end %>
-        </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold">Total Interest Earned for the Year</h2>
+        <p class="text-2xl font-bold text-green-700">
+          <%= number_to_currency(@total_interest_earned_year, unit: '₱', precision: 2, delimiter: ',') %>
+        </p>
       </div>
     </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-      <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
+  </div>
 
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
+  <!-- Cash Advances Due in Next Payroll -->
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
+    <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll</h2>
+    <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
+      <thead class="text-gray-700 bg-gray-200">
+        <tr>
+          <th class="p-2">Employee Name</th>
+          <th class="p-2">Due Date</th>
+          <th class="p-2">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @due_next_payroll.any? %>
+          <% @due_next_payroll.each do |repayment| %>
+            <% employee = repayment.cash_adv_request.employee %>
+            <tr class="odd:bg-gray-50 even:bg-white">
+              <td class="p-2"><%= "#{employee.f_name} #{employee.l_name}" %></td>
+              <td class="p-2"><%= repayment.due_date.strftime("%Y-%m-%d") %></td>
+              <td class="p-2">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="3" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <% if @pagy_due_next_payroll&.pages.to_i > 1 %>
+      <div class="mt-4">
+        <%= render "/layouts/pagy/pagination1", pagy: @pagy_due_next_payroll, page_param: "page_due_next_payroll" %>
+      </div>
+    <% end %>
+  </div>
+
+  <hr class="mt-10">
+
+<h1 class="text-xl font-semibold mb-4">My Account</h1>
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+        <h3 class="text-md font-semibold text-gray-600">Requests</h3>
+        <% eligibility = Eligibility.first %>
+        <% if current_user.net_salary.to_f < eligibility.min_net_salary.to_f %>
+          <p class="text-sm text-red-500 italic">
+            Your net salary is too low to be eligible for a cash advance.
+          </p>
+        <% elsif User.in_cooldown_period?(current_user) %> 
+          <% cooldown_days_left = User.in_cooldown_period?(current_user) %>
+          <p class="text-sm text-red-500 italic">
+            You recently settled your cash advance. Please wait <%= pluralize(cooldown_days_left, "more day") %> before applying again.
+          </p>
+        <% elsif @myaccount_pending_cash_advances.to_i > 0 %>
+          <p class="text-sm text-red-500 italic">
+            You have a pending request waiting for approval.
+          </p>
+        <% elsif @myaccount_approved_cash_advances.to_i > 0 %> 
+          <p class="text-sm text-blue-500 italic">
+            Your request is approved and waiting to be released.
+          </p>
+        <% elsif @myaccount_has_ongoing_repayment %>
+          <p class="text-sm text-yellow-500 italic">
+            You still have an ongoing cash advance.
+          </p>
+        <% else %>
+          <p class="text-sm text-gray-500 italic">
+            No pending request. You can easily request a cash advance!
+            <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base" type="button">
+              <span class="font-semibold">Apply Now</span>
+            </button>
+          </p>
+        <% end %>
+      </div>
+      <div>
+        <h3 class="text-md font-semibold text-gray-600">Released Requests</h3>
+        <p class="text-2xl font-bold text-green-600">
+          <%= @myaccount_released_cash_advances %>
+        </p>
+      </div>
+      <div>
+        <h3 class="text-md font-semibold text-gray-600">Total Cash Advance</h3>
+        <p class="text-2xl font-bold text-blue-600">
+          <%= number_to_currency(@myaccount_total_cash_advance, precision: 2, unit: '₱', delimiter: ',') %>
+        </p>
+      </div>
+      <div>
+        <h3 class="text-md font-semibold text-gray-600">Due Next Payroll</h3>
+        <p class="text-2xl font-bold text-red-600">
+          <%= number_to_currency(@myaccount_due_next_payroll_total, precision: 2, unit: '₱', delimiter: ',') %>
+        </p>
+        <% if @myaccount_due_next_payroll_date %>
+          <p class="text-sm text-gray-500">
+            Due on: <%= @myaccount_due_next_payroll_date.strftime("%B %d, %Y") %>
+          </p>
+        <% else %>
+          <p class="text-sm text-gray-400 italic">No upcoming dues.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
+    <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
+    <div class="overflow-x-auto w-full mb-7">
+      <table class="min-w-full table-auto text-xs sm:text-md text-center text-gray-500">
         <thead class="text-gray-700 bg-gray-200">
           <tr>
             <th class="p-2">Description</th>
@@ -149,18 +183,19 @@
           <% end %>
         </tbody>
       </table>
-      <% if @pagy_payrolls&.pages.to_i > 1 %>
-        <div class="mt-4">
-          <%= render "/layouts/pagy/pagination1", pagy: @pagy_payrolls, page_param: "page_payrolls" %>
-        </div>
-      <% end %>
     </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-      <% if @repayment_schedules.present? %>
-        <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
-      <% else %>
-        <p class="text-center text-gray-500">No due dates available</p>
-      <% end %>
-    </div>
+    <% if @pagy_payrolls&.pages.to_i > 1 %>
+      <div class="mt-4">
+        <%= render "/layouts/pagy/pagination1", pagy: @pagy_payrolls, page_param: "page_payrolls" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
+    <% if @repayment_schedules.present? %>
+      <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
+    <% else %>
+      <p class="text-center text-gray-500">No due dates available</p>
+    <% end %>
   </div>
 </div>
+<%= render partial: "admin/cash_adv_requests/modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
