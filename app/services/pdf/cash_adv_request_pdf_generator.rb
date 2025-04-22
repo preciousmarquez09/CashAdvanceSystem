@@ -102,10 +102,9 @@ module Pdf
               approver_status = ['approved', 'declined', 'released', 'on-going', 'settled']
     
               if approver_status.include?(cashadv.status)
-                dataApprover = [
-                  ["Approver:", (cashadv.approver&.f_name.to_s + " " + cashadv.approver&.l_name.to_s).presence || "N/A", "Updated At:", cashadv.updated_at.strftime('%B %-d, %Y') || "N/A"]
-                ]
-                pdf.table(dataApprover, width: pdf.bounds.width, column_widths: column_widths, cell_style: { borders: [], padding: [2, 2], size: 10, overflow: :shrink_to_fit })
+                approver_name = [cashadv.approver&.f_name, cashadv.approver&.l_name].compact.join(' ').presence || "N/A"
+
+                pdf.table([["Approver:", { content: approver_name, colspan: 3 }]], width: pdf.bounds.width, column_widths: column_widths, cell_style: { borders: [], size: 10, padding: [2, 2], overflow: :shrink_to_fit })
     
                 if cashadv.status == 'declined'
                   approver_reason_text = cashadv.approver_reason.presence || "N/A"

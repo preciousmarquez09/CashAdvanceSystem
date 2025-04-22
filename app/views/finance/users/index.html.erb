@@ -36,7 +36,7 @@
                         <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= number_to_currency(user.salary, unit: "₱ ", precision: (user.salary % 1 == 0 ? 0 : 2))%> </td>
                         <td class="px-3 py-2 w-24 hidden md:table-cell"> 
                             <% value = @users_with_cash_adv.include?(user) ? "No" : (user.net_salary >= @eligibility.min_net_salary && user.employment_status == "regular" ? "Yes" : "No") %> 
-                            <span class="<%= value == 'No' ? 'text-red-500' : 'text-green-500' %>"><%= value %></span>
+                            <span class="font-bold px-3 py-1 rounded  text-white <%= value == 'No' ? 'bg-red-400' : 'bg-green-400' %>"><%= value %></span>
                         </td>
 
                         <td class="px-3 py-2 w-24"> 

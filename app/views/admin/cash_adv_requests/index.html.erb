@@ -9,7 +9,7 @@
                     <span class="font-semibold">Export to PDF</span>
                 <% end %>
 
-                <%= link_to pdf_file_admin_cash_adv_requests_path(q: params[:q]&.permit!.to_h, status: @status), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-green-500 hover:bg-green-600 flex items-center space-x-2 justify-center" do %>
+                <%= link_to excel_file_admin_cash_adv_requests_path(q: params[:q]&.permit!.to_h, status: @status), target: "_blank", class: "text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md bg-green-500 hover:bg-green-600 flex items-center space-x-2 justify-center" do %>
                     <i class="bi bi-filetype-xlsx text-lg sm:text-xl"></i>
                     <span class="font-semibold">Export to EXCEL</span>
                 <% end %>

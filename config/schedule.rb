@@ -49,12 +49,4 @@ every 1.minute do
   CMD
 end
   
- 
-
-
-  
-# every 1.minutes do #change to 1 min to test
-#     command ""
-# end
-  
   
