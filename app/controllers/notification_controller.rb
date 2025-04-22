@@ -14,6 +14,7 @@ class NotificationController < ApplicationController
         # Paginate and group other notifications
         @pagy_other, @other_notifications = pagy(user.notifications.where(action: ['pending', 'settled'])
                                               .where("employee_id = ? OR employee_id != ?", user.employee_id, user.employee_id)
+                                              .where.not(message: nil)
                                               .order(created_at: :desc), items: 5, page_param: :page_other)
         @grouped_other_notifications = @other_notifications.group_by { |notification| notification.created_at.to_date }
       else 

@@ -29,13 +29,12 @@ module Pdf
       
         @audit_logs1.each do |log|
           table_data << [
-            log.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            log.created_at.strftime("%Y-%m-%d %I:%M %p"),
             "#{log.user.f_name} #{log.user.l_name}",
             log.action
           ]
         end
       
-        
         Rails.logger.debug "Table Data: #{table_data.inspect}"
       
         table_width = pdf.bounds.width
@@ -50,8 +49,6 @@ module Pdf
           row(0).font_style = :bold          
         end
         
-      
-      
         pdf.render
       end
   end

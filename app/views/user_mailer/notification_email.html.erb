@@ -31,7 +31,7 @@
       <b><%= @cash_advance_request.status %></b>.
     </p>
     <p> 
-      The total amount of your cash advance, including the principal and interest, is <b><%= @cash_advance_request.amount + @cash_advance_request.interest_amount %></b> 
+      The total amount of your cash advance, including the principal and interest is <b><%= @cash_advance_request.amount + @cash_advance_request.interest_amount %></b> 
     </p>
 
     <% if @cash_advance_request.status == "released" %>

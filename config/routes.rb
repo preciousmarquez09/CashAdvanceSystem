@@ -11,16 +11,19 @@ Rails.application.routes.draw do
       post :reset_password, on: :member
       collection do
         get :pdf_file
+        get :excel_file
       end
     end
     resources :cash_adv_requests do
       collection do
         get :pdf_file
+        get :excel_file
       end
     end
     resources :auditlogs, only: [:index] do
       collection do
-        get :pdf_file  # Add this for the export_pdf action
+        get :pdf_file 
+        get :excel_file
       end
     end
     

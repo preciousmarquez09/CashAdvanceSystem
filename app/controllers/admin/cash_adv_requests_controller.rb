@@ -21,7 +21,7 @@ class Admin::CashAdvRequestsController < ApplicationController
       # Apply status filter only if not all
       @filtered_results = @filtered_results.where(status: @status) unless @status == 'all'
     
-      @pagy, @cash_adv_requests = pagy(@filtered_results.order(created_at: :desc), items: 10)
+      @pagy, @cash_adv_requests = pagy(@filtered_results.order(updated_at: :desc), items: 10)
       @status = params[:status]&.downcase&.tr('_', '-')
       # Status counts based on search
       @pending_count = @q.result.where(status: 'pending').count
@@ -145,8 +145,19 @@ class Admin::CashAdvRequestsController < ApplicationController
     
       send_data pdfgenerator.generate, filename: "Cash Advance List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf", type: 'application/pdf',disposition: 'attachment'
     end
-    
   
+    def excel_file
+      excel_generator = Excel::CashAdvRequestExcelGenerator.new(params)
+    
+      if excel_generator.empty?
+        flash[:alert] = "No cash advance found"
+        redirect_to admin_cash_adv_requests_path
+        return
+      end
+      
+      send_data excel_generator.generate, filename: "Cash Advance List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).xlsx", type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    end
+
     private
 
     def cash_adv_request_params
