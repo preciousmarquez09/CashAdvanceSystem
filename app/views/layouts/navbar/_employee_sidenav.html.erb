@@ -23,7 +23,7 @@
                <span class="hidden sm:inline ms-3">Dashboard</span>
             </a>
          </li>
-         <% if current_user.has_role?(:finance) %>
+         <% if current_user.has_role?(:finance) || current_user.has_role?(:employee)%>
             <li>
                <% active = request.path.starts_with?("/admin/cash_adv_requests") || request.path.starts_with?("/cash_adv_requests") %>
                <a href="<%= admin_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">

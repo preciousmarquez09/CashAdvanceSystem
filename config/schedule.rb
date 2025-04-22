@@ -46,12 +46,9 @@ every 1.minute do
             cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_settled' >> /home/precious/code/cash_advance/log/cron.log 2>&1"
   end
   
- 
 
-
-  
-every 5.minutes do #change to 1 min to test
-    command "cd /home/john/code/cash && RAILS_ENV=development bundle exec rails runner 'GeneratePayroll.perform' >> /home/john/code/cash/log/cron.log 2>&1"
+every 1.minute do #change to 1 min to test
+    command "cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'GeneratePayroll.perform' >>  /home/precious/code/cash_advance/log/cron.log 2>&1"
 end
   
   

@@ -97,6 +97,17 @@ class Admin::UsersController < ApplicationController
       send_data pdfgenerator.generate, filename: "Users List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).pdf" , type: 'application/pdf',disposition: 'attachment'
     end
 
+    def excel_file
+      excel_generator = Excel::UserExcelGenerator.new(params)
+    
+      if excel_generator.empty?
+        flash[:alert] = "No users found"
+        redirect_to admin_users_path
+        return
+      end
+      
+      send_data excel_generator.generate, filename: "Users List (#{Time.current.strftime('%B %-d, %Y - %I:%M %p')}).xlsx", type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    end
       
     private
     def user_params

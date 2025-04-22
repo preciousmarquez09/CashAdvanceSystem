@@ -1,7 +1,7 @@
 class GeneratePayroll
     def self.perform
       today = Date.today
-      return unless [15, 30].include?(today.day) #change return to day today to test
+      return unless today.day == 16 #[15, 30].include?(today.day) #change return to day today to test
   
       is_first_cutoff = today.day == 15
       description_date = today.strftime('%B %d, %Y')
