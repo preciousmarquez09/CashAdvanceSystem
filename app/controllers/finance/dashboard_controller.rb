@@ -58,6 +58,7 @@ class Finance::DashboardController < ApplicationController
     .where(cash_adv_requests: { employee_id: current_user.employee_id })
     .where("DATE(repayment_schedules.due_date) >= ?", Date.current)
     .where(status: 'pending')
+    .exists?
   
  
 
