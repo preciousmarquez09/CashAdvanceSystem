@@ -2,20 +2,41 @@
   <div class="mx-auto">
     <h1 class="text-3xl font-bold mb-6">Employee Dashboard</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+      <!-- Request Status Card -->
       <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h2 class="text-lg font-semibold mb-2">Pending Requests</h2>
-        <% if @myaccount_pending_cash_advances.to_i > 0 %>
-          <p class="text-2xl font-bold text-yellow-600">
-            <%= @myaccount_pending_cash_advances %>
-          </p>
-        <% elsif @myaccount_has_ongoing_repayment %>
+        <h3 class="text-md font-semibold text-gray-600">Requests</h3>
+        <% eligibility = Eligibility.first %>
+        <% cooldown_info = User.in_cooldown_period?(current_user) %>
+        <% if current_user.net_salary.to_f < eligibility.min_net_salary.to_f %>
           <p class="text-sm text-red-500 italic">
+            Your net salary is too low to be eligible for a cash advance.
+          </p>
+        <% elsif cooldown_info[:active] && cooldown_info[:type] == 'settled' %>
+          <p class="text-sm text-red-500 italic">
+            You recently settled your cash advance. Please wait <%= pluralize(cooldown_info[:days_left], "more day") %> before applying again.
+          </p>
+        <% elsif cooldown_info[:active] && cooldown_info[:type] == 'declined' %>
+          <p class="text-sm text-orange-500 italic">
+            Your previous request was declined. Please wait <%= pluralize(cooldown_info[:days_left], "more day") %> before applying again.
+          </p>
+        <% elsif @current_user_pending_cash_advances.to_i > 0 %>
+          <p class="text-sm text-red-500 italic">
+            You have a pending request waiting for approval.
+          </p>
+        <% elsif @current_user_approved_cash_advances.to_i > 0 %>
+          <p class="text-sm text-blue-500 italic">
+            Your request is approved and waiting to be released.
+          </p>
+        <% elsif @current_user_has_ongoing_repayment %>
+          <p class="text-sm text-yellow-500 italic">
             You still have an ongoing cash advance.
           </p>
         <% else %>
           <p class="text-sm text-gray-500 italic">
-            No pending request. You can easily request for a cash advance!
-            <%= link_to "Apply now", new_employee_cash_adv_request_path, class: "text-blue-600 hover:underline font-medium" %>.
+            No pending request. You can easily request a cash advance!
+            <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base" type="button">
+              <span class="font-semibold">Apply Now</span>
+            </button>
           </p>
         <% end %>
       </div>
@@ -46,36 +67,6 @@
           </p>
         <% end %>
       </div>
-    </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-6">
-      <h2 class="text-xl font-semibold mb-4">History of Cash Advances</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400">
-        <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th class="p-2"><%= sort_link(@q, :created_at, "Date") %></th>
-            <th class="p-2"><%= sort_link(@q, :amount, "Amount") %></th>
-            <th class="p-2"><%= sort_link(@q, :status, "Status") %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @cash_advance_history.each do |request| %>
-            <tr class="odd:bg-gray-50 even:bg-white">
-              <td class="p-2"><%= request.created_at.strftime("%Y-%m-%d") %></td>
-              <td class="p-2"><%= number_to_currency(request.amount, precision: 2, unit: '₱', delimiter: ",") %></td>
-              <td class="p-2">
-                <span class="<%= request.status_class %>">
-                  <%= request.status.titleize %>
-                </span>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <% if @pagy_cash_advance_history&.pages.to_i > 1 %>
-        <div class="mt-4">
-          <%= render "/layouts/pagy/pagination1", pagy: @pagy_cash_advance_history, page_param: ":page_cash_adv_history" %>
-        </div>
-      <% end %>
     </div>
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
       <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
@@ -132,3 +123,4 @@
     </div>
   </div>
 </div>
+<%= render partial: "admin/cash_adv_requests/modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
