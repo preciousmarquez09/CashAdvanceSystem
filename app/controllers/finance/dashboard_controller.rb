@@ -41,16 +41,34 @@ class Finance::DashboardController < ApplicationController
 
     @myaccount_approved_cash_advances = current_user.cash_adv_requests.where(status: 'approved').count
 
-    day_cutoff = Date.today.day <= 15 ? 15 : 30
-
-    day_cutoff = Date.today.day <= 15 ? 15 : 30
-
+    if Date.today.day <= 15
+      start_date = Date.today.beginning_of_month
+      end_date = Date.today.change(day: 15)
+    else
+      start_date = Date.today.change(day: 16)
+      end_date = Date.today.end_of_month
+    end
+    
     @myaccount_due_next_payroll_records = RepaymentSchedule
-    .includes(cash_adv_request: :employee)
-    .where("DAY(due_date) = ?", day_cutoff)
-    .where("due_date <= ?", Time.current.end_of_month)
-    .where(status: "pending")
-    .where("cash_adv_requests.employee_id = ?", current_user.employee_id)
+      .joins(cash_adv_request: :employee)
+      .includes(cash_adv_request: :employee)
+      .where(due_date: start_date..end_date)
+      .where(status: "pending")
+      .where(cash_adv_requests: { employee_id: current_user.employee_id })
+    
+    @pagy_due_next_payroll, @due_next_payroll = pagy(
+      RepaymentSchedule
+        .joins(cash_adv_request: :employee)
+        .includes(cash_adv_request: :employee)
+        .where(due_date: start_date..end_date)
+        .where(status: "pending")
+        .where(cash_adv_requests: { employee_id: current_user.employee_id })
+        .order(:due_date),
+      items: 10,
+      page_param: :page_due_next_payroll
+    )
+    
+    
   
     @myaccount_due_next_payroll_total = @myaccount_due_next_payroll_records.sum(:amount)
     @myaccount_due_next_payroll_date = @myaccount_due_next_payroll_records.minimum(:due_date)
@@ -65,16 +83,7 @@ class Finance::DashboardController < ApplicationController
  
 
 
-    @pagy_due_next_payroll, @due_next_payroll = pagy(
-      RepaymentSchedule
-        .includes(cash_adv_request: :employee)
-        .where("DAY(due_date) = ?", day_cutoff)
-        .where("due_date <= ?", Time.current.end_of_month)
-        .where(status: "pending")
-        .order(:due_date),
-        items: 10,
-        page_param: :page_due_next_payroll
-    )
+   
     
 
     @pagy_payrolls, @payrolls = pagy(current_user.payrolls.order(created_at: :desc),
