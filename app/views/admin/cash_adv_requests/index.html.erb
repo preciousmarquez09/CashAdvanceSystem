@@ -17,8 +17,6 @@
         <% end %>
     </div>
 
-
-
     <% if @eligible && User.can_request_cashadv(current_user) == true && (current_user.has_role?(:finance) || current_user.has_role?(:employee)) %>
         <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base px-3 sm:px-4 py-2 mb-5 text-white shadow-md rounded-md bg-blue-500 hover:bg-blue-600 flex items-center space-x-2" type="button">
             <i class="bi bi-file-earmark-plus-fill text-xl"></i>
@@ -105,6 +103,8 @@
                     <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
                     <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th> 
+                    
+                    <th scope="col" class="px-3 py-2 w-20 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/ Interest") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
@@ -131,6 +131,10 @@
                     </td>
                     <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
                         <%= cashadvreq.repayment_months %>
+                    </td>
+                    <td class="px-3 py-2 w-20 capitalize hidden md:table-cell">
+                        <% total_amount = cashadvreq.amount + cashadvreq.interest_amount %>
+                        <%= number_to_currency(total_amount, unit: "₱ ", precision: (total_amount % 1 == 0 ? 0 : 2)) %>
                     </td>
                     <td class="px-3 py-2 w-24 capitalize">
                         <span class="<%= cashadvreq.status_class %>">

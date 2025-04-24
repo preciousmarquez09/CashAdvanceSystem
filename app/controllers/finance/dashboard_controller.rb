@@ -14,8 +14,11 @@ class Finance::DashboardController < ApplicationController
     @total_released_requests = CashAdvRequest.where(status: 'released').count
     @total_ongoing_cash_advances = CashAdvRequest.where(status: 'ongoing').count
     @total_cash_advances_year = CashAdvRequest
-    .where("created_at >= ? AND status = ?", Time.current.beginning_of_year, "released")
-    .sum(:amount)
+    .where("created_at >= ?", Time.current.beginning_of_year)
+    .where(status: ['released', 'on-going', 'settled'])
+    .sum("amount + interest_amount")
+  
+
     
     @total_ongoing_users = RepaymentSchedule.where(status: 'pending')
     .distinct
@@ -27,9 +30,11 @@ class Finance::DashboardController < ApplicationController
 
     @myaccount_released_cash_advances = current_user.cash_adv_requests.released.count
 
+    day_cutoff = Date.today.day <= 15 ? 15 : 30
+
     @myaccount_due_next_payroll_records = RepaymentSchedule
     .includes(cash_adv_request: :employee)
-    .where("DAY(due_date) IN (15, 30)")
+    .where("DAY(due_date) = ?", day_cutoff)
     .where("due_date <= ?", Time.current.end_of_month)
     .where("cash_adv_requests.employee_id = ?", current_user.employee_id)
   
@@ -43,13 +48,17 @@ class Finance::DashboardController < ApplicationController
     .where.not(status: 'paid') # adjust if you track status differently
     .exists?
 
-    @pagy_due_next_payroll, @due_next_payroll = pagy(RepaymentSchedule
-    .includes(cash_adv_request: :employee)
-    .where("DAY(due_date) IN (15, 30)")
-    .where("due_date <= ?", Time.current.end_of_month)
-    .order(:due_date),
-    items: 10,
-    page_param: :page_due_next_payroll)
+
+    @pagy_due_next_payroll, @due_next_payroll = pagy(
+      RepaymentSchedule
+        .includes(cash_adv_request: :employee)
+        .where("DAY(due_date) = ?", day_cutoff)
+        .where("due_date <= ?", Time.current.end_of_month)
+        .order(:due_date),
+      items: 10,
+      page_param: :page_due_next_payroll
+    )
+    
 
     @pagy_payrolls, @payrolls = pagy(current_user.payrolls.order(created_at: :desc),
     items: 10,

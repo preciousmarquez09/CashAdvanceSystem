@@ -16,7 +16,9 @@
         <% else %>
           <p class="text-sm text-gray-500 italic">
             No pending request. You can easily request for a cash advance!
-            <%= link_to "Apply now", new_employee_cash_adv_request_path, class: "text-blue-600 hover:underline font-medium" %>.
+            <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="text-sm sm:text-base " type="button">
+                <span class="font-semibold">Apply Now</span>
+            </button>
           </p>
         <% end %>
       </div>
@@ -133,3 +135,4 @@
     </div>
   </div>
 </div>
+<%= render partial: "admin/cash_adv_requests/modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>

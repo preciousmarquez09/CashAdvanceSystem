@@ -20,9 +20,10 @@ module Employee
 
         @released_cash_advances = current_user.cash_adv_requests.released.count
 
+        day_cutoff = Date.today.day <= 15 ? 15 : 30
         @due_next_payroll_records = RepaymentSchedule
         .includes(cash_adv_request: :employee)
-        .where("DAY(due_date) IN (15, 30)")
+        .where("DAY(due_date) = ?", day_cutoff)
         .where("due_date <= ?", Time.current.end_of_month)
         .where("cash_adv_requests.employee_id = ?", current_user.employee_id)
       

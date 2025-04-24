@@ -44,6 +44,7 @@
                 <hr class="px-2"></hr>
 
                 <p class="font-semibold text-md "> Payroll for <%= @next_payroll.strftime("%B %d, %Y") %></p>
+                <label class="block text-sm font-bold text-gray-600 dark:text-white"> Basic Salary: <span class="text-black font-medium ml-2"><%= number_to_currency(user.salary / 2, unit: "₱ ", precision: (user.salary / 2 % 1 == 0 ? 0 : 2)) %> </span> </label>
                 <label class="block text-sm font-bold text-gray-600 dark:text-white"> Deductions </label>
                 <% salary = user.salary.to_f %>
                 <% contributions = User.gov_contribution(salary) %> 
@@ -78,7 +79,7 @@
                 </div>
                 <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
                     <div class="w-full md:w-1/2">
-                        <label class="block text-sm text-gray-600 dark:text-white"> Total Deduction: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(total_contributions, unit: "₱ ", precision: (total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>   
+                        <label class="block text-sm text-gray-600 dark:text-white"> Total Deduction: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(total_contributions, unit: "₱ ", precision: (total_contributions % 1 == 0 ? 0 : 2)) %> </span> </label>   
                     </div>
                     <div class="w-full md:w-1/2">
                         <label class="block mb-2 text-sm dark:text-white"> <span class="p-1 text-center font-medium text-md text-white bg-green-500 rounded">  Net Pay: <%= number_to_currency((user.salary / 2 )- total_contributions, unit: "₱ ", precision: ((user.salary / 2 ) - total_contributions % 1 == 0 ? 0 : 2))%> </span> </label>

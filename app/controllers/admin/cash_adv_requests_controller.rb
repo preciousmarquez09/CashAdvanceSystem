@@ -58,7 +58,11 @@ class Admin::CashAdvRequestsController < ApplicationController
             )
             notification.deliver(user)
           end
-          redirect_to admin_cash_adv_requests_path, notice: "Cash advance request submitted. Please wait for finance approval."
+          if current_user.has_role?(:finance)
+            redirect_to admin_cash_adv_requests_path, notice: "Cash advance request submitted. Please wait for finance approval."
+          else
+            redirect_to employee_cash_adv_requests_path, notice: "Cash advance request submitted. Please wait for finance approval."
+          end
         else
           @user = current_user
           @eligibility = Eligibility.first
