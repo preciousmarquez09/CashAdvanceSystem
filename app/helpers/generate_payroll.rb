@@ -1,7 +1,7 @@
 class GeneratePayroll
     def self.perform
       today = Date.today
-      return unless today.day == 16 #[15, 30].include?(today.day) #change return to day today to test
+      return unless today.day == 24 #[15, 24].include?(today.day) #change return to day today to test
   
       is_first_cutoff = today.day == 15
       description_date = today.strftime('%B %d, %Y')
@@ -28,9 +28,11 @@ class GeneratePayroll
           pagibig = 0
           net_amount = (basic - cash_advance_deduction).round(2)
         else
-          sss = salary < 20_000 ? 500 : 1000
-          philhealth = ((salary * 0.05) / 2.0).round(2)
-          pagibig = 200
+          contributions = User.gov_contribution(salary)
+          sss = contributions[:sss]
+          philhealth = contributions[:philhealth].round(2)
+          pagibig = contributions[:pagibig]
+
           net_amount = (basic - (sss + philhealth + pagibig + cash_advance_deduction)).round(2)
         end
   
