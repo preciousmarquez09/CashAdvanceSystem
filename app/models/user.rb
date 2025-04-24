@@ -116,6 +116,30 @@ class User < ApplicationRecord
       return true
     end
   end
+
+  def self.in_cooldown_period?(user)
+    eligibility = Eligibility.first
+    last_request = user.cash_adv_requests.order(created_at: :desc).first
+    return { active: false } unless last_request
+  
+    if last_request.status == 'settled'
+      days_since_settled = (Date.today - last_request.updated_at.to_date).to_i
+      cooldown_days_left = eligibility.req_approve_days - days_since_settled
+      if cooldown_days_left > 0
+        return { active: true, type: 'settled', days_left: cooldown_days_left }
+      end
+    end
+  
+    if last_request.status == 'declined'
+      days_since_declined = (Date.today - last_request.updated_at.to_date).to_i
+      cooldown_days_left = eligibility.req_decline_days - days_since_declined
+      if cooldown_days_left > 0
+        return { active: true, type: 'declined', days_left: cooldown_days_left }
+      end
+    end
+  
+    { active: false }
+  end
   
 
   private
