@@ -2,9 +2,16 @@
   <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
     <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
       <p class="text-xl font-bold">Cash Advance Request </p>
-      <%= link_to admin_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
-        <i class="bi bi-arrow-left"></i> 
-        <span>Back</span>
+      <% if current_user.has_role?(:employee) %>
+        <%= link_to employee_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+            <i class="bi bi-arrow-left"></i> 
+            <span>Back</span>
+        <% end %>
+      <% else %>
+        <%= link_to admin_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+            <i class="bi bi-arrow-left"></i> 
+            <span>Back</span>
+        <% end %>
       <% end %>
     </div>
     <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
@@ -20,16 +27,23 @@
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.amount, unit: "₱ ", precision: (@cash_adv_request.amount % 1 == 0 ? 0 : 2)) %> </p>   
         </div>
         <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Interest Amount </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Total Cash Advance w/ Interest </label>
+            <% total_amount = @cash_adv_request.amount + @cash_adv_request.interest_amount %>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(total_amount, unit: "₱ ", precision: (total_amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+    </div>
+    <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+        <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Payment Every </label>
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @cash_adv_request.cut_off == "cutoff" ? "Cut-off" : @cash_adv_request.cut_off %>  </p>   
         </div>
         <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Terms </label>
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @cash_adv_request.repayment_months %> <%= @cash_adv_request.repayment_months > 1 ? "Months" : "Month" %>  </p>   
-        </div>
-        <div class="w-full md:w-1/2">
-            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Interest Amount </label>
-            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %> </p>   
         </div>
         <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Amount </label>

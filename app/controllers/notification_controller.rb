@@ -12,10 +12,11 @@ class NotificationController < ApplicationController
         @grouped_own_notifications = @own_notifications.group_by { |notification| notification.created_at.to_date }
       
         # Paginate and group other notifications
-        @pagy_other, @other_notifications = pagy(user.notifications.where(action: ['pending', 'settled'])
+        @pagy_other, @other_notifications = pagy(user.notifications
+                                              .where("(action = 'pending' AND message IS NULL) OR (action = 'settled' AND message IS NOT NULL)")
                                               .where("employee_id = ? OR employee_id != ?", user.employee_id, user.employee_id)
-                                              .where.not(message: nil)
-                                              .order(created_at: :desc), items: 5, page_param: :page_other)
+                                              .order(created_at: :desc),
+                                            items: 5,page_param: :page_other)
         @grouped_other_notifications = @other_notifications.group_by { |notification| notification.created_at.to_date }
       else 
         # Paginate all notifications for non-finance users

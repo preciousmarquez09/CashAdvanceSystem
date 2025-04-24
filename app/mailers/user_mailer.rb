@@ -13,5 +13,12 @@ class UserMailer < ApplicationMailer
 
   end
 
+  def finance_settlement(finance_user, settlements)
+    @finance_user = finance_user
+    @settlements = settlements
+    mail(to: finance_user.email, subject: "Settled Cash Advance Requests #{@settlements.first[:due_date].strftime("%B %d, %Y")}")
+  end
+  
+
   
 end

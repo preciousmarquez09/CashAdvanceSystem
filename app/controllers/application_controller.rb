@@ -44,8 +44,8 @@ class ApplicationController < ActionController::Base
   private
   def notification_counter
     if current_user.has_role?(:finance)
-      @fown_notif = current_user.notifications.where(employee_id: current_user.employee_id).where.not(action: 'pending').where(read_at: nil).count 
-      @other_notif = current_user.notifications.where(action: ['pending', 'settled']).where("employee_id = ? OR employee_id != ?", current_user.employee_id, current_user.employee_id).where(read_at: nil).count
+      @fown_notif = current_user.notifications.where(employee_id: current_user.employee_id).where.not(action: 'pending').where(message: nil).where(read_at: nil).count 
+      @other_notif = current_user.notifications.where("(action = 'pending' AND message IS NULL) OR (action = 'settled' AND message IS NOT NULL)").where("employee_id = ? OR employee_id != ?", current_user.employee_id, current_user.employee_id).where(read_at: nil).count
     elsif current_user.has_role?(:employee)
       @own_notif = current_user.notifications.where(read_at: nil).count
     end

@@ -1,8 +1,4 @@
 
-<% if @notification_data[:message].present? %>
-  <p><%= @employee.f_name + " " + @employee.l_name %> cash advance successfully settled.</p>
-
-<% else %>
 <h1>Cash Advance Request</h1>
 
 <p>Hello <%= @employee.f_name + " " + @employee.l_name %>,</p>
@@ -48,5 +44,3 @@
 <p> Should you need further clarification or assistance, please do not hesitate to contact our team. </p>
 <p>Regards,<br>Cash Advance System</p>
 
-
-<% end %>

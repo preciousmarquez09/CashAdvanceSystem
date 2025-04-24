@@ -20,16 +20,23 @@
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.amount, unit: "₱ ", precision: (@cash_adv_request.amount % 1 == 0 ? 0 : 2)) %> </p>   
         </div>
         <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Interest Amount </label>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+        <div class="w-full md:w-1/2">
+            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Total Cash Advance w/ Interest </label>
+            <% total_amount = @cash_adv_request.amount + @cash_adv_request.interest_amount %>
+            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(total_amount, unit: "₱ ", precision: (total_amount % 1 == 0 ? 0 : 2)) %> </p>   
+        </div>
+    </div>
+    <div class="flex gap-6 md:flex-nowrap flex-wrap mb-5">
+        <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Payment Every </label>
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 capitalize"> <%= @cash_adv_request.cut_off == "cutoff" ? "Cut-off" : @cash_adv_request.cut_off %>  </p>   
         </div>
         <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Terms </label>
             <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= @cash_adv_request.repayment_months %> <%= @cash_adv_request.repayment_months > 1 ? "Months" : "Month" %>  </p>   
-        </div>
-        <div class="w-full md:w-1/2">
-            <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Interest Amount </label>
-            <p class="text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"> <%= number_to_currency(@cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %> </p>   
         </div>
         <div class="w-full md:w-1/2">
             <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Monthly Amount </label>
@@ -93,8 +100,15 @@
             <%= f.label :status, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Status <span class="text-red-500">*</span>
             <% end %>
-            <%= f.select :status,  options_for_select([['Pending', 'pending'], ['Approved', 'approved'], ['Declined', 'declined'], ['Released', 'released']], @cash_adv_request.status), { prompt: "Select Status" }, 
-                { id: "status", required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" } %>
+            <% if @cash_adv_request.status == 'pending'
+                    choices = [['Pending', 'pending'], ['Approved', 'approved'], ['Declined', 'declined']]
+                else
+                    choices = [['Approved', 'approved'],['Released', 'released']]
+                end 
+            %>
+            <%= f.select :status, options_for_select(choices, @cash_adv_request.status), { prompt: "Select Status" }, { id: "status", required: true, 
+                class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" } %>
+
             <% if @cash_adv_request.errors[:status].present? %>
                 <p class="text-red-500 text-xs mt-1 ml-2"><%= @cash_adv_request.errors.full_messages_for(:status).first %></p>
             <% end %>  

@@ -1,0 +1,18 @@
+<p>Hello <%= @finance_user.f_name %>,</p>
+
+<% if @settlements.any? %>
+    <p>Here is the list of cash advance requests that were settled for Payroll <b> <%= @settlements.first[:due_date].strftime("%B %d, %Y") %></b>:</p>
+
+  <ul>
+    <% @settlements.each do |s| %>
+      <li>
+        <strong>Employee:</strong> <%= s[:employee_name] %><br>
+        <strong>Total Amount:</strong> <%= number_to_currency(s[:total_amount], unit: "₱ ") %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No settled cash advances.</p>
+<% end %>
+
+<p>Regards,<br>Cash Advance System</p>

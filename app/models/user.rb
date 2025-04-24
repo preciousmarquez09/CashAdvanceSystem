@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :approved_cash_adv_requests, foreign_key: "approver_id", class_name: "CashAdvRequest", dependent: :destroy
   has_many :audit_logs, dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy
-  has_many :payrolls, foreign_key: 'user_id'
+  has_many :payrolls, foreign_key: 'user_id', dependent: :destroy
 
 
   rolify
@@ -18,8 +18,9 @@ class User < ApplicationRecord
     super + [ "employee_id", "f_name", "m_name", "l_name", "employee_id", "job_title", "employment_status", "role", "salary" ]
   end
 
-  validates :email, presence: true, uniqueness: { case_sensitive: true }, format: { 
-            with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]{3,}\z/i, message: "must be a valid email address" }
+  validates :email, presence: true, uniqueness: { case_sensitive: true }, format: {
+  with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]{2,}\z/i, message: "must be a valid email address" }
+
   
   validates :employment_status, :gender, presence: true
   validates :f_name, presence: true, length: { minimum: 2 }, if: -> { f_name.present? }, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters" }

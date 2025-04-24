@@ -43,6 +43,8 @@ class Finance::DashboardController < ApplicationController
 
     day_cutoff = Date.today.day <= 15 ? 15 : 30
 
+    day_cutoff = Date.today.day <= 15 ? 15 : 30
+
     @myaccount_due_next_payroll_records = RepaymentSchedule
     .includes(cash_adv_request: :employee)
     .where("DAY(due_date) = ?", day_cutoff)

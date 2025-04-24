@@ -4,9 +4,8 @@ class GenerateSchedule
     end
   
     def perform
-
       #March 12
-      #start_date = Date.new(Date.today.year, 3, 12).next_month 
+      #start_date = Date.new(Date.today.year, 4, 15).next_month 
       start_date = Date.today.next_month
 
       # Determine due date based on the start date's day
@@ -23,30 +22,27 @@ class GenerateSchedule
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date: Date.new(Date.today.year, 4, 22)  , #change Date.today for testing (paid all - settled), Date.todaynext_month(i) (on-going 1 - 1 paid)
+            due_date: Date.today, #change Date.today for testing (paid all - settled), Date.todaynext_month(i) (on-going 1 - 1 paid)
             status: "pending"
           )
         end
       else
-        @cash_adv_request.repayment_months.times do |i|
-          date_15 = due_date.next_month(i).change(day: 15)
-          date_30 = due_date.next_month(i).change(day: 30)
-        
+        (@cash_adv_request.repayment_months * 2).times do
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date: date_15 ,
+            due_date: Date.today,
             status: "pending"
           )
-        
-          RepaymentSchedule.create!(
-            cash_adv_request_id: @cash_adv_request.id,
-            amount: @cash_adv_request.monthly_cost,
-            due_date: date_30 ,
-            status: "pending"
-          )
+          # Change between 15 and 30
+          if due_date.day == 15
+            due_date = due_date.change(day: 30)
+          else
+            # If currently 30, go to 15 of next month
+            due_date = due_date.next_month.change(day: 15)
+          end
         end
-        
+
       end
     end
 end
