@@ -46,15 +46,15 @@
     
         pdf.text "Summary", style: :bold
         pdf.table([
-            ["Total Earnings", "PHP #{'%.2f' % total_earnings}"],
-            ["Total Deductions", "PHP #{'%.2f' % total_deductions}"],
-            ["Net Pay", "PHP #{'%.2f' % net_pay}"]
+            ["Total Earnings", "PHP #{ total_earnings}"],
+            ["Total Deductions", "PHP #{ total_deductions}"],
+            ["Net Pay", "PHP #{net_pay}"]
         ], width: pdf.bounds.width)
         pdf.move_down 20
     
         
-        pdf.text "This is a system-generated payslip.", size: 10, align: :center
-        pdf.text "Contact finance if you have any questions or dispute regarding your payslip.", size: 10, align: :center
+        pdf.text "This is a system-generated payslip.", size: 10, align: :center, style: :italic
+        pdf.text "Contact finance if you have any questions or dispute regarding your payslip.", size: 10, align: :center, style: :italic
     
         
         send_data pdf.render,

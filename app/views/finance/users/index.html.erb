@@ -43,7 +43,7 @@
                             <button onclick="openModal(<%= user.id %>)" class="bg-blue-500 px-3 py-1 text-white rounded">View</button>
                         </td>
                     </tr>
-                    <%= render "showModal", user: user, next_payroll: @next_payroll %>
+                    <%= render "showModal", user: user, next_payroll: @next_payroll, repayment_schedule: @user_schedules[user.id]  %>
                 <% end %>
             </tbody>
         </table>

@@ -11,7 +11,26 @@ class Finance::UsersController < ApplicationController
     # Users with at least one cash advance request matching specific statuses
     @users_with_cash_adv = User.joins(:cash_adv_requests)
                                .where(cash_adv_requests: { status: ["pending", "approved", "released", "on-going"] })
-                               .distinct                       
+                               .distinct
+                            
+    # Determine cutoff range based on next payroll
+    from_date, to_date = if @next_payroll.day == 15
+      [Date.today.beginning_of_month, Date.new(Date.today.year, Date.today.month, 15)]
+    else
+      [Date.new(Date.today.year, Date.today.month, 16), Date.today.end_of_month]
+    end
+
+    # Get first pending repayment schedule per user for the upcoming cutoff
+    @user_schedules = {}
+    @users.each do |user|
+      schedule = RepaymentSchedule.joins(:cash_adv_request)
+        .where(cash_adv_requests: { employee_id: user.employee_id })
+        .where(status: 'pending', due_date: from_date..to_date)
+        .order(:due_date)
+        .first
+
+      @user_schedules[user.id] = schedule if schedule.present?
+    end
   end
   
   def next_payroll_date

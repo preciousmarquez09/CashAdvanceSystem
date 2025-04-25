@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_10_052111) do
+ActiveRecord::Schema.define(version: 2025_04_24_074533) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -91,12 +91,12 @@ ActiveRecord::Schema.define(version: 2025_04_10_052111) do
   create_table "payrolls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "description"
-    t.decimal "basic", precision: 10
-    t.decimal "sss", precision: 10
-    t.decimal "philhealth", precision: 10
-    t.decimal "pagibig", precision: 10
-    t.integer "cashadv"
-    t.decimal "net_amount", precision: 10
+    t.decimal "basic", precision: 10, scale: 2
+    t.decimal "sss", precision: 10, scale: 2
+    t.decimal "philhealth", precision: 10, scale: 2
+    t.decimal "pagibig", precision: 10, scale: 2
+    t.decimal "cashadv", precision: 10, scale: 2
+    t.decimal "net_amount", precision: 10, scale: 2
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_payrolls_on_user_id"

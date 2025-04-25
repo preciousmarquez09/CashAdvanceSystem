@@ -55,8 +55,9 @@
                 <% deductions_included = (Date.today.day >= 16) %>
 
                 <% total_contributions = 0 %>
-                
-                <% total_contributions = cash_advance[:amount] if cash_advance && cash_advance[:amount].present? %>
+
+
+                <% total_contributions = repayment_schedule.amount if repayment_schedule.present? && repayment_schedule.amount.present? %>
                 <% if deductions_included %>
                     <% total_contributions += contributions[:sss] + contributions[:pagibig] + contributions[:philhealth].ceil %>
                 <% end %>
@@ -74,7 +75,7 @@
                         <label class="block text-sm text-gray-600 dark:text-white capitalize"> Philhealth: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:philhealth].ceil : 0 %> </span> </label>   
                     </div>
                     <div class="w-full md:w-1/2">
-                        <label class="block text-sm text-gray-600 dark:text-white"> Cash Advance: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(cash_advance && cash_advance[:amount] || 0, unit: "₱ ", precision: (cash_advance && cash_advance[:amount].present? && cash_advance[:amount] % 1 != 0 ? 2 : 0)) %> </span> </label>
+                        <label class="block text-sm text-gray-600 dark:text-white"> Cash Advance: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(repayment_schedule.present? && repayment_schedule.amount || 0, unit: "₱ ", precision: (repayment_schedule.present? && repayment_schedule.amount % 1 != 0 ? 2 : 0)) %> </span> </label>
                     </div>
                 </div>
                 <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
@@ -95,7 +96,7 @@
                             <label class="block text-sm text-gray-600 font-medium dark:text-white"> Requested At </label>
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Amount</label>
+                            <label class="block text-sm text-gray-600 font-medium dark:text-white"> Total Amount w/ Interest</label>
                         </div>
                         <div>
                             <label class="block text-sm text-gray-600 font-medium dark:text-white"> Status </label>
