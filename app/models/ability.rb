@@ -11,6 +11,7 @@ class Ability
         can :manage, User
         can :manage, Eligibility
         can [:index, :show, :pdf_file], CashAdvRequest
+        
       elsif user.has_role?(:finance)
         can [:index, :show], User
         can :update_password, User, id: user.id

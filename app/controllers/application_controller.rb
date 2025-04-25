@@ -5,7 +5,15 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = "You don’t have permission to access this page"
-    redirect_to root_path
+    if current_user.has_role?(:admin)
+      admin_dashboard_path
+    elsif current_user.has_role?(:finance)
+      finance_dashboard_path
+    elsif current_user.has_role?(:employee)
+      employee_dashboard_path
+    else
+      root_path 
+    end
   end
 
   def after_sign_in_path_for(resource)

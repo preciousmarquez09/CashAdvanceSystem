@@ -54,8 +54,8 @@ class PayrollsController < ApplicationController
       pdf.move_down 20
   
       # Footer note
-      pdf.text "This is a system-generated payslip.", size: 10, align: :center
-      pdf.text "Contact finance if you have any questions or disputes regarding your payslip.", size: 10, align: :center
+      pdf.text "This is a system-generated payslip.", size: 10, align: :center, style: :italic
+      pdf.text "Contact finance if you have any questions or disputes regarding your payslip.", size: 10, align: :center, style: :italic
   
       # Sending the PDF
       send_data pdf.render,

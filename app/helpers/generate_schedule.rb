@@ -31,7 +31,7 @@ class GenerateSchedule
           RepaymentSchedule.create!(
             cash_adv_request_id: @cash_adv_request.id,
             amount: @cash_adv_request.monthly_cost,
-            due_date: Date.today,
+            due_date: due_date,
             status: "pending"
           )
           # Change between 15 and 30

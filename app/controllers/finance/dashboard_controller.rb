@@ -7,7 +7,7 @@ class Finance::DashboardController < ApplicationController
     @eligibility = Eligibility.first
     @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f
     
-    @cash_adv_request = current_user.cash_adv_requests.first
+    @cash_adv_request = current_user.cash_adv_requests.where(status: ['released', 'on-going']).last
     if @cash_adv_request.present?
       @repayment_schedules = @cash_adv_request.repayment_schedules
     else
@@ -26,9 +26,7 @@ class Finance::DashboardController < ApplicationController
     .where("created_at >= ?", Time.current.beginning_of_year)
     .where(status: ['released', 'on-going', 'settled'])
     .sum(:interest_amount)
-  
 
-    
     @total_ongoing_users = RepaymentSchedule.where(status: 'pending')
     .distinct
     .count(:cash_adv_request_id)
@@ -67,8 +65,6 @@ class Finance::DashboardController < ApplicationController
       items: 10,
       page_param: :page_due_next_payroll
     )
-    
-    
   
     @myaccount_due_next_payroll_total = @myaccount_due_next_payroll_records.sum(:amount)
     @myaccount_due_next_payroll_date = @myaccount_due_next_payroll_records.minimum(:due_date)
@@ -79,12 +75,6 @@ class Finance::DashboardController < ApplicationController
     .where("DATE(repayment_schedules.due_date) >= ?", Date.current)
     .where(status: 'pending')
     .exists?
-  
- 
-
-
-   
-    
 
     @pagy_payrolls, @payrolls = pagy(current_user.payrolls.order(created_at: :desc),
     items: 10,

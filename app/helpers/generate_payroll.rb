@@ -1,7 +1,7 @@
 class GeneratePayroll
     def self.perform
       today = Date.today
-      return unless today.day == 24 #[15, 24].include?(today.day) #change return to day today to test
+      return unless today.day == 25 #[15, 24].include?(today.day) #change return to day today to test
   
       is_first_cutoff = today.day == 15
       description_date = today.strftime('%B %d, %Y')
@@ -16,6 +16,8 @@ class GeneratePayroll
                status: 'pending')
         .sum(:amount)
 
+        is_first_cutoff = today.day == 15
+        description_date = today.strftime('%B %d, %Y')
 
   
         # Check for duplicate
@@ -48,8 +50,5 @@ class GeneratePayroll
           cashadv: cash_advance_deduction
         )
       end
-  
-     
-    end
   end
-  
+end
