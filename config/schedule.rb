@@ -47,6 +47,7 @@ every 1.minute do
     cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_due_statuses' >> /home/precious/code/cash_advance/log/cron.log 2>&1 && \
     cd /home/precious/code/cash_advance && RAILS_ENV=development bundle exec rails runner 'RepaymentSchedule.update_cashadvreq_status_to_settled' >> /home/precious/code/cash_advance/log/cron.log 2>&1
   CMD
+  
 end
   
   

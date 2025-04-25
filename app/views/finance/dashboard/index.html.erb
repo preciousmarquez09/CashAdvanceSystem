@@ -185,7 +185,7 @@
     <% if @repayment_schedules.present? %>
       <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
     <% else %>
-      <p class="text-center text-gray-500">No due dates available</p>
+      <p class="text-center text-gray-500 italic">No repayment schedule available.</p>
     <% end %>
   </div>
 </div>
