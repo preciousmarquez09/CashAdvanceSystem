@@ -56,8 +56,7 @@
 
                 <% total_contributions = 0 %>
 
-
-                <% total_contributions = repayment_schedule.amount if repayment_schedule.present? && repayment_schedule.amount.present? %>
+                <% total_contributions = @user_schedules[user.id] if @user_schedules[user.id].present? %>
                 <% if deductions_included %>
                     <% total_contributions += contributions[:sss] + contributions[:pagibig] + contributions[:philhealth].ceil %>
                 <% end %>
@@ -75,7 +74,7 @@
                         <label class="block text-sm text-gray-600 dark:text-white capitalize"> Philhealth: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:philhealth].ceil : 0 %> </span> </label>   
                     </div>
                     <div class="w-full md:w-1/2">
-                        <label class="block text-sm text-gray-600 dark:text-white"> Cash Advance: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(repayment_schedule.present? && repayment_schedule.amount || 0, unit: "₱ ", precision: (repayment_schedule.present? && repayment_schedule.amount % 1 != 0 ? 2 : 0)) %> </span> </label>
+                        <label class="block text-sm text-gray-600 dark:text-white"> Cash Advance: <span class="ml-2 font-medium text-md text-gray-900"> <%= number_to_currency(@user_schedules[user.id].present? && @user_schedules[user.id] || 0, unit: "₱ ", precision: (@user_schedules[user.id].present? && @user_schedules[user.id] % 1 != 0 ? 2 : 0)) %> </span> </label>
                     </div>
                 </div>
                 <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
@@ -89,7 +88,7 @@
 
                 <% if cash_advance && cash_advance[:cash_adv_request] %>
                     <hr class="px-2"></hr>
-                    <p class="font-semibold text-md">Cash Advance History</p>
+                    <p class="font-semibold text-md">Recent Cash Advances</p>
 
                     <div class="grid grid-cols-4 gap-2 px-2">
                         <div>
@@ -106,7 +105,7 @@
                         </div>
                     </div>
                 
-                    <% cash_advance[:cash_adv_request].sort_by(&:created_at).reverse.each do |cash_adv| %>
+                    <% cash_advance[:cash_adv_request].sort_by(&:created_at).last(5).reverse.each do |cash_adv| %>
                         <div class="grid grid-cols-4 gap-2 px-2">
                             <div>
                                 <label class="block text-sm text-black font-semibold dark:text-white capitalize">  <%= cash_adv.created_at.strftime("%B %d, %Y") %> </label>
@@ -122,6 +121,7 @@
                             </div>
                         </div>
                     <% end %>
+                    
                 <% end %>
 
             </div>

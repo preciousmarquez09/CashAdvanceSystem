@@ -1,7 +1,7 @@
 class GeneratePayroll
     def self.perform
       today = Date.today
-      return unless today.day == 25 #[15, 24].include?(today.day) #change return to day today to test
+      return unless today.day == 28 #[15, 24].include?(today.day) #change return to day today to test
   
       is_first_cutoff = today.day == 15
       description_date = today.strftime('%B %d, %Y')
@@ -12,7 +12,7 @@ class GeneratePayroll
   
         cash_advance_deduction = RepaymentSchedule.joins(:cash_adv_request)
         .where(cash_adv_requests: { employee_id: user.employee_id }, 
-               due_date: today, 
+               due_date: Date.new(Date.today.year, 4, 30), 
                status: 'pending')
         .sum(:amount)
 

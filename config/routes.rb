@@ -20,7 +20,7 @@ Rails.application.routes.draw do
         get :excel_file
       end
     end
-    resources :auditlogs, only: [:index] do
+    resources :audit_logs, only: [:index] do
       collection do
         get :pdf_file 
         get :excel_file

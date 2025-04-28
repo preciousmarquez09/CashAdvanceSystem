@@ -1,7 +1,9 @@
 class Admin::UsersController < ApplicationController
   load_and_authorize_resource
-  before_action :authorize_admin!
-
+  include RestrictPages
+    
+    before_action :authorize_admin!
+  
     def index
       @q = User.includes(:roles).ransack(params[:q])
       @pagy, @users = pagy(@q.result(distinct: true), items: 10)

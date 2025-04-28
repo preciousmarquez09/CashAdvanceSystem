@@ -1,9 +1,11 @@
 class Admin::DashboardController < ApplicationController
-  include Pagy::Backend
-  before_action :authenticate_user!
-  before_action :authorize_admin!
   
-
+  include Pagy::Backend
+  include RestrictPages
+  
+  before_action :authorize_admin!
+  before_action :authenticate_user!
+  
   def index
     authorize! :read, :dashboard
     @total_pending_requests = CashAdvRequest.where(status: "pending").count

@@ -2,17 +2,18 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :notification_counter, if: :user_signed_in?
+  before_action :restrict_signup, only: [:new, :create], if: :devise_controller?
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = "You don’t have permission to access this page"
     if current_user.has_role?(:admin)
-      admin_dashboard_path
+      redirect_to admin_dashboard_path
     elsif current_user.has_role?(:finance)
-      finance_dashboard_path
+      redirect_to finance_dashboard_path
     elsif current_user.has_role?(:employee)
-      employee_dashboard_path
+      redirect_to employee_dashboard_path
     else
-      root_path 
+      redirect_to root_path
     end
   end
 
@@ -56,6 +57,19 @@ class ApplicationController < ActionController::Base
       @other_notif = current_user.notifications.where("(action = 'pending' AND message IS NULL) OR (action = 'settled' AND message IS NOT NULL)").where("employee_id = ? OR employee_id != ?", current_user.employee_id, current_user.employee_id).where(read_at: nil).count
     elsif current_user.has_role?(:employee)
       @own_notif = current_user.notifications.where(read_at: nil).count
+    end
+  end
+
+  def restrict_signup
+    if (current_user&.has_role?(:employee) || current_user&.has_role?(:finance))  && controller_name == 'registrations' && action_name == 'new'
+      flash[:alert] = "You don’t have permission to access this page"
+      if current_user.has_role?(:finance)
+        redirect_to finance_dashboard_path
+      elsif current_user.has_role?(:employee)
+        redirect_to employee_dashboard_path
+      else
+        redirect_to root_path
+      end
     end
   end
 

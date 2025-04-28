@@ -19,18 +19,17 @@ class Finance::UsersController < ApplicationController
     else
       [Date.new(Date.today.year, Date.today.month, 16), Date.today.end_of_month]
     end
-
-    # Get first pending repayment schedule per user for the upcoming cutoff
+    
     @user_schedules = {}
     @users.each do |user|
-      schedule = RepaymentSchedule.joins(:cash_adv_request)
+      total_amount = RepaymentSchedule.joins(:cash_adv_request)
         .where(cash_adv_requests: { employee_id: user.employee_id })
         .where(status: 'pending', due_date: from_date..to_date)
-        .order(:due_date)
-        .first
-
-      @user_schedules[user.id] = schedule if schedule.present?
+        .sum(:amount)
+    
+      @user_schedules[user.id] = total_amount if total_amount > 0
     end
+    
   end
   
   def next_payroll_date
