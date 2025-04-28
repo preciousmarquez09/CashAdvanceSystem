@@ -1,6 +1,7 @@
 class Admin::UsersController < ApplicationController
   load_and_authorize_resource
-  
+  before_action :authorize_admin!
+
     def index
       @q = User.includes(:roles).ransack(params[:q])
       @pagy, @users = pagy(@q.result(distinct: true), items: 10)
@@ -124,5 +125,4 @@ class Admin::UsersController < ApplicationController
         return password if password.match?(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/)
       end
     end
-
 end
