@@ -2,9 +2,16 @@
   <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
     <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
       <p class="text-xl font-bold">Cash Advance Request</p>
-      <%= link_to admin_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
-        <i class="bi bi-arrow-left"></i> 
-        <span>Back</span>
+      <% if current_user.has_role?(:admin) || current_user.has_role?(:finance) %>
+        <%= link_to admin_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+          <i class="bi bi-arrow-left"></i> 
+          <span>Back</span>
+        <% end %>
+      <% else %>
+        <%= link_to employee_cash_adv_requests_path, class: "bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-black flex items-center space-x-2 w-fit sm:w-auto" do %>
+          <i class="bi bi-arrow-left"></i> 
+          <span>Back</span>
+        <% end %>
       <% end %>
     </div>
 

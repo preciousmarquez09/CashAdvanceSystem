@@ -14,9 +14,11 @@
         <% end %>
       <% end %>
     </div>
-    <div class="flex justify-between items-center gap-6 md:flex-nowrap mb-5">
-        <p class="font-bold text-md md:text-3xl sm:text-3xl mb-3"> <%= @cash_adv_request.employee_id %> : <%= @cash_adv_request.employee.f_name + " " + @cash_adv_request.employee.m_name + " " + @cash_adv_request.employee.l_name%></p>
+    <div class="flex flex-col gap-2 mb-5">
+        <p class="font-bold text-md md:text-3xl sm:text-3xl"> <%= @cash_adv_request.employee_id %> : <%= @cash_adv_request.employee.f_name + " " + @cash_adv_request.employee.m_name + " " + @cash_adv_request.employee.l_name %></p>
+        <p class="text-sm md:text-base"> Requested on: <%= @cash_adv_request.created_at.strftime("%B %d, %Y") %></p>
     </div>
+
     <div class="w-full md:w-full mb-5">
         <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"> Reason </label>
         <p class="h-36 text-justify bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 overflow-y-auto"> <%= @cash_adv_request.request_reason %> </p>   
@@ -102,16 +104,7 @@
     <% if ["declined", "on-going", "settled", "released", "approved"].include?(@cash_adv_request.status) %>
         <hr class="p-3 mt-5"></hr>
         <div class="w-full md:w-1/2 mb-5">
-            <span class="px-3 py-2 text-xl font-semibold rounded
-                            <%= case @cash_adv_request.status
-                            when 'pending' then 'bg-yellow-200 text-yellow-600'
-                            when 'declined' then 'bg-red-200 text-red-600'
-                            when 'approved' then 'bg-green-200 text-green-600'
-                            when 'released' then 'bg-blue-200 text-blue-600'
-                            when 'on-going' then 'bg-orange-200 text-orange-600'
-                            when 'settled' then 'bg-purple-200 text-purple-600'
-                            else 'bg-gray-300' # Default color
-                            end %>">
+            <span class="px-3 py-2 text-xl font-semibold rounded <%= @cash_adv_request.status_class %>">
                             <%= @cash_adv_request.status.capitalize %>
                         </span>
         </div>

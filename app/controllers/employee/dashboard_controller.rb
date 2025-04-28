@@ -1,6 +1,9 @@
 module Employee
     class DashboardController < ApplicationController
       include Pagy::Backend
+      include RestrictPages
+  
+      before_action :authorize_employee!
       before_action :authenticate_user!
   
       def index

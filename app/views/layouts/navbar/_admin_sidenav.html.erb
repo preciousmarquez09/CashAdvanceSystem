@@ -34,8 +34,8 @@
         </a>
       </li>
       <li>
-        <% active = current_page?(admin_auditlogs_path) %>
-        <a href="<%= admin_auditlogs_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+        <% active = current_page?(admin_audit_logs_path) %>
+        <a href="<%= admin_audit_logs_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
           <i class="bi bi-file-earmark-text-fill text-lg transition duration-75 <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
           <span class="hidden sm:inline ms-3">Audit Logs</span>
         </a>

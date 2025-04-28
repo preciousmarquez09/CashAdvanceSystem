@@ -6,7 +6,7 @@ class GenerateSchedule
     def perform
       #March 12
       #start_date = Date.new(Date.today.year, 4, 15).next_month 
-      start_date = Date.today.next_month
+      start_date = Date.today
 
       # Determine due date based on the start date's day
       if start_date.day >= 1 && start_date.day <= 15

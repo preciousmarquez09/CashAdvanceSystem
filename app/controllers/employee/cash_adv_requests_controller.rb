@@ -1,6 +1,8 @@
 class Employee::CashAdvRequestsController < ApplicationController
         load_and_authorize_resource
-
+        include RestrictPages
+  
+        before_action :authorize_employee!
         def index
             @eligibility = Eligibility.first
             @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f

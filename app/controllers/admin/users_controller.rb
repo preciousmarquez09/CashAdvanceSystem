@@ -1,5 +1,8 @@
 class Admin::UsersController < ApplicationController
   load_and_authorize_resource
+  include RestrictPages
+    
+    before_action :authorize_admin!
   
     def index
       @q = User.includes(:roles).ransack(params[:q])
