@@ -10,6 +10,7 @@ class Ability
       if user.has_role?(:admin)
         can :manage, User
         can :manage, Eligibility
+        can :manage, AuditLog
         can [:index, :show, :pdf_file], CashAdvRequest
         
       elsif user.has_role?(:finance)
@@ -19,7 +20,7 @@ class Ability
       else
         can :update_password, User, id: user.id
         can :can_request_cashadv, User
-        can [:new, :create, :show, :index], CashAdvRequest
+        can [:new, :create, :index, :show], CashAdvRequest, employee_id: user.employee_id
       end
     #   return unless user.present?
     #   can :read, :all

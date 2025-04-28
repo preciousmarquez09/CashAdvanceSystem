@@ -1,9 +1,15 @@
 class Admin::CashAdvRequestsController < ApplicationController
-  load_and_authorize_resource
+    load_and_authorize_resource
+    include RestrictPages
+    
+    before_action :authorize_admin_finance!, only: [:index, :edit, :update]
     def index
       @eligibility = Eligibility.first
       @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f
     
+      if params.dig(:q, :created_at_lteq).present?
+        params[:q][:created_at_lteq] = Date.parse(params[:q][:created_at_lteq]).end_of_day
+      end
       # Convert params[:q] to an unsafe hash to avoid strong parameters filtering
       @q = CashAdvRequest.includes(:employee).ransack(params[:q]&.to_unsafe_h || {})
     
@@ -13,7 +19,6 @@ class Admin::CashAdvRequestsController < ApplicationController
       if params[:q].present? && params[:status].blank?
         @status = 'all'
       end
-    
     
       # Apply the search query but keep status count
       @filtered_results = @q.result(distinct: false)

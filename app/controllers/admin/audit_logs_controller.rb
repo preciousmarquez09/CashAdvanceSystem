@@ -1,4 +1,5 @@
-class Admin::AuditlogsController < ApplicationController
+class Admin::AuditLogsController < ApplicationController
+    load_and_authorize_resource
     include Pagy::Backend
     before_action :authenticate_user!
   

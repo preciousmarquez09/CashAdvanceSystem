@@ -2,11 +2,9 @@ module Excel
   class CashAdvRequestExcelGenerator
     def initialize(params)
       @params = params
-      @params[:status] ||= 'all'
-
       @q = CashAdvRequest.ransack(@params[:q])
       @cashadvreq = @q.result
-
+    
       @cashadvreq = @cashadvreq.order(Arel.sql(<<~SQL.squish))
         CASE status
           WHEN 'pending' THEN 1
@@ -18,8 +16,11 @@ module Excel
           ELSE 7
         END, created_at DESC
       SQL
-
-      if @params[:status] != 'all'
+    
+      # If no status then make it all
+      if @params[:status].blank? || @params[:status] == 'all'
+        # No additional filtering
+      else
         @cashadvreq = @cashadvreq.where(status: @params[:status])
       end
     end
@@ -38,14 +39,16 @@ module Excel
       # Main sheet for cash advance list
       main_sheet = workbook.add_worksheet(name: "Cash Advance List")
       main_sheet.add_row [
-        "EMPLOYEE ID", "NAME", "REASON", "AMOUNT", "INTEREST AMOUNT", "MONTHLY AMOUNT",
-        "TOTAL AMOUNT W/ INTEREST", "MONTHLY TERMS", "PAYMENT EVERY", "STATUS",
-        "NO. OF ATTACHMENT", "APPROVER", "APPROVER REASON"
+        "EMPLOYEE ID", "NAME", "REASON", "AMOUNT", "INTEREST AMOUNT", "MONTHLY AMOUNT", "TOTAL AMOUNT W/ INTEREST", "MONTHLY TERMS", 
+        "PAYMENT EVERY", "STATUS", "NO. OF ATTACHMENT", "APPROVER", "APPROVER REASON"
       ], style: header_style
 
       repayment_status = ['released', 'on-going', 'settled']
       repayment_sheet = nil
-      if @params[:status] == 'all' || repayment_status.include?(@params[:status])
+
+      create_repayment_sheet = @cashadvreq.any? { |req| repayment_status.include?(req.status) && req.repayment_schedules.any? }
+
+      if create_repayment_sheet
         repayment_sheet = workbook.add_worksheet(name: "Repayment Schedules")
         repayment_sheet.add_row [
           "EMPLOYEE ID", "NAME", "DUE DATE", "AMOUNT", "STATUS"

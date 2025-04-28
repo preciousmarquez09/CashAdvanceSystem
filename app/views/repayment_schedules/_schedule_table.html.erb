@@ -1,14 +1,21 @@
 
 
 <div class="relative overflow-x-auto sm:rounded-lg">
-<p class="text-sm sm:text-lg font-semibold mb-2"> Repayment Schedules </p>
     <% if repayment_schedules.present? %>
+        <div class="flex justify-between items-center px-4">
+            <p class="text-sm sm:text-lg font-semibold mb-2"> Repayment Schedules </p>
+            <p class="text-sm sm:text-lg mb-2 mr-10">
+                Paid: <b> <%= repayment_schedules.where(status: 'paid').count %> of <%= repayment_schedules.count %></b>
+            </p>
+        </div>
+
         <table class="min-w-full text-xs sm:text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
             <thead class="text-xs sm:text-lg text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Due Date </th>
                     <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Amount </th>
                     <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Status </th>
+                    <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Paid on </th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +36,9 @@
                         end %>">
                         <%= schedule.status.capitalize %>
                     </span>
+                    <th class="px-3 py-2 sm:px-6 sm:py-4 font-medium">
+                        <%= schedule.updated_at == schedule.created_at ? "Not yet paid" : "<span class='text-black'>#{schedule.updated_at.strftime('%B %d, %Y')}</span>".html_safe %>
+                    </th>
                     </td>
                 </tr>
             <% end %>

@@ -1,5 +1,8 @@
 class Finance::DashboardController < ApplicationController
   include Pagy::Backend
+  include RestrictPages
+  
+  before_action :authorize_finance!
   before_action :authenticate_user!
   
   def index
@@ -11,7 +14,7 @@ class Finance::DashboardController < ApplicationController
     if @cash_adv_request.present?
       @repayment_schedules = @cash_adv_request.repayment_schedules
     else
-      @repayment_schedules = [] 
+      @repayment_schedules = []
     end
 
     @total_pending_requests = CashAdvRequest.where(status: 'pending').count

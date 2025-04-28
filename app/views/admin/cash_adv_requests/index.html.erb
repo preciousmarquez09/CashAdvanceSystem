@@ -85,14 +85,28 @@
 
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
         <div class="mb-5 w-full">
-            <%= search_form_for @q, url: admin_cash_adv_requests_path, method: :get, class: "flex items-center gap-2" do |f| %>
-                <%= hidden_field_tag :status, @status %>
+            <%= search_form_for @q, url: admin_cash_adv_requests_path, method: :get, class: "flex flex-wrap items-end gap-4" do |f| %>
+            <%= hidden_field_tag :status, @status %>
+        
+            <div class="flex-1">
                 <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
                     class: "w-full p-2 border border-gray-300 rounded-lg", 
                     placeholder: "Search cash advance requests" %>
-                
-                <%= f.submit "Search", class: "w-auto px-10 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold" %>
-          <% end %>
+            </div>
+            <div class="flex-shrink-0">
+                <%= f.label :created_at_gteq, 'From', class: "block text-sm font-medium mb-1" %>
+                <%= f.date_field :created_at_gteq,
+                    class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+            </div>
+            <div class="flex-shrink-0">
+                <%= f.label :created_at_lteq, 'To', class: "block text-sm font-medium mb-1" %>
+                <%= f.date_field :created_at_lteq,
+                    class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+            </div>
+            <div>
+                <%= f.submit "Search", class: "px-6 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold text-sm transition-colors" %>
+            </div>
+            <% end %>
         </div>
 
         <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
@@ -102,8 +116,7 @@
                     <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
-                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th> 
-                    
+                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th>
                     <th scope="col" class="px-3 py-2 w-20 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/ Interest") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>

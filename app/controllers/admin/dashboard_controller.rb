@@ -1,7 +1,10 @@
 class Admin::DashboardController < ApplicationController
+  
   include Pagy::Backend
+  include RestrictPages
+  
+  before_action :authorize_admin!
   before_action :authenticate_user!
-
   
   def index
     @pending_requests = CashAdvRequest.where(status: "pending").count
