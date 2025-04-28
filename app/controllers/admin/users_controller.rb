@@ -127,5 +127,4 @@ class Admin::UsersController < ApplicationController
         return password if password.match?(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/)
       end
     end
-
 end

@@ -12,6 +12,8 @@ class Ability
         can :manage, Eligibility
         can :manage, AuditLog
         can [:index, :show, :pdf_file], CashAdvRequest
+        can :read, :dashboard
+        can :read, AuditLog
         
       elsif user.has_role?(:finance)
         can [:index, :show], User
