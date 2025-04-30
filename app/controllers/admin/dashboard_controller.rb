@@ -20,6 +20,9 @@ class Admin::DashboardController < ApplicationController
     .where(status: ['released', 'on-going', 'settled'])
     .sum(:interest_amount)
    
+    if params.dig(:q, :created_at_lteq).present?
+      params[:q][:created_at_lteq] = Date.parse(params[:q][:created_at_lteq]).end_of_day
+    end
     @q = AuditLog.ransack(params[:q])
     @pagy_audit_logs, @audit_logs = pagy(@q.result.order(created_at: :desc), items: 10)
   end

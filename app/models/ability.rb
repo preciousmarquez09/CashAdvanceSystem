@@ -19,10 +19,12 @@ class Ability
         can [:index, :show], User
         can :update_password, User, id: user.id
         can :manage, CashAdvRequest
+        can [:preview], Payroll, user_id: user.id
       else
         can :update_password, User, id: user.id
         can :can_request_cashadv, User
         can [:new, :create, :index, :show], CashAdvRequest, employee_id: user.employee_id
+        can [:preview], Payroll, user_id: user.id
       end
     #   return unless user.present?
     #   can :read, :all

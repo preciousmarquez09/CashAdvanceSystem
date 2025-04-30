@@ -35,8 +35,11 @@
                         <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell"> <%= user.employment_status %> </td>  
                         <td class="px-3 py-2 w-24 hidden md:table-cell"> <%= number_to_currency(user.salary, unit: "₱ ", precision: (user.salary % 1 == 0 ? 0 : 2))%> </td>
                         <td class="px-3 py-2 w-24 hidden md:table-cell"> 
-                            <% value = @users_with_cash_adv.include?(user) ? "No" : (user.net_salary >= @eligibility.min_net_salary && user.employment_status == "regular" ? "Yes" : "No") %> 
-                            <span class="font-bold px-3 py-1 rounded  text-white <%= value == 'No' ? 'bg-red-400' : 'bg-green-400' %>"><%= value %></span>
+                            <% if @eligible && User.can_request_cashadv(user) == true && (user.has_role?(:finance) || user.has_role?(:employee)) %> 
+                                <span class="font-bold px-3 py-1 rounded  text-white bg-green-400">Yes</span>
+                            <% else %>
+                                <span class="font-bold px-3 py-1 rounded  text-white bg-red-400">No</span>
+                            <% end %>
                         </td>
 
                         <td class="px-3 py-2 w-24"> 

@@ -15,7 +15,7 @@ module Pdf
         pdf = Prawn::Document.new
       
         pdf.text "CASH ADVANCE SYSTEM", size: 24, style: :bold, align: :center
-        pdf.text "Generated on: #{Time.current.strftime('%B %-d, %Y - %I:%M %p')}", size: 12, align: :center
+        pdf.text "Generated on: #{Time.current.strftime('%B %d, %Y - %I:%M:%S %p')}", size: 12, align: :center
         pdf.move_down 20
     
         pdf.text "AUDIT LOGS", size: 18, style: :bold, align: :center
@@ -29,7 +29,7 @@ module Pdf
       
         @audit_logs1.each do |log|
           table_data << [
-            log.created_at.strftime("%Y-%m-%d %I:%M %p"),
+            log.created_at.strftime("%B %d, %Y - %I:%M:%S %p"),
             "#{log.user.f_name} #{log.user.l_name}",
             log.action
           ]

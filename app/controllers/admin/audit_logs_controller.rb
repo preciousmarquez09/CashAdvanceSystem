@@ -1,17 +1,18 @@
-class Admin::AuditlogsController < ApplicationController
-  include Pagy::Backend
-  before_action :authenticate_user!
-  before_action :authorize_admin!
-  before_action -> { authorize! :read, AuditLog }, only: [:index, :pdf_file, :excel_file]
+class Admin::AuditLogsController < ApplicationController
+    load_and_authorize_resource
+    
+    include Pagy::Backend
+    before_action :authenticate_user!
+  
+    def index
+      if params.dig(:q, :created_at_lteq).present?
+        params[:q][:created_at_lteq] = Date.parse(params[:q][:created_at_lteq]).end_of_day
+      end
 
-  def index
-    if params.dig(:q, :created_at_lteq).present?
-      params[:q][:created_at_lteq] = Date.parse(params[:q][:created_at_lteq]).end_of_day
+      @q = AuditLog.ransack(params[:q])
+      @pagy_audit_logs1, @audit_logs1 = pagy(@q.result.order(created_at: :desc), items: 10)
+     
     end
-
-    @q = AuditLog.ransack(params[:q])
-    @pagy_audit_logs1, @audit_logs1 = pagy(@q.result.order(created_at: :desc), items: 10)
-  end
 
   def pdf_file
     pdfgenerator = Pdf::AuditLogPdfGenerator.new(params)

@@ -1,6 +1,9 @@
 class NotificationController < ApplicationController
   before_action :authenticate_user!
 
+  include RestrictPages
+  before_action :authorize_finance_employee!
+
   def index
     user = User.find_by(employee_id: current_user.employee_id)
     

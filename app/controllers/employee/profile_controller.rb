@@ -1,7 +1,10 @@
 module Employee
     class ProfileController < ApplicationController
       before_action :authenticate_user!
-  
+
+      include RestrictPages
+      before_action :authorize_employee!
+      
       def index
         @user = current_user
       end

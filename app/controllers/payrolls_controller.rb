@@ -1,5 +1,6 @@
 class PayrollsController < ApplicationController
     include ActionView::Helpers::NumberHelper  # Make sure this line is included
+    load_and_authorize_resource
   
     def preview
       @payroll = Payroll.find(params[:id])
