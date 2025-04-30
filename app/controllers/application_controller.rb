@@ -83,19 +83,5 @@ class ApplicationController < ActionController::Base
   def after_sign_out_path_for(resource_or_scope)
     new_user_session_path # Redirect to login page after logout
   end
-
-  def authorize_admin!
-    if current_user.has_role?(:admin)
-      return true
-    elsif current_user.has_role?(:finance)
-      redirect_to finance_dashboard_path, alert: "You are not authorized to view this page."
-    elsif current_user.has_role?(:employee)
-      redirect_to employee_dashboard_path, alert: "You are not authorized to view this page."
-    else
-      redirect_to root_path, alert: "You are not authorized to view this page."
-    end
-  end
-
-  
   
 end
