@@ -28,7 +28,7 @@ module Excel
               full_name = "#{log.user.f_name} #{log.user.l_name}".capitalize
     
               sheet.add_row [
-                log.created_at.strftime("%Y-%m-%d %I:%M %p"),
+                log.created_at.strftime("%B %d, %Y - %I:%M:%S %p"),
                 full_name,
                 log.action&.capitalize || 'N/A'
               ]

@@ -60,7 +60,6 @@
                 <% if deductions_included %>
                     <% total_contributions += contributions[:sss] + contributions[:pagibig] + contributions[:philhealth].ceil %>
                 <% end %>
-
                 <div class="flex gap-2 px-2 md:flex-nowrap flex-wrap">
                     <div class="w-full md:w-1/2">
                         <label class="block text-sm text-gray-600 dark:text-white"> SSS: <span class="ml-2 font-medium text-md text-gray-900"> <%= Date.today.day >= 16 ? contributions[:sss] : 0 %> </span> </label>   

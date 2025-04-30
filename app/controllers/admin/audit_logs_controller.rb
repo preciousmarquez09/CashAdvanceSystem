@@ -1,5 +1,6 @@
 class Admin::AuditLogsController < ApplicationController
     load_and_authorize_resource
+    
     include Pagy::Backend
     before_action :authenticate_user!
   
@@ -10,6 +11,7 @@ class Admin::AuditLogsController < ApplicationController
 
       @q = AuditLog.ransack(params[:q])
       @pagy_audit_logs1, @audit_logs1 = pagy(@q.result.order(created_at: :desc), items: 10)
+     
     end
 
     def pdf_file

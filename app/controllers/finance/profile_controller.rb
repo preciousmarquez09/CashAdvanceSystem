@@ -1,6 +1,9 @@
 module Finance
     class ProfileController < ApplicationController
       before_action :authenticate_user!
+
+      include RestrictPages
+      before_action :authorize_finance!
   
       def index
         @user = current_user

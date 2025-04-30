@@ -31,12 +31,11 @@
     </div>
   </div>
   <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-    <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll</h2>
-    <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 mb-7">
-      <thead class="text-gray-700 bg-gray-200">
+    <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll (<%= @next_payroll.strftime("%B %d, %Y") %>)</h2>
+    <table class="w-full table-auto text-md sm:text-md text-center text-gray-500 mb-7">
+      <thead class="text-gray-700 bg-gray-200 ">
         <tr>
           <th class="p-2">Employee Name</th>
-          <th class="p-2">Due Date</th>
           <th class="p-2">Amount</th>
         </tr>
       </thead>
@@ -44,9 +43,8 @@
         <% if @due_next_payroll.any? %>
           <% @due_next_payroll.each do |repayment| %>
             <% employee = repayment.cash_adv_request.employee %>
-            <tr class="odd:bg-gray-50 even:bg-white">
+            <tr class="odd:bg-gray-50 even:bg-white ">
               <td class="p-2"><%= "#{employee.f_name} #{employee.l_name}" %></td>
-              <td class="p-2"><%= repayment.due_date.strftime("%Y-%m-%d") %></td>
               <td class="p-2">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
             </tr>
           <% end %>

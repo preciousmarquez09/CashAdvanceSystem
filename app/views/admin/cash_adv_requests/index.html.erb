@@ -90,18 +90,15 @@
         
             <div class="flex-1">
                 <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
-                    class: "w-full p-2 border border-gray-300 rounded-lg", 
-                    placeholder: "Search cash advance requests" %>
+                    class: "w-full p-2 border border-gray-300 rounded-lg", placeholder: "Search cash advance requests" %>
             </div>
             <div class="flex-shrink-0">
                 <%= f.label :created_at_gteq, 'From', class: "block text-sm font-medium mb-1" %>
-                <%= f.date_field :created_at_gteq,
-                    class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+                <%= f.date_field :created_at_gteq, class: "p-2 border border-gray-300 rounded-lg text-sm" %>
             </div>
             <div class="flex-shrink-0">
                 <%= f.label :created_at_lteq, 'To', class: "block text-sm font-medium mb-1" %>
-                <%= f.date_field :created_at_lteq,
-                    class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+                <%= f.date_field :created_at_lteq, class: "p-2 border border-gray-300 rounded-lg text-sm" %>
             </div>
             <div>
                 <%= f.submit "Search", class: "px-6 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold text-sm transition-colors" %>
@@ -113,11 +110,11 @@
             <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-2 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
-                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
                     <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th>
-                    <th scope="col" class="px-3 py-2 w-20 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/ Interest") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/ Interest") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
@@ -145,16 +142,16 @@
                     <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
                         <%= cashadvreq.repayment_months %>
                     </td>
-                    <td class="px-3 py-2 w-20 capitalize hidden md:table-cell">
+                    <td class="px-3 py-2 w-24 capitalize hidden md:table-cell">
                         <% total_amount = cashadvreq.amount + cashadvreq.interest_amount %>
                         <%= number_to_currency(total_amount, unit: "₱ ", precision: (total_amount % 1 == 0 ? 0 : 2)) %>
                     </td>
-                    <td class="px-3 py-2 w-24 capitalize">
+                    <td class="px-3 py-2 w-32 capitalize">
                         <span class="<%= cashadvreq.status_class %>">
                             <%= cashadvreq.status.capitalize %>
                         </span>
                     </td>
-                    <td class="px-3 py-2 w-24">
+                    <td class="px-3 py-2 w-32">
                         <%= link_to admin_cash_adv_request_path(cashadvreq.id), class: "px-2 py-1 text-blue-600" do %>
                             <i class="bi bi-eye-fill"></i>
                         <% end %>

@@ -1,8 +1,10 @@
 class Admin::CashAdvRequestsController < ApplicationController
     load_and_authorize_resource
+
     include RestrictPages
-    
     before_action :authorize_admin_finance!, only: [:index, :edit, :update]
+    before_action :check_cashadv_eligibility, only: [:new, :create]
+
     def index
       @eligibility = Eligibility.first
       @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f
@@ -176,6 +178,20 @@ class Admin::CashAdvRequestsController < ApplicationController
       permitted_params += [:approver_reason] if params.dig(:cash_adv_request, :approver_reason).present?
       
       params.require(:cash_adv_request).permit(permitted_params)
+    end
+    def check_cashadv_eligibility
+      @eligibility = Eligibility.first
+      @eligible = current_user&.salary.to_f >= @eligibility&.min_net_salary.to_f
+      unless @eligible && User.can_request_cashadv(current_user) == true && (current_user.has_role?(:finance) || current_user.has_role?(:employee))
+        
+        flash[:alert] = "You are not allowed to request new cash advance"
+        if current_user.has_role?(:finance)
+          redirect_to finance_dashboard_path
+        else current_user.has_role?(:employee)
+          redirect_to employee_dashboard_path
+        end
+
+      end
     end
     
 end
