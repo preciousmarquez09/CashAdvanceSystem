@@ -35,10 +35,7 @@ module Pdf
     
         pdf.text "CASH ADVANCE SYSTEM", size: 24, style: :bold, align: :center
         pdf.text "Generated on: #{Time.current.strftime('%B %-d, %Y - %I:%M %p')}", size: 12, align: :center
-        pdf.move_down 20
-    
-        pdf.text "CASH ADVANCE LIST – #{title_status}", size: 18, style: :bold, align: :center
-        pdf.move_down 20
+        pdf.move_down 10
     
         previous_status = nil
     
@@ -134,10 +131,10 @@ module Pdf
               end
             end
     
-            pdf.move_down 30
+            pdf.move_down 20
             pdf.stroke_color "cccccc"
             pdf.stroke_horizontal_rule
-            pdf.move_down 30
+            pdf.move_down 20
           end
         end
     
