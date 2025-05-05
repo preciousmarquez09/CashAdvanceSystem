@@ -32,7 +32,7 @@ class CashAdvNotification < Noticed::Base
   
     cash_adv_status = [ "declined", "approved"]
     if params[:action] == "pending"
-      "#{user.f_name} #{user.l_name} requested a new cash advance."
+      "#{user.f_name.capitalize} #{user.l_name.capitalize} requested a new cash advance."
     elsif cash_adv_status.include?(params[:action])
       "Your cash advance updated to #{params[:action]}"
     elsif params[:action] == "released"
@@ -44,7 +44,7 @@ class CashAdvNotification < Noticed::Base
       "Your cash advance for #{repayment_schedule_id&.due_date&.strftime('%B %d, %Y') || 'unknown date'} successfully paid."
     elsif params[:action] == "settled"
       if params[:message]
-        "#{user.f_name} #{user.l_name} cash advance successfully settled."
+        "#{user.f_name.capitalize} #{user.l_name.capitalize} cash advance successfully settled."
       else
         "Your cash advance successfully settled."
       end

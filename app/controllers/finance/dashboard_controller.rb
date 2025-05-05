@@ -42,18 +42,17 @@ class Finance::DashboardController < ApplicationController
 
     @myaccount_approved_cash_advances = current_user.cash_adv_requests.where(status: 'approved').count
 
-    if Date.today.day <= 15
-      start_date = Date.today.beginning_of_month
-      end_date = Date.today.change(day: 15)
+    today = Date.today
+    if today.day <= 15
+      pay_date = Date.new(today.year, today.month, 15)
     else
-      start_date = Date.today.change(day: 16)
-      end_date = Date.today.change(day: 30)
+      pay_date = Date.new(today.year, today.month, 30)
     end
     
     @myaccount_due_next_payroll_records = RepaymentSchedule
       .joins(cash_adv_request: :employee)
       .includes(cash_adv_request: :employee)
-      .where(due_date: start_date..end_date)
+      .where(due_date: pay_date)
       .where(status: "pending")
       .where(cash_adv_requests: { employee_id: current_user.employee_id })
     
@@ -61,13 +60,12 @@ class Finance::DashboardController < ApplicationController
       RepaymentSchedule
         .joins(cash_adv_request: :employee)
         .includes(cash_adv_request: :employee)
-        .where(due_date: start_date..end_date)
-        .where(status: "pending")
+        .where(due_date: pay_date)
         .order(:due_date),
       items: 10,
       page_param: :page_due_next_payroll
     )
-    @next_payroll = end_date
+    @next_payroll = pay_date
   
     @myaccount_due_next_payroll_total = @myaccount_due_next_payroll_records.sum(:amount)
     @myaccount_due_next_payroll_date = @myaccount_due_next_payroll_records.minimum(:due_date)

@@ -19,7 +19,7 @@ class Admin::AuditLogsController < ApplicationController
 
     if pdfgenerator.empty?
       flash[:alert] = "No audit logs found"
-      redirect_to admin_auditlogs_path
+      redirect_to admin_audit_logs_path
       return
     end
 
@@ -34,7 +34,7 @@ class Admin::AuditLogsController < ApplicationController
 
     if excel_generator.empty?
       flash[:alert] = "No audit logs found"
-      redirect_to admin_auditlogs_path
+      redirect_to admin_audit_logs_path
       return
     end
 

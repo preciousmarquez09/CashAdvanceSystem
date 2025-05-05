@@ -86,7 +86,7 @@
             <% active = request.path == profile_path %>
             <a href="<%= profile_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
                <i class="bi bi-people-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
-               <span class="hidden text-sm sm:inline ms-3"> <%= current_user.f_name.split.first + ' ' + current_user.l_name %> </span>
+               <span class="hidden text-sm sm:inline ms-3"> <%= current_user.f_name.split.first.capitalize + ' ' + current_user.l_name.capitalize %> </span>
             </a>
          </li>
 
