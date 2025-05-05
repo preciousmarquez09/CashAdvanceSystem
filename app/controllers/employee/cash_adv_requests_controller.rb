@@ -1,5 +1,7 @@
 class Employee::CashAdvRequestsController < ApplicationController
         load_and_authorize_resource
+        before_action :authenticate_user!
+        
         include RestrictPages
         before_action :authorize_employee!
         

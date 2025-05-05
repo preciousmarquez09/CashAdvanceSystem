@@ -1,6 +1,7 @@
 class Admin::CashAdvRequestsController < ApplicationController
     load_and_authorize_resource
-
+    before_action :authenticate_user!
+    
     include RestrictPages
     before_action :authorize_admin_finance!, only: [:index, :edit, :update]
     before_action :check_cashadv_eligibility, only: [:new, :create]

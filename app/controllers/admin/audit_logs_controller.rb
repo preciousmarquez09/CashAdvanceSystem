@@ -2,7 +2,9 @@ class Admin::AuditLogsController < ApplicationController
     load_and_authorize_resource
     
     include Pagy::Backend
+    include RestrictPages
     before_action :authenticate_user!
+    before_action :authorize_admin!
   
     def index
       if params.dig(:q, :created_at_lteq).present?
