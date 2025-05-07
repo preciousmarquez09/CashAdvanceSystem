@@ -9,65 +9,47 @@
             </button>
         <% end %>
     </div>
-
-    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'all', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'all' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    All
-                <% end %>
-            </li>
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'pending', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'pending' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    Pending 
-                    <% if @pending_count && @pending_count > 0 %>
-                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @pending_count %></span>
-                    <% end %>
-                <% end %>
-            </li>
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'approved', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'approved' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    Approved 
-                    <% if @approved_count && @approved_count > 0 %>
-                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @approved_count %></span>
-                    <% end %>
-                <% end %>
-            </li>
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'released', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'released' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    Released 
-                    <% if @released_count && @released_count > 0 %>
-                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @released_count %></span>
-                    <% end %>
-                <% end %>
-            </li>
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'on-going', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'on-going' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    On-Going 
-                    <% if @ongoing_count && @ongoing_count > 0 %>
-                        <span class="ml-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white"><%= @ongoing_count %></span>
-                    <% end %>
-                <% end %>
-            </li>
-            <li class="mr-2">
-                <%= link_to employee_cash_adv_requests_path(status: 'settled', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'settled' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    Settled 
-                <% end %>
-            </li>
-            <li>
-                <%= link_to employee_cash_adv_requests_path(status: 'declined', q: params[:q]&.to_unsafe_h), 
-                    class: "inline-block p-4 #{@status == 'declined' ? 'text-blue-600 border-b-2 border-blue-600 rounded-t-lg active' : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300'}" do %>
-                    Declined 
-                <% end %>
-            </li>
-        </ul>
-    </div>
+    <% if @cash_adv_request.present? %>
+        <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-5">
+            <span class=" font-medium text-xl rounded-xl  <%= @cash_adv_request.status_class %>"> <%= @cash_adv_request.status.capitalize %> Request </span> 
+            <div class="grid grid-cols-3 gap-4 px-10">
+                <div class=" p-4 ">
+                    <h2 class="text-lg font-semibold">Amount</h2>
+                    <p class="text-2xl font-bold text-black">
+                        <%= number_to_currency(@cash_adv_request.amount , unit: "₱ ", precision: (@cash_adv_request.amount  % 1 == 0 ? 0 : 2)) %>
+                    </p>
+                </div>
+                <div class=" p-4 ">
+                    <h2 class="text-lg font-semibold">Interest Amount</h2>
+                    <p class="text-2xl font-bold text-black">
+                        <%= number_to_currency(@cash_adv_request.interest_amount , unit: "₱ ", precision: (@cash_adv_request.interest_amount  % 1 == 0 ? 0 : 2)) %>
+                    </p>
+                </div>
+                <div class=" p-4 ">
+                    <h2 class="text-lg font-semibold">Total Amount w/Interest</h2>
+                    <p class="text-2xl font-bold text-red-600">
+                        <%= number_to_currency(@cash_adv_request.amount + @cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.amount + @cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %>
+                    </p>
+                </div>
+            </div>
+                
+            <div class="w-full border border-gray-400 rounded-2xl">
+                <button id="accordion-toggle" type="button" class="flex items-center justify-between w-full p-5 font-medium text-black hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-400">
+                    <span>Repayment Schedule</span>
+                    <svg id="accordion-icon" class="w-4 h-4 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5L5 1 1 5"/>
+                    </svg>
+                </button>
+                <div id="accordion-body" class="hidden p-5 text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+                    <% if @repayment_schedules.present? %>
+                    <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
+                  <% else %>
+                    <p class="text-center text-gray-500 italic">No repayment schedule available.</p>
+                  <% end %>
+                </div>
+            </div>
+        </div>
+    <% end %>
 
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
         <div class="mb-5 w-full">
@@ -84,12 +66,13 @@
         <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
             <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-2 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
-                    <th scope="col" class="px-3 py-2 w-36 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
-                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :interest_amount, "Interest") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/Interest") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
                     <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th> 
-                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
+                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :created_at, "Requested on") %></th>
+                    <th scope="col" class="px-3 py-2 w-28 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
             </thead>
@@ -101,14 +84,15 @@
             <% else %>
                 <% @cash_adv_requests.each do |cashadvreq| %>
                 <tr class="cash-advance-row text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-status="<%= cashadvreq.status.downcase %>">
-                    <th class="px-3 py-2 w-24 text-gray-900 dark:text-white hidden md:table-cell">
-                        <%= cashadvreq.employee_id %>
-                    </th>
-                    <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden">
-                        <%= cashadvreq.employee.f_name + " " + cashadvreq.employee.l_name %>
-                    </td>
+                    
                     <td class="px-3 py-2 w-24 capitalize hidden md:table-cell">
                         <%= number_to_currency(cashadvreq.amount, unit: "₱ ", precision: (cashadvreq.amount % 1 == 0 ? 0 : 2)) %>
+                    </td>
+                    <td class="px-3 py-2 w-24 capitalize hidden md:table-cell">
+                        <%= number_to_currency(cashadvreq.interest_amount, unit: "₱ ", precision: (cashadvreq.interest_amount % 1 == 0 ? 0 : 2)) %>
+                    </td>
+                    <td class="px-3 py-2 w-24 capitalize">
+                        <%= number_to_currency(cashadvreq.amount + cashadvreq.interest_amount, unit: "₱ ", precision: (cashadvreq.amount + cashadvreq.interest_amount % 1 == 0 ? 0 : 2)) %>
                     </td>
                     <td class="px-3 py-2 w-24 hidden md:table-cell capitalize">
                         <%= cashadvreq.cut_off %>
@@ -116,7 +100,10 @@
                     <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
                         <%= cashadvreq.repayment_months %>
                     </td>
-                    <td class="px-3 py-2 w-24 capitalize">
+                    <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
+                        <%= cashadvreq.created_at.strftime("%B %d, %Y") %>
+                    </td>
+                    <td class="px-3 py-2 w-28 capitalize">
                         <span class="<%= cashadvreq.status_class %>">
                             <%= cashadvreq.status.capitalize %>
                         </span>
@@ -140,66 +127,22 @@
             <%= render "/layouts/pagy/pagination", pagy: @pagy %>
         <% end %>
     </div>
-
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-      <% if @repayment_schedules.present? %>
-        <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
-      <% else %>
-        <p class="text-center text-gray-500 italic">No repayment schedule available.</p>
-      <% end %>
-    </div>
 </div>
 
 <%= render partial: "admin/cash_adv_requests/modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
 
 <script>
+  document.addEventListener('turbolinks:load', function () {
+    const toggle = document.getElementById('accordion-toggle');
+    const body = document.getElementById('accordion-body');
+    const icon = document.getElementById('accordion-icon');
 
-document.addEventListener('turbolinks:load', function() {
-    const tabs = document.querySelectorAll('[data-target]'); // Tab title
-    const rows = document.querySelectorAll('.cash-advance-row'); // Tab body
-    const noDataMessage = document.getElementById('no-data-message'); // message for data not found
-    
-    // Tab selection and row filtering
-    function selectTab(status) {
-        // Update active tab
-        tabs.forEach(tab => {
-            const isActive = tab.getAttribute('data-target') === status;
-            tab.classList.toggle('text-blue-600', isActive);
-            tab.classList.toggle('border-blue-600', isActive);
-            tab.classList.toggle('active', isActive);
-            tab.classList.toggle('dark:text-blue-500', isActive);
-            tab.classList.toggle('dark:border-blue-500', isActive);
-            tab.classList.toggle('border-transparent', !isActive);
-        });
-
-        // Filter rows
-        let visibleCount = 0;
-        rows.forEach(row => {
-            const isVisible = status === 'all' || row.getAttribute('data-status') === status;
-            row.classList.toggle('hidden', !isVisible);
-            if (isVisible) visibleCount++;
-        });
-
-        // Toggle "no data" message
-        noDataMessage.classList.toggle('hidden', visibleCount > 0 || rows.length === 0);
-
-        // Save selected tab in local storage to prevent going to all when searching
-        localStorage.setItem('activeTab', status);
+    if (toggle && body && icon) {
+      toggle.addEventListener('click', () => {
+        body.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
     }
-
-    // Initialize with default tab to "all"
-    const savedTab = localStorage.getItem('activeTab') || 'all';
-    selectTab(savedTab);
-
-    // Click events to tabs
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            selectTab(tab.getAttribute('data-target'));
-        });
-    });
-
-});
-
+  });
 </script>
-
 

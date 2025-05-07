@@ -1,6 +1,6 @@
 <% if user_signed_in? %>
 <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-16 sm:w-72 h-screen transition-all bg-gray-50 dark:bg-gray-800" aria-label="Sidebar">
-   <div class="h-full px-2 sm:px-3 py-4 overflow-y-auto">
+   <div class="h-full px-2 sm:px-3 py-4 overflow-y-auto bg-gradient-to-b from-white to-blue-300">
       <ul class="space-y-2 font-medium">
          <% if current_user.has_role?(:employee) %>
             <% dashboard_path = employee_dashboard_path %>
@@ -15,7 +15,7 @@
 
          <li>
             <% active = request.path == dashboard_path %>
-            <a href="<%= dashboard_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+            <a href="<%= dashboard_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                <svg class="w-6 h-6 transition duration-75 <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                   <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                   <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
@@ -26,7 +26,7 @@
          <% if current_user.has_role?(:finance) %>
             <li>
                <% active = request.path.starts_with?("/admin/cash_adv_requests") || request.path.starts_with?("/cash_adv_requests") %>
-               <a href="<%= admin_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+               <a href="<%= admin_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                   <i class="bi bi-cash-stack text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
                   <span class="hidden sm:inline ms-3">Cash Advance</span>
                </a>
@@ -36,7 +36,7 @@
           <% if current_user.has_role?(:employee) %>
             <li>
                <% active = request.path.starts_with?("/employee/cash_adv_requests") %>
-               <a href="<%= employee_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+               <a href="<%= employee_cash_adv_requests_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                   <i class="bi bi-cash-stack text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
                   <span class="hidden sm:inline ms-3">Cash Advance</span>
                </a>
@@ -46,7 +46,7 @@
          <% if can?(:index, User) %>
             <li>
                <% active = request.path.starts_with?("/finance/users")%>
-               <a href="<%= finance_users_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+               <a href="<%= finance_users_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                   <i class="bi bi-people-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
                   <span class="hidden sm:inline ms-3">Users</span>
                </a>
@@ -55,7 +55,7 @@
 
          <li>
             <% active = request.path.starts_with?(notification_index_path) %>
-            <a href="<%= notification_index_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+            <a href="<%= notification_index_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                <div class="relative">
                   <i class="bi bi-bell-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
 
@@ -84,7 +84,7 @@
 
          <li>
             <% active = request.path == profile_path %>
-            <a href="<%= profile_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+            <a href="<%= profile_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                <i class="bi bi-people-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
                <span class="hidden text-sm sm:inline ms-3"> <%= current_user.f_name.split.first.capitalize + ' ' + current_user.l_name.capitalize %> </span>
             </a>
@@ -92,7 +92,7 @@
 
          <li>
             <% active = request.path == edit_password_path %>
-            <a href="<%= edit_password_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+            <a href="<%= edit_password_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                <i class="bi bi-person-lock text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
                <span class="hidden sm:inline ms-3">Change Password</span>
             </a>
@@ -100,7 +100,7 @@
 
          <li>
             <%= form_with url: destroy_user_session_path, method: :delete, html: { id: "logout-form" } do %>
-            <a href="#" onclick="confirmLogout(event)" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <a href="#" onclick="confirmLogout(event)" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700">
                <i class="bi bi-box-arrow-right text-lg text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                <span class="hidden sm:inline ms-3">Sign Out</span>
             </a>

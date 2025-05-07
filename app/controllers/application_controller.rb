@@ -5,15 +5,21 @@ class ApplicationController < ActionController::Base
   before_action :restrict_signup, only: [:new, :create], if: :devise_controller?
 
   rescue_from CanCan::AccessDenied do |exception|
-    flash[:alert] = "You don’t have permission to access this page"
-    if current_user.has_role?(:admin)
-      redirect_to admin_dashboard_path
-    elsif current_user.has_role?(:finance)
-      redirect_to finance_dashboard_path
-    elsif current_user.has_role?(:employee)
-      redirect_to employee_dashboard_path
+    
+    if user_signed_in?
+      flash[:alert] = "You don’t have permission to access this page"
+      if current_user&.has_role?(:admin)
+        redirect_to admin_dashboard_path
+      elsif current_user&.has_role?(:finance)
+        redirect_to finance_dashboard_path
+      elsif current_user&.has_role?(:employee)
+        redirect_to employee_dashboard_path
+      else
+        redirect_to root_path
+      end
     else
-      redirect_to root_path
+      flash[:alert] = "You need to sign in or sign up before continuing."
+      redirect_to new_user_session_path
     end
   end
 

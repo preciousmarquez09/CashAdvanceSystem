@@ -2,12 +2,10 @@ class Admin::DashboardController < ApplicationController
   
   include Pagy::Backend
   include RestrictPages
-  
-
+  before_action :authorize_admin!
   before_action :authenticate_user!
   
   def index
-    authorize! :read, :dashboard
     @total_pending_requests = CashAdvRequest.where(status: "pending").count
     @total_released_requests = CashAdvRequest.where(status: ['released', 'on-going', 'settled']).count
     @total_ongoing_cash_advances = CashAdvRequest.where(status: "ongoing").count
@@ -27,12 +25,5 @@ class Admin::DashboardController < ApplicationController
     @pagy_audit_logs, @audit_logs = pagy(@q.result.order(created_at: :desc), items: 10)
   end
 
-  private
-
-  def authorize_dashboard
-    unless can?(:read, :dashboard)
-      redirect_to root_path, alert: "You are not authorized to view this page."
-    end
-  end
 
 end
