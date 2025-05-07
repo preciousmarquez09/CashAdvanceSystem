@@ -2,9 +2,9 @@
 
 <div class="relative overflow-x-auto sm:rounded-lg">
     <% if repayment_schedules.present? %>
-        <div class="flex justify-between items-center px-4">
+        <div class="flex justify-between items-center px-4 text-black">
             <p class="text-sm sm:text-lg font-semibold mb-2"> Repayment Schedules </p>
-            <p class="text-sm sm:text-lg mb-2 mr-10">
+            <p class="text-sm sm:text-lg mb-2 ">
                 Paid: <b> <%= repayment_schedules.where(status: 'paid').count %> of <%= repayment_schedules.count %></b>
             </p>
         </div>
@@ -24,7 +24,7 @@
                     <th scope="row" class="px-3 py-2 sm:px-6 sm:py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         <%= schedule.due_date.strftime("%B %d, %Y") %>
                     </th>
-                    <td class="px-3 py-2 sm:px-6 sm:py-4">
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 text-black">
                         <%= number_to_currency(schedule.amount, unit: "₱ ", precision: (schedule.amount % 1 == 0 ? 0 : 2)) %>
                     </td>
                     <td class="px-3 py-2 sm:px-6 sm:py-4">
