@@ -34,7 +34,9 @@ class Finance::DashboardController < ApplicationController
     .distinct
     .count(:cash_adv_request_id)
 
-    @myaccount_total_cash_advance = current_user.cash_adv_requests.where(status: ['released', 'on-going', 'settled']).sum(:amount)
+    @myaccount_total_cash_advance = current_user.cash_adv_requests.where("created_at >=?", Time.current.beginning_of_year)
+                                                                  .where(status: ['released', 'on-going', 'settled'])
+                                                                  .sum("amount + interest_amount")
 
     @myaccount_pending_cash_advances = current_user.cash_adv_requests.pending.count
 
