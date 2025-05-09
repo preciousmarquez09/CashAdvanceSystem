@@ -67,3 +67,4 @@ gem 'prawn'
 gem 'prawn-table'
 gem 'axlsx'
 gem 'axlsx_rails'
+

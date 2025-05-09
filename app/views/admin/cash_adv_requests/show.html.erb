@@ -104,9 +104,9 @@
     <% if ["declined", "on-going", "settled", "released", "approved"].include?(@cash_adv_request.status) %>
         <hr class="p-3 mt-5"></hr>
         <div class="w-full md:w-1/2 mb-5">
-            <span class="px-3 py-2 text-xl font-semibold rounded <%= @cash_adv_request.status_class %>">
-                            <%= @cash_adv_request.status.capitalize %>
-                        </span>
+            <span class="px-3 py-2 text-xl font-semibold rounded <%= status_class(@cash_adv_request.status) %>">
+                <%= @cash_adv_request.status.capitalize %>
+            </span>
         </div>
         <% if @cash_adv_request.approver_id.present? %>
         <div class="w-full md:w-full mb-5">

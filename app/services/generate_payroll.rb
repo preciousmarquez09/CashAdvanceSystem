@@ -18,8 +18,7 @@ class GeneratePayroll
 
         is_first_cutoff = today.day == 15
         description_date = today.strftime('%B %d, %Y')
-
-  
+        
         # Check for duplicate
         next if Payroll.exists?(user_id: user.id, description: "Payroll for #{description_date}")
   

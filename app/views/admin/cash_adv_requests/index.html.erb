@@ -147,7 +147,7 @@
                         <%= number_to_currency(total_amount, unit: "₱ ", precision: (total_amount % 1 == 0 ? 0 : 2)) %>
                     </td>
                     <td class="px-3 py-2 w-32 capitalize">
-                        <span class="<%= cashadvreq.status_class %>">
+                        <span class="<%= status_class(cashadvreq.status) %>">
                             <%= cashadvreq.status.capitalize %>
                         </span>
                     </td>
