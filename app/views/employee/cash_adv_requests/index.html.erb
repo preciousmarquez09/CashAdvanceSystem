@@ -11,7 +11,7 @@
     </div>
     <% if @cash_adv_request.present? %>
         <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-5">
-            <span class=" font-medium text-xl rounded-xl  <%= @cash_adv_request.status_class %>"> <%= @cash_adv_request.status.capitalize %> Request </span> 
+            <span class=" font-medium text-xl rounded-xl  <%= status_class(@cash_adv_request.status) %>"> <%= @cash_adv_request.status.capitalize %> Request </span> 
             <div class="grid grid-cols-3 gap-4 px-10">
                 <div class=" p-4 ">
                     <h2 class="text-lg font-semibold">Amount</h2>
@@ -104,7 +104,7 @@
                         <%= cashadvreq.created_at.strftime("%B %d, %Y") %>
                     </td>
                     <td class="px-3 py-2 w-28 capitalize">
-                        <span class="<%= cashadvreq.status_class %>">
+                        <span class="<%= status_class(cashadvreq.status) %>">
                             <%= cashadvreq.status.capitalize %>
                         </span>
                     </td>

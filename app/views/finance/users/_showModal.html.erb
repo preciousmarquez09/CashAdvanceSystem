@@ -113,7 +113,7 @@
                                 <label class="block text-sm text-black font-semibold dark:text-white"> <%= number_to_currency(cash_adv.amount + cash_adv.interest_amount, unit: "₱ ", precision: (cash_adv.amount + cash_adv.interest_amount % 1 == 0 ? 0 : 2))  %> </label>
                             </div>
                             <div>
-                                <label class="block <%= cash_adv.status_class %>"> <%= cash_adv.status %> </label>
+                                <label class="block <%= status_class(cash_adv.status) %>"> <%= cash_adv.status %> </label>
                             </div>
                             <div class="ml-5">
                                 <%= link_to "View", admin_cash_adv_request_path(cash_adv.id), class: "px-5 py-1 text-white bg-blue-500 rounded" %>
