@@ -2,7 +2,7 @@ class User < ApplicationRecord
   attr_accessor :remove_profile
   has_one_attached :profile_picture
   has_many :cash_adv_requests, foreign_key: "employee_id", primary_key: "employee_id", dependent: :destroy
-  has_many :approved_cash_adv_requests, foreign_key: "approver_id", class_name: "CashAdvRequest", dependent: :destroy
+  has_many :approved_cash_adv_requests, foreign_key: "approver_id", class_name: "CashAdvRequest", dependent: :nullify
   has_many :audit_logs, dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy
   has_many :payrolls, foreign_key: 'user_id', dependent: :destroy
