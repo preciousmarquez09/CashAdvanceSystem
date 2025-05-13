@@ -161,8 +161,8 @@
                                     <i class="bi bi-pencil-square"></i>
                                 <% end %>
                             <% end %>
-
-                            <%= link_to admin_cash_adv_request_path(cashadvreq.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { cashadvreq_id: cashadvreq.id }, onclick: "confirmDelete(event, this); return false;" do %>
+                            
+                            <% link_to admin_cash_adv_request_path(cashadvreq.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { cashadvreq_id: cashadvreq.id }, onclick: "confirmDelete(event, this); return false;" do %>
                                 <i class="bi bi-trash3-fill"></i>
                             <% end %>
                         <% end %>

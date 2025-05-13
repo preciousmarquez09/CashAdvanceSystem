@@ -63,7 +63,7 @@
                             <%= link_to edit_admin_user_path(user.id), class: "px-2 py-1 text-orange-600" do %>
                                 <i class="bi bi-pencil-square"></i>
                             <% end %>
-                            <%= link_to admin_user_path(user.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { user_id: user.id }, onclick: "confirmDelete(event, this); return false;" do %>
+                            <% link_to admin_user_path(user.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { user_id: user.id }, onclick: "confirmDelete(event, this); return false;" do %>
                                 <i class="bi bi-trash3-fill"></i>
                               <% end %>
                         </td>
