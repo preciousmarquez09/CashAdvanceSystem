@@ -25,7 +25,7 @@
 
   <body>
 
-    <% if user_signed_in? && current_user.is_first%>
+    <% if user_signed_in? && (current_user.is_first || current_user.has_role?(:admin))%>
       <% if current_user.has_role?(:admin) %>
         <%= render "layouts/navbar/admin_sidenav" %>
       <% elsif current_user.has_role?(:employee) %>
@@ -59,7 +59,7 @@
     <% end %>
 
 
-    <% if user_signed_in? && current_user.is_first %>
+    <% if user_signed_in? && (current_user.is_first || current_user.has_role?(:admin)) %>
       <div class="p-4 ml-16 sm:ml-72 transition-all">
         <%= yield %>
       </div>
