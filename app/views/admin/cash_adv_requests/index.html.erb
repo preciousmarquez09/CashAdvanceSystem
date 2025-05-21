@@ -222,7 +222,7 @@ document.addEventListener('turbolinks:load', function () {
       .map(cb => parseInt(cb.value, 10));
     outputField.value = JSON.stringify(selected);
 
-    // Uncheck select all if not all checkboxes are selected
+    // Uncheck select all if not all selected
     if (selectAllCheckbox) {
       const allChecked = Array.from(checkboxes).every(cb => cb.checked);
       selectAllCheckbox.checked = allChecked;
