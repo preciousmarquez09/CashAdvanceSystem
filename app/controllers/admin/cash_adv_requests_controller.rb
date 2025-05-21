@@ -124,7 +124,47 @@ class Admin::CashAdvRequestsController < ApplicationController
       end
     end
     
+    def multiple_update
+      
+      status = params[:status] == 'pending' ? 'approved' : 'released'
 
+      if params[:selected_ids].present? && JSON.parse(params[:selected_ids]).any?
+        @selected_ids = JSON.parse(params[:selected_ids]) rescue []
+      else
+        flash[:alert] = "Please select a cash advance to #{status}."
+        redirect_to admin_cash_adv_requests_path and return
+      end
+      
+      @selected_ids.each do |id|
+        cash_adv_request = CashAdvRequest.find_by(id: id)
+        next unless cash_adv_request
+      
+        cash_adv_request.update(status: status, approver_id: current_user.employee_id)
+        GenerateSchedule.new(cash_adv_request).perform if status == "released"
+
+        employee = User.find_by(employee_id: cash_adv_request.employee_id)
+        repayment_schedule = RepaymentSchedule.find_by(cash_adv_request_id: id)
+        next unless employee
+      
+        notification_data = {
+          employee_id: employee.employee_id,
+          cash_adv_request_id: cash_adv_request.id,
+          action: status
+        }
+        if repayment_schedule.present?
+          notification_data[:repayment_schedule_id] = repayment_schedule.id
+        end
+
+        if status == "released"
+          UserMailer.notification_email(employee, notification_data).deliver_now 
+        end
+
+        CashAdvNotification.with(notification_data).deliver(employee)
+      end
+      redirect_to admin_cash_adv_requests_path, notice: "Cash Advance Request updated successfully."
+    end
+    
+    
     def show
       @cash_adv_request = CashAdvRequest.includes(:employee, :approver, :repayment_schedules).find(params[:id])
       @approver = User.find_by(employee_id: @cash_adv_request.approver_id)
@@ -178,6 +218,8 @@ class Admin::CashAdvRequestsController < ApplicationController
       # Ensure :approver_reason is added only if it's present in params
       permitted_params += [:approver_reason] if params.dig(:cash_adv_request, :approver_reason).present?
       
+      permitted_params += [:selected_ids] if params.dig(:cash_adv_request, :selected_ids).present?
+
       params.require(:cash_adv_request).permit(permitted_params)
     end
     def check_cashadv_eligibility

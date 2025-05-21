@@ -105,10 +105,27 @@
             </div>
             <% end %>
         </div>
-
+        
+        <% if ['pending', 'approved'].include?(@status) && @cash_adv_requests.present? && current_user.has_role?(:finance) %>
+            <%= form_with url: multiple_update_admin_cash_adv_requests_path, method: :put, local: true do |f| %>
+                <%= text_field_tag :selected_ids, '', id: 'update_id_cont', readonly: true, class: 'text-black hidden' %>
+                <%= text_field_tag :status, '', value: @status, readonly: true, class: 'text-black hidden' %>
+                <% status = @status == 'pending' ? 'approved all' : 'released all' %>
+                <div class=" mb-5">
+                    <%= submit_tag status, class: "capitalize font-bold text-sm sm:text-base px-3 sm:px-4 py-2 text-white shadow-md rounded-md #{status.include?('approved') ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'}" %>
+                </div>
+            <% end %>
+        <% end %>
+        
         <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
             <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
+                    <% if ['pending', 'approved'].include?(@status) && @cash_adv_requests.present? && current_user.has_role?(:finance) %>
+                        <th scope="col" class="px-2 py-2 w-10 sm:table-cell whitespace-nowrap text-center">
+                            <input type="checkbox" id="select-all-checkbox">
+                        </th>
+                    <% end %>
+                
                     <th scope="col" class="px-2 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :employee_id, "Employee ID") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
@@ -119,6 +136,7 @@
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
             </thead>
+            
             <tbody>
             <% if @cash_adv_requests.empty? %>
                 <tr class="cash-advance-row">
@@ -127,6 +145,13 @@
             <% else %>
                 <% @cash_adv_requests.each do |cashadvreq| %>
                 <tr class="cash-advance-row text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-status="<%= cashadvreq.status.downcase %>">
+                    
+                    <% if ['pending', 'approved'].include?(@status) && current_user.has_role?(:finance)%>
+                        <td class="px-3 py-2 w-10 text-center">
+                        <input type="checkbox" name="update_ids[]" value="<%= cashadvreq.id %>" class="update-id">
+                        </td>
+                    <% end %>
+              
                     <th class="px-3 py-2 w-24 text-gray-900 dark:text-white hidden md:table-cell">
                         <%= cashadvreq.employee_id %>
                     </th>
@@ -162,7 +187,7 @@
                                 <% end %>
                             <% end %>
                             
-                            <% link_to admin_cash_adv_request_path(cashadvreq.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { cashadvreq_id: cashadvreq.id }, onclick: "confirmDelete(event, this); return false;" do %>
+                            <%= link_to admin_cash_adv_request_path(cashadvreq.id), class: "delete-user-btn px-2 py-1 text-red-600", data: { cashadvreq_id: cashadvreq.id }, onclick: "confirmDelete(event, this); return false;" do %>
                                 <i class="bi bi-trash3-fill"></i>
                             <% end %>
                         <% end %>
@@ -186,6 +211,37 @@
 <%= render partial: "modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
 
 <script>
+document.addEventListener('turbolinks:load', function () {
+  const checkboxes = document.querySelectorAll('.update-id');
+  const outputField = document.getElementById('update_id_cont');
+  const selectAllCheckbox = document.getElementById('select-all-checkbox');
+
+  function updateSelectedIds() {
+    const selected = Array.from(checkboxes)
+      .filter(cb => cb.checked)
+      .map(cb => parseInt(cb.value, 10));
+    outputField.value = JSON.stringify(selected);
+
+    // Uncheck select all if not all checkboxes are selected
+    if (selectAllCheckbox) {
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      selectAllCheckbox.checked = allChecked;
+    }
+  }
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', updateSelectedIds);
+  });
+
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', function () {
+      checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+      updateSelectedIds();
+    });
+  }
+
+  updateSelectedIds();
+});
 
 document.addEventListener('turbolinks:load', function() {
     const tabs = document.querySelectorAll('[data-target]'); // Tab title
