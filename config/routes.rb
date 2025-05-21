@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       collection do
         get :pdf_file
         get :excel_file
+        put :multiple_update
       end
     end
     resources :audit_logs, only: [:index] do
