@@ -161,7 +161,8 @@
             <%= f.label :employment_status, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
               Employment Status <span class="text-red-500">*</span>
             <% end %>
-            <div class="border border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-2.5 h-11 flex items-center space-x-4">
+
+            <div class="border border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-2.5 flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
               <div class="flex items-center space-x-2">
                 <%= f.radio_button :employment_status, "regular", id: "estatus_regular", class: "form-check-input cursor-pointer", checked: @user.employment_status == "regular" %>
                 <%= f.label :estatus_regular, "Regular", for: "estatus_regular", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
@@ -171,10 +172,12 @@
                 <%= f.label :estatus_probationary, "Probationary", for: "estatus_probationary", class: "text-sm font-medium text-gray-900 dark:text-white cursor-pointer" %>
               </div>
             </div>
+
             <% if @user.errors[:employment_status].present? %>
               <p class="text-red-500 text-xs mt-1 ml-2"><%= @user.errors.full_messages_for(:employment_status).first %></p>
             <% end %>  
           </div>
+
         </div>
         <div class="mb-2">
           <%= f.label :salary, class: "block mb-1 text-sm font-medium text-gray-900 dark:text-white" do %>
@@ -215,19 +218,19 @@
             </div>
         </div>
       
-        <div class="p-3 flex justify-between items-center">
-            <div class="flex-grow-0 w-full">
-            <%= f.submit "Update", class: "p-3 bg-green-500 text-white font-bold rounded-lg cursor-pointer px-8" %>
-            </div>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div class="w-full sm:w-auto">
+            <%= f.submit "Update", class: "w-full sm:w-auto p-3 bg-green-500 text-white font-bold rounded-lg cursor-pointer px-8" %>
+          </div>
         <% end %>
         
-            <div class="flex-grow-0">
-            <%= button_to "Reset Password", reset_password_admin_user_path(@user), 
+             <div class="w-full sm:w-auto">
+              <%= button_to "Reset Password", reset_password_admin_user_path(@user), 
                 method: :post, 
                 params: { temporary_password: @temporary_password }, 
-                class: "bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg whitespace-nowrap cursor-pointer" %>
+                class: "w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg whitespace-nowrap cursor-pointer" %>
             </div>
-      </div>
+        </div>
   </div>
 </div>
 

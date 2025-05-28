@@ -83,28 +83,31 @@
         </ul>
     </div>
 
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
-        <div class="mb-5 w-full">
-            <%= search_form_for @q, url: admin_cash_adv_requests_path, method: :get, class: "flex flex-wrap items-end gap-4" do |f| %>
+    <div class="mb-5 w-full">
+        <%= search_form_for @q, url: admin_cash_adv_requests_path, method: :get, class: "flex flex-wrap items-end gap-4" do |f| %>
             <%= hidden_field_tag :status, @status %>
-        
-            <div class="flex-1">
-                <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
-                    class: "w-full p-2 border border-gray-300 rounded-lg", placeholder: "Search cash advance requests" %>
+
+            <div class="w-full sm:flex-1">
+            <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
+                class: "w-full p-2 border border-gray-300 rounded-lg text-sm", placeholder: "Search cash advance requests" %>
             </div>
-            <div class="flex-shrink-0">
-                <%= f.label :created_at_gteq, 'From', class: "block text-sm font-medium mb-1" %>
-                <%= f.date_field :created_at_gteq, class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+
+            <div class="w-full sm:w-auto">
+            <%= f.label :created_at_gteq, 'From', class: "block text-sm font-medium mb-1" %>
+            <%= f.date_field :created_at_gteq, class: "w-full sm:w-auto p-2 border border-gray-300 rounded-lg text-sm" %>
             </div>
-            <div class="flex-shrink-0">
-                <%= f.label :created_at_lteq, 'To', class: "block text-sm font-medium mb-1" %>
-                <%= f.date_field :created_at_lteq, class: "p-2 border border-gray-300 rounded-lg text-sm" %>
+
+            <div class="w-full sm:w-auto">
+            <%= f.label :created_at_lteq, 'To', class: "block text-sm font-medium mb-1" %>
+            <%= f.date_field :created_at_lteq, class: "w-full sm:w-auto p-2 border border-gray-300 rounded-lg text-sm" %>
             </div>
-            <div>
-                <%= f.submit "Search", class: "px-6 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold text-sm transition-colors" %>
+
+            <div class="w-full sm:w-auto">
+            <%= f.submit "Search", class: "w-full sm:w-auto px-6 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold text-sm transition-colors" %>
             </div>
-            <% end %>
-        </div>
+        <% end %>
+    </div>
+
         
         <% if ['pending', 'approved'].include?(@status) && @cash_adv_requests.present? && current_user.has_role?(:finance) %>
             <%= form_with url: multiple_update_admin_cash_adv_requests_path, method: :put, local: true do |f| %>
@@ -117,8 +120,8 @@
             <% end %>
         <% end %>
         
-        <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
-            <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+        <table class="w-full table-auto text-[10px] sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
+            <thead class="text-[10px] sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <% if ['pending', 'approved'].include?(@status) && @cash_adv_requests.present? && current_user.has_role?(:finance) %>
                         <th scope="col" class="px-2 py-2 w-10 sm:table-cell whitespace-nowrap text-center">
@@ -130,8 +133,8 @@
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, "employee_f_name", "Name") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
-                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th>
-                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/ Interest") %></th>
+                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, ("Repayment<br>Months").html_safe) %></th>
+                    <th scope="col" class="px-3 py-2 w-24 hidden sm:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, ("Total Amount<br>w/ Interest").html_safe) %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
                     <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
                 </tr>
@@ -144,7 +147,7 @@
                 </tr>
             <% else %>
                 <% @cash_adv_requests.each do |cashadvreq| %>
-                <tr class="cash-advance-row text-sm sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-status="<%= cashadvreq.status.downcase %>">
+                <tr class="cash-advance-row text-[14px] sm:text-sm md:text-md lg:text-md bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-status="<%= cashadvreq.status.downcase %>">
                     
                     <% if ['pending', 'approved'].include?(@status) && current_user.has_role?(:finance)%>
                         <td class="px-3 py-2 w-10 text-center">
@@ -155,7 +158,7 @@
                     <th class="px-3 py-2 w-24 text-gray-900 dark:text-white hidden md:table-cell">
                         <%= cashadvreq.employee_id %>
                     </th>
-                    <td class="px-3 py-3 w-24 capitalize max-w-[150px] truncate overflow-hidden">
+                    <td class="px-3 py-3 w-24 capitalize max-w-[130px] truncate overflow-hidden">
                         <%= cashadvreq.employee.f_name + " " + cashadvreq.employee.l_name %>
                     </td>
                     <td class="px-3 py-2 w-24 capitalize hidden md:table-cell">

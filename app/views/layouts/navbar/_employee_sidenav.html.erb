@@ -14,6 +14,18 @@
          <% end %>
 
          <li>
+            <% active = request.path == profile_path %>
+            <a href="<%= profile_path %>" class="flex flex-col sm:flex-row items-center p-2 mb-5 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
+               <% if current_user.profile_picture.attached? %>
+                  <%= image_tag current_user.profile_picture, class: "w-[30px] h-[30px] object-cover rounded-full sm:w-[40px] sm:h-[40px] md:w-[40px] md:h-[40px]" %>
+               <% else %>
+                  <i class="bi bi-people-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
+               <% end %>
+               <span class="hidden text-lg font-bold sm:inline ms-3"> <%= current_user.f_name.split.first.capitalize + ' ' + current_user.l_name.capitalize %> </span>
+            </a>
+         </li>
+
+         <li>
             <% active = request.path == dashboard_path %>
             <a href="<%= dashboard_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
                <svg class="w-6 h-6 transition duration-75 <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -82,13 +94,7 @@
             </a>
          </li>
 
-         <li>
-            <% active = request.path == profile_path %>
-            <a href="<%= profile_path %>" class="flex flex-col sm:flex-row items-center p-2 rounded-lg group <%= active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700' %>">
-               <i class="bi bi-people-fill text-lg <%= active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' %>"></i>
-               <span class="hidden text-sm sm:inline ms-3"> <%= current_user.f_name.split.first.capitalize + ' ' + current_user.l_name.capitalize %> </span>
-            </a>
-         </li>
+         
 
          <li>
             <% active = request.path == edit_password_path %>

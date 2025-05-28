@@ -10,70 +10,77 @@
         <% end %>
     </div>
     <% if @cash_adv_request.present? %>
-        <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mb-5">
-            <span class=" font-medium text-xl rounded-xl  <%= status_class(@cash_adv_request.status) %>"> <%= @cash_adv_request.status.capitalize %> Request </span> 
-            <div class="grid grid-cols-3 gap-4 px-10">
-                <div class=" p-4 ">
-                    <h2 class="text-lg font-semibold">Amount</h2>
-                    <p class="text-2xl font-bold text-black">
-                        <%= number_to_currency(@cash_adv_request.amount , unit: "₱ ", precision: (@cash_adv_request.amount  % 1 == 0 ? 0 : 2)) %>
-                    </p>
-                </div>
-                <div class=" p-4 ">
-                    <h2 class="text-lg font-semibold">Interest Amount</h2>
-                    <p class="text-2xl font-bold text-black">
-                        <%= number_to_currency(@cash_adv_request.interest_amount , unit: "₱ ", precision: (@cash_adv_request.interest_amount  % 1 == 0 ? 0 : 2)) %>
-                    </p>
-                </div>
-                <div class=" p-4 ">
-                    <h2 class="text-lg font-semibold">Total Amount w/Interest</h2>
-                    <p class="text-2xl font-bold text-red-600">
-                        <%= number_to_currency(@cash_adv_request.amount + @cash_adv_request.interest_amount, unit: "₱ ", precision: (@cash_adv_request.amount + @cash_adv_request.interest_amount % 1 == 0 ? 0 : 2)) %>
-                    </p>
-                </div>
+        <div class="relative overflow-hidden shadow-md sm:rounded-lg p-4 sm:p-8 border-t border-gray-200 mb-5">
+            <span class="font-medium text-lg sm:text-xl rounded-xl <%= status_class(@cash_adv_request.status) %>">
+            <%= @cash_adv_request.status.capitalize %> Request
+            </span> 
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 px-2 sm:px-10 mt-4">
+            <div class="p-2">
+                <h2 class="text-base sm:text-lg font-semibold">Amount</h2>
+                <p class="text-xl sm:text-2xl font-bold text-black">
+                <%= number_to_currency(@cash_adv_request.amount , unit: "₱ ", precision: (@cash_adv_request.amount  % 1 == 0 ? 0 : 2)) %>
+                </p>
             </div>
-                
-            <div class="w-full border border-gray-400 rounded-2xl">
-                <button id="accordion-toggle" type="button" class="flex items-center justify-between w-full p-5 font-medium text-black hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-400">
-                    <span>Repayment Schedule</span>
-                    <svg id="accordion-icon" class="w-4 h-4 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5L5 1 1 5"/>
-                    </svg>
-                </button>
-                <div id="accordion-body" class="hidden p-5 text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
-                    <% if @repayment_schedules.present? %>
-                    <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
-                  <% else %>
-                    <p class="text-center text-gray-500 italic">No repayment schedule available.</p>
-                  <% end %>
-                </div>
+            <div class="p-2">
+                <h2 class="text-base sm:text-lg font-semibold">Interest Amount</h2>
+                <p class="text-xl sm:text-2xl font-bold text-black">
+                <%= number_to_currency(@cash_adv_request.interest_amount , unit: "₱ ", precision: (@cash_adv_request.interest_amount  % 1 == 0 ? 0 : 2)) %>
+                </p>
+            </div>
+            <div class="p-2">
+                <h2 class="text-base sm:text-lg font-semibold">Total Amount w/Interest</h2>
+                <p class="text-xl sm:text-2xl font-bold text-red-600">
+                <%= number_to_currency(@cash_adv_request.amount + @cash_adv_request.interest_amount, unit: "₱ ", precision: ((@cash_adv_request.amount + @cash_adv_request.interest_amount) % 1 == 0 ? 0 : 2)) %>
+                </p>
+            </div>
+            </div>
+
+            <div class="w-full border border-gray-400 rounded-2xl mt-4">
+            <button id="accordion-toggle" type="button" class="flex items-center justify-between w-full p-5 font-medium text-black hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-400">
+                <span>Repayment Schedule</span>
+                <svg id="accordion-icon" class="w-4 h-4 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5L5 1 1 5"/>
+                </svg>
+            </button>
+            <div id="accordion-body" class="hidden p-5 text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+                <% if @repayment_schedules.present? %>
+                <%= render "repayment_schedules/schedule_table", repayment_schedules: @repayment_schedules %>
+                <% else %>
+                <p class="text-center text-gray-500 italic">No repayment schedule available.</p>
+                <% end %>
+            </div>
             </div>
         </div>
     <% end %>
 
+
     <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200">
         <div class="mb-5 w-full">
-            <%= search_form_for @q, url: employee_cash_adv_requests_path, method: :get, class: "flex items-center gap-2" do |f| %>
-                <%= hidden_field_tag :status, @status %>
-                <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
-                    class: "w-full p-2 border border-gray-300 rounded-lg", 
-                    placeholder: "Search cash advance requests" %>
-                
-                <%= f.submit "Search", class: "w-auto px-10 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold" %>
-          <% end %>
+            <%= search_form_for @q, url: employee_cash_adv_requests_path, method: :get, class: "flex flex-col sm:flex-row items-stretch gap-2" do |f| %>
+            <%= hidden_field_tag :status, @status %>
+        
+            <%= f.search_field :employee_f_name_or_employee_m_name_or_employee_l_name_or_cut_off_or_status_cont, 
+                class: "w-full p-2 border border-gray-300 rounded-lg text-sm", 
+                placeholder: "Search cash advance requests" %>
+        
+            <%= f.submit "Search", 
+                class: "w-full sm:w-auto px-6 py-2.5 bg-blue-500 text-white shadow-md rounded-md font-semibold text-sm transition-colors" %>
+            <% end %>
         </div>
+  
 
         <table class="w-full table-auto text-xs sm:text-md text-left text-gray-500 dark:text-gray-400 mb-5">
             <thead class="text-xs sm:text-sm md:text-md lg:text-md p-2 text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :amount, "Amount") %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :interest_amount, "Interest") %></th>
-                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap"><%= sort_link(@q, :amount, "Total Amount w/Interest") %></th>
+                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap "><%= sort_link(@q, :amount, ("Total Amount<br>w/Interest").html_safe) %></th>
                     <th scope="col" class="px-3 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :cut_off, "Cut-Off") %></th>
-                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :repayment_months, "Repayment Months") %></th> 
+                    <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap text-center"><%= sort_link(@q, :repayment_months, ("Repayment<br>Months").html_safe) %></th> 
                     <th scope="col" class="px-2 py-2 w-24 hidden md:table-cell whitespace-nowrap"><%= sort_link(@q, :created_at, "Requested on") %></th>
                     <th scope="col" class="px-3 py-2 w-28 whitespace-nowrap"><%= sort_link(@q, :status, "Status") %></th>
-                    <th scope="col" class="px-3 py-2 w-24 whitespace-nowrap">Action</th>
+                    <th scope="col" class="px-3 py-2 w-20 whitespace-nowrap">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -97,7 +104,7 @@
                     <td class="px-3 py-2 w-24 hidden md:table-cell capitalize">
                         <%= cashadvreq.cut_off %>
                     </td>
-                    <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
+                    <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell text-center">
                         <%= cashadvreq.repayment_months %>
                     </td>
                     <td class="px-3 py-2 w-24 capitalize max-w-[150px] hidden md:table-cell">
@@ -108,7 +115,7 @@
                             <%= cashadvreq.status.capitalize %>
                         </span>
                     </td>
-                    <td class="px-3 py-2 w-24">
+                    <td class="px-3 py-2 w-20">
                         <%= link_to admin_cash_adv_request_path(cashadvreq.id), class: "px-2 py-1 text-blue-600" do %>
                             <i class="bi bi-eye-fill"></i>
                         <% end %>

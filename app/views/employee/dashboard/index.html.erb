@@ -67,26 +67,28 @@
         <% end %>
       </div>
     </div>
-    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-      <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
-      <table class="w-full table-auto text-xs sm:text-md text-center text-gray-500 dark:text-gray-400 mb-7">
+    <div class="relative overflow-hidden shadow-md sm:rounded-lg p-4 sm:p-8 border-t border-gray-200 mt-10">
+    <h2 class="text-lg sm:text-xl font-semibold mb-4">Payroll Summary</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full table-auto text-xs sm:text-sm md:text-md text-center text-gray-500 dark:text-gray-400 mb-7 min-w-[600px]">
         <thead class="text-xs sm:text-sm md:text-md lg:text-md text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th class="p-2">Description</th>
-            <th class="p-2">Basic</th>
-            <th class="p-2">SSS</th>
-            <th class="p-2">PhilHealth</th>
-            <th class="p-2">PAGIBIG</th>
-            <th class="p-2">Cash Advance</th>
-            <th class="p-2">Net Amount</th>
-            <th class="p-2">Action</th>
+            <th class="p-2 whitespace-nowrap">Description</th>
+            <th class="p-2 whitespace-nowrap">Basic</th>
+            <th class="p-2 whitespace-nowrap">SSS</th>
+            <th class="p-2 whitespace-nowrap">PhilHealth</th>
+            <th class="p-2 whitespace-nowrap">PAGIBIG</th>
+            <th class="p-2 whitespace-nowrap">Cash Advance</th>
+            <th class="p-2 whitespace-nowrap">Net Amount</th>
+            <th class="p-2 whitespace-nowrap">Action</th>
           </tr>
         </thead>
         <tbody>
           <% if @employee_payrolls.any? %>
             <% @employee_payrolls.each do |payroll| %>
               <tr class="odd:bg-gray-50 even:bg-white">
-                <td class="p-2"><%= payroll.description %></td>
+                <td class="p-2 text-left"><%= payroll.description %></td>
                 <td class="p-2"><%= number_to_currency(payroll.basic, unit: '₱', precision: 2, delimiter: ',') %></td>
                 <td class="p-2"><%= number_to_currency(payroll.sss, unit: '₱', precision: 2, delimiter: ',') %></td>
                 <td class="p-2"><%= number_to_currency(payroll.philhealth, unit: '₱', precision: 2, delimiter: ',') %></td>
@@ -114,12 +116,14 @@
           <% end %>
         </tbody>
       </table>
-      <% if @pagy_employee_payrolls&.pages.to_i > 1 %>
-        <div class="mt-4">
-          <%= render "/layouts/pagy/pagination1", pagy: @pagy_employee_payrolls, page_param: "page_employee_payrolls" %>
-        </div>
-      <% end %>
     </div>
+    
+    <% if @pagy_employee_payrolls&.pages.to_i > 1 %>
+      <div class="mt-4">
+        <%= render "/layouts/pagy/pagination1", pagy: @pagy_employee_payrolls, page_param: "page_employee_payrolls" %>
+      </div>
+    <% end %>
   </div>
+
 </div>
 <%= render partial: "admin/cash_adv_requests/modal", locals: { modal_id: "default-modal", eligibility: @eligibility } %>
