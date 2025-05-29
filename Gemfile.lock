@@ -99,6 +99,10 @@ GEM
       responders
       warden (~> 1.2.3)
     domain_name (0.6.20240107)
+    dotenv (2.8.1)
+    dotenv-rails (2.8.1)
+      dotenv (= 2.8.1)
+      railties (>= 3.2)
     erubi (1.13.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
@@ -303,6 +307,7 @@ DEPENDENCIES
   cancancan (~> 3.6, >= 3.6.1)
   capybara (>= 2.15)
   devise (~> 4.9, >= 4.9.4)
+  dotenv-rails
   faker
   image_processing (~> 1.2)
   jbuilder (~> 2.7)

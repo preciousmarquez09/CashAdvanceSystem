@@ -30,37 +30,43 @@
       </div>
     </div>
   </div>
-  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-8 border-t border-gray-200 mt-10">
-    <h2 class="text-xl font-semibold mb-4">Cash Advances Due in Next Payroll (<%= @next_payroll.strftime("%B %d, %Y") %>)</h2>
-    <table class="w-full table-auto text-md sm:text-md text-center text-gray-500 mb-7">
-      <thead class="text-gray-700 bg-gray-200 ">
+  <div class="relative overflow-hidden shadow-md sm:rounded-lg p-4 sm:p-8 border-t border-gray-200 mt-10">
+    <h2 class="text-base sm:text-xl font-semibold mb-4">
+      Cash Advances Due in Next Payroll (<%= @next_payroll.strftime("%B %d, %Y") %>)
+    </h2>
+    
+    <table class="w-full table-auto text-xs sm:text-sm md:text-md text-center text-gray-500 mb-7">
+      <thead class="text-gray-700 bg-gray-200">
         <tr>
-          <th class="p-2">Employee Name</th>
-          <th class="p-2">Amount</th>
+          <th class="p-1 sm:p-2 whitespace-nowrap">Employee Name</th>
+          <th class="p-1 sm:p-2 whitespace-nowrap">Amount</th>
         </tr>
       </thead>
       <tbody>
         <% if @due_next_payroll.any? %>
           <% @due_next_payroll.each do |repayment| %>
             <% employee = repayment.cash_adv_request.employee %>
-            <tr class="odd:bg-gray-50 even:bg-white ">
-              <td class="p-2"><%= "#{employee.f_name} #{employee.l_name}" %></td>
-              <td class="p-2">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
+            <tr class="odd:bg-gray-50 even:bg-white">
+              <td class="p-2 sm:p-2 text-left whitespace-nowrap text-center"><%= "#{employee.f_name} #{employee.l_name}" %></td>
+              <td class="p-2 sm:p-2 whitespace-nowrap">₱ <%= number_to_currency(repayment.amount, unit: '', precision: 2, delimiter: ',') %></td>
             </tr>
           <% end %>
         <% else %>
           <tr>
-            <td colspan="3" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
+            <td colspan="2" class="p-2 text-center text-gray-500">No Cash Advances Due in Next Payroll</td>
           </tr>
         <% end %>
       </tbody>
     </table>
+
     <% if @pagy_due_next_payroll&.pages.to_i > 1 %>
       <div class="mt-4">
         <%= render "/layouts/pagy/pagination1", pagy: @pagy_due_next_payroll, page_param: "page_due_next_payroll" %>
       </div>
     <% end %>
   </div>
+
+
   <hr class="mt-10">
   <h1 class="text-xl font-semibold mb-4">My Account</h1>
   <div class="bg-white p-6 rounded-lg shadow-md mb-6">

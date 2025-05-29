@@ -1,50 +1,50 @@
-
-
 <div class="relative overflow-x-auto sm:rounded-lg">
-    <% if repayment_schedules.present? %>
-        <div class="flex justify-between items-center px-4 text-black">
-            <p class="text-sm sm:text-lg font-semibold mb-2"> Repayment Schedules </p>
-            <p class="text-sm sm:text-lg mb-2 ">
-                Paid: <b> <%= repayment_schedules.where(status: 'paid').count %> of <%= repayment_schedules.count %></b>
-            </p>
-        </div>
+  <% if repayment_schedules.present? %>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 text-black gap-2 sm:gap-0">
+      <p class="text-sm sm:text-base md:text-lg font-semibold">Repayment Schedules</p>
+      <p class="text-sm sm:text-base md:text-lg">
+        Paid: <b><%= repayment_schedules.where(status: 'paid').count %> of <%= repayment_schedules.count %></b>
+      </p>
+    </div>
 
-        <table class="min-w-full text-xs sm:text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
-            <thead class="text-xs sm:text-lg text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Due Date </th>
-                    <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Amount </th>
-                    <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Status </th>
-                    <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3"> Paid on </th>
-                </tr>
-            </thead>
-            <tbody>
-            <% repayment_schedules.each do |schedule| %>
-                <tr class="bg-white text-xs sm:text-lg border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                    <th scope="row" class="px-3 py-2 sm:px-6 sm:py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        <%= schedule.due_date.strftime("%B %d, %Y") %>
-                    </th>
-                    <td class="px-3 py-2 sm:px-6 sm:py-4 text-black">
-                        <%= number_to_currency(schedule.amount, unit: "₱ ", precision: (schedule.amount % 1 == 0 ? 0 : 2)) %>
-                    </td>
-                    <td class="px-3 py-2 sm:px-6 sm:py-4">
-                        <span class="px-2 py-1 text-xs sm:text-lg font-semibold rounded
-                        <%= case schedule.status
-                            when 'pending' then 'bg-yellow-200 text-yellow-600'
-                            when 'paid' then 'bg-green-200 text-green-600'
-                            else 'bg-gray-300' # Default color
-                        end %>">
-                        <%= schedule.status.capitalize %>
-                    </span>
-                    <th class="px-3 py-2 sm:px-6 sm:py-4 font-medium">
-                        <%= schedule.updated_at == schedule.created_at ? "Not yet paid" : "<span class='text-black'>#{schedule.updated_at.strftime('%B %d, %Y')}</span>".html_safe %>
-                    </th>
-                    </td>
-                </tr>
-            <% end %>
-            </tbody>
-        </table>
-    <% else %>
-        <p>No repayment schedules available.</p>
-    <% end %>
+    <div class="w-full mt-3">
+      <table class="min-w-full table-fixed text-xs sm:text-sm md:text-base lg:text-lg text-left text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <thead class="text-xs sm:text-sm md:text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="w-1/4 px-3 py-2 sm:px-4 sm:py-3">Due Date</th>
+            <th scope="col" class="w-1/4 px-3 py-2 sm:px-4 sm:py-3">Amount</th>
+            <th scope="col" class="w-1/4 px-3 py-2 sm:px-4 sm:py-3">Status</th>
+            <th scope="col" class="w-1/4 px-3 py-2 sm:px-4 sm:py-3">Paid On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% repayment_schedules.each do |schedule| %>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td class="w-1/4 px-3 py-2 sm:px-4 sm:py-3 font-medium text-gray-900 dark:text-white">
+                <%= schedule.due_date.strftime("%B %d, %Y") %>
+              </td>
+              <td class="w-1/4 px-3 py-2 sm:px-4 sm:py-3 text-black">
+                <%= number_to_currency(schedule.amount, unit: "₱ ", precision: (schedule.amount % 1 == 0 ? 0 : 2)) %>
+              </td>
+              <td class="w-1/4 px-3 py-2 sm:px-4 sm:py-3">
+                <span class="inline-block px-2 py-1 text-xs sm:text-sm md:text-base font-semibold rounded
+                  <%= case schedule.status
+                      when 'pending' then 'bg-yellow-200 text-yellow-600'
+                      when 'paid' then 'bg-green-200 text-green-600'
+                      else 'bg-gray-300'
+                  end %>">
+                  <%= schedule.status.capitalize %>
+                </span>
+              </td>
+              <td class="w-1/4 px-3 py-2 sm:px-4 sm:py-3 font-medium text-black">
+                <%= schedule.updated_at == schedule.created_at ? "Not yet paid" : schedule.updated_at.strftime('%B %d, %Y') %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500 italic p-4">No repayment schedules available.</p>
+  <% end %>
 </div>
